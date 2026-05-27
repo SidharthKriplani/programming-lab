@@ -1,0 +1,65 @@
+# Docker Compose for local development infrastructure
+# Provides PostgreSQL, Redis, and other services for testing
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: psl-postgres
+    environment:
+      POSTGRES_USER: labuser
+      POSTGRES_PASSWORD: labpass
+      POSTGRES_DB: production_systems_lab
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U labuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - psl-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: psl-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - psl-network
+
+  # PgAdmin for PostgreSQL Management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: psl-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - psl-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  psl-network:
+    driver: bridge
