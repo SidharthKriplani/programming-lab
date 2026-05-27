@@ -8,11 +8,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Module 2: Databases & Performance
 - Module 3: Observability & Monitoring
 - Module 4: Deployment & Infrastructure
 - Module 5: Building for Scale
 - Module 6: Real-World Systems
+
+---
+
+## [0.2.0] - 2024-12-27
+
+### Added - Module 2: Databases & Performance
+- **Main application** (`app.py`)
+  - SQLite database with async queries
+  - User and Post tables with proper schema
+  - Endpoints demonstrating N+1 problem vs optimized joins
+  - `/comparison/slow` endpoint (N+1 problem)
+  - `/comparison/fast` endpoint (optimized join)
+  - `/seed` endpoint for test data
+  - Connection management with async
+
+- **Module 2 README**
+  - Database design principles
+  - Query optimization strategies
+  - Index design and impact
+  - Connection pooling concepts
+  - Performance testing patterns
+
+- **Exercise 1: Schema Design**
+  - Bad vs good schema comparison
+  - Relationships and foreign keys
+  - Index impact on performance
+  - Composite indexes
+
+- **Dependencies**
+  - Added `aiosqlite` for async SQLite
+
+### Key Features
+- ✅ Real performance comparison (N+1 vs JOIN)
+- ✅ SQLite for zero-setup database
+- ✅ Proper schema design with constraints
+- ✅ Index strategy demonstrations
+- ✅ Seed data for experimentation
+
+### Architecture
+```
+Module 1: Async APIs          → Why async matters
+    ↓
+Module 2: Databases           → What you're making async calls to
+    ↓
+Module 3: Observability       → Monitor what's happening
+    ↓
+Module 4: Deployment          → Ship to production
+    ↓
+Module 5: Scaling             → Handle 10,000s of requests
+    ↓
+Module 6: Real-World Systems  → Put it all together
+```
 
 ---
 
@@ -22,57 +73,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Initial Project Setup**
   - Project structure and organization
   - Virtual environment configuration
-  - Development dependencies (FastAPI, pytest, black, etc.)
-  - Docker Compose for local infrastructure (PostgreSQL, Redis)
+  - Development dependencies
 
 - **Module 1: Async APIs & Concurrency**
-  - Comprehensive README explaining async/await concepts
-  - Main application (`app.py`) demonstrating:
-    - Synchronous endpoint (`/sync-data`)
-    - Asynchronous endpoint (`/async-data`)
-    - Health check endpoint
-    - Pydantic data models for validation
-  - Exercise 1: Basic async concepts with 5 progressive examples
-  - Test suite with pytest and async test patterns
-  - Makefile with common development commands
-  - Docker Compose setup for services
+  - Comprehensive README explaining async/await
+  - Main application demonstrating sync vs async
+  - Exercise 1: Basic async concepts (5 examples)
+  - Test suite with pytest
+  - Makefile with common commands
+  - Docker Compose for local services
 
 - **Documentation**
-  - Root README with learning path and project overview
-  - Module 1 detailed README
-  - Setup instructions
-  - Project structure documentation
+  - Root README with 6-module learning path
+  - QUICKSTART guide
+  - Project structure docs
 
 - **Configuration**
-  - `.gitignore` for Python projects
-  - `.env.example` for environment variables
-  - `requirements.txt` with production dependencies
-
-### Key Features
-- ✅ Fast async API that can handle 1000+ req/s
-- ✅ Comparison between sequential and concurrent execution
-- ✅ Educational code with clear explanations
-- ✅ Testing infrastructure ready
-- ✅ Development environment setup
-
-### Known Limitations
-- Module 1 uses simulated data sources (not real databases)
-- No authentication/authorization yet
-- No rate limiting yet
-- No production deployment setup
+  - `.gitignore`, `.env.example`, `requirements.txt`
 
 ---
 
 ## Development Notes
 
-### Session: Initial Setup (Dec 27, 2024)
+### Session 1: Module 1 (Dec 27)
 - Created comprehensive project scaffolding
-- Module 1 fully implemented and documented
-- Designed for educational clarity over production optimization
-- Focus on teaching "why" async matters with concrete examples
+- Module 1 fully implemented
+- Educational focus over production optimization
 
-### Next Session Actions
-- Get user feedback on Module 1
-- Implement Exercise 2-5 for Module 1
-- Plan Module 2 content
-- Set up CI/CD pipeline
+### Session 2: Module 2 (Dec 27)
+- Built Module 2 with real database examples
+- Demonstrated N+1 problem vs optimized queries
+- Added performance comparison endpoints
+- Created Exercise 1 on schema design
+- Switched from Vercel to local development
+
+### Next Steps
+- Get feedback on Module 1-2
+- Implement Exercises 2-5 for Module 2
+- Plan Module 3 (Observability)
+- Deploy to Railway or similar when ecosystem is complete
