@@ -1,0 +1,6 @@
+# PL — LINEAGE
+
+_Narrative history of Programming Lab. One line per meaningful turn._
+
+- **2026-06-23 — Re-scoped from Production Systems Lab to Programming Lab.** The repo began (Dec 2024) as an infra-ops teaching lab: FastAPI, Docker, async APIs, databases, caching, scaling, observability. That scope was superseded by HQ D-07 (PSL = the SWE layer for data people: DSA, Python, pandas; glass-box "feel the machine") and D-15 (the fluency rung of the Competence Model). HQ authored `docs/PL-BUILD-SPEC.md` (the four fluency banks, B-ready schema, Pyodide IDE plan). Sidharth approved Option A (rebuild as a React+Vite+Pyodide SPA, archive the legacy infra) and the rename PSL → PL (Programming Lab); the Vercel-slug rename was deferred.
+- **2026-06-23 — B0 + B1 built.** Legacy infra archived to `_legacy/`. New sibling-consistent SPA stood up with a glass-box Pyodide IDE (CodeMirror + real CPython + time/memory instrumentation, built early as the differentiator, not last). Bank A shipped: 23 Python gotchas, each a runnable predict→reveal→fix loop that doubles as a LinkedIn post — the distribution-gate override is honored because the content *is* the distribution. Not yet built/deployed on macOS; B2 (pandas/numpy) is the next bank.

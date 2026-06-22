@@ -29,6 +29,14 @@ ENV/
 env/
 .venv
 
+# Node / Vite SPA
+node_modules/
+dist/
+dist-tmp/
+dist-output/
+.vite/
+*.local
+
 # IDE
 .vscode/
 .idea/

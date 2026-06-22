@@ -1,0 +1,618 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRAMMING LAB (PL) THEME
+   Variables, keyframes, and .pal-* utility classes pasted VERBATIM from
+   Product Analytics Lab (PAL) so components reused from sibling labs render
+   unchanged. PL-specific base/layout styles follow at the bottom.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Theme Variables (PAL casefile warm) ─────────────────────────────────── */
+:root {
+  /* Canvas — casefile warm paper */
+  --bg: #F4EFE6;
+  --surface: #FFFCF4;
+  --surface-2: #F8F1E5;
+  --surface-raised: #FFFCF4;
+
+  /* Borders — warm tan */
+  --border: #DDD0BE;
+  --border-subtle: #EDE5D5;
+  --border-strong: #BFAE98;
+
+  /* Text hierarchy — all values at ≥4.5:1 WCAG AA against --bg and --surface */
+  --text: #141414;
+  --text-secondary: #4A4036;
+  --text-muted: #756B60;
+  --text-dim: #9B8E80;
+
+  /* Primary accent — cobalt blue */
+  --accent: #2457D6;
+  --accent-hover: #1D45AD;
+  --accent-light: #5A7FE8;
+  --accent-bg: rgba(36,87,214,0.07);
+  --accent-border: rgba(36,87,214,0.22);
+
+  /* Secondary accent — evidence teal */
+  --teal: #007C89;
+  --teal-bg: rgba(0,124,137,0.07);
+  --teal-border: rgba(0,124,137,0.25);
+
+  /* Semantic — green */
+  --green: #16a34a;
+  --green-bg: #f0fdf4;
+  --green-border: #86efac;
+  --green-text: #14532d;
+
+  /* Semantic — red */
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --red-border: #fca5a5;
+  --red-text: #7f1d1d;
+
+  /* Semantic — progress amber */
+  --yellow: #C97706;
+  --yellow-bg: rgba(201,119,6,0.08);
+  --yellow-border: rgba(201,119,6,0.25);
+  --yellow-text: #7A4500;
+
+  /* Semantic — purple */
+  --purple: #6B3FA0;
+  --purple-bg: rgba(107,63,160,0.07);
+  --purple-border: rgba(107,63,160,0.22);
+  --purple-text: #3D2060;
+
+  /* Blue (info/hypothesis) */
+  --blue-text: #1d4ed8;
+  --blue-bg: #eff6ff;
+  --blue-border: #bfdbfe;
+
+  /* Structural */
+  --header-bg: rgba(255,252,244,0.97);
+  --shadow-sm: 0 1px 3px rgba(20,20,20,0.05), 0 1px 2px rgba(20,20,20,0.04);
+  --shadow: 0 2px 8px rgba(20,20,20,0.07), 0 1px 3px rgba(20,20,20,0.04);
+  --shadow-md: 0 4px 16px rgba(20,20,20,0.08), 0 2px 6px rgba(20,20,20,0.05);
+  --shadow-lg: 0 8px 24px rgba(20,20,20,0.08), 0 4px 10px rgba(20,20,20,0.05);
+  --shadow-xl: 0 16px 48px rgba(20,20,20,0.10), 0 6px 18px rgba(20,20,20,0.06);
+  --shadow-glow: 0 0 0 3px var(--accent-border);
+  --input-bg: #ffffff;
+  --radius: 8px;
+  --radius-sm: 5px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #2457D6 0%, #5A7FE8 100%);
+  --gradient-warm: linear-gradient(135deg, #C97706 0%, #E8900A 100%);
+  --gradient-teal: linear-gradient(135deg, #007C89 0%, #00A3B4 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(36,87,214,0.06) 0%, rgba(0,124,137,0.03) 50%, rgba(201,119,6,0.02) 100%);
+
+  /* Overlay / backdrop */
+  --overlay: rgba(0, 0, 0, 0.45);
+
+  /* Discovery — insight reveal moments only */
+  --discovery: #E8A033;
+
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition: 0.16s ease;
+  --transition-slow: 0.26s ease;
+
+  /* ── Typography ──────────────────────────────────────────────────────────── */
+  --font-ui:   'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Type scale */
+  --text-xs:   12px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   16px;
+  --text-lg:   18px;
+  --text-xl:   22px;
+  --text-2xl:  28px;
+  --text-3xl:  36px;
+  --text-hero: 56px;
+
+  /* Line heights */
+  --leading-tight: 1.15;
+  --leading-title: 1.25;
+  --leading-body:  1.5;
+  --leading-code:  1.55;
+
+  /* Weights */
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  /* ── Sibling-component aliases ─────────────────────────────────────────────
+     MSL PythonCell + HowToStrip and GSL GateOverlay reference their own var
+     names. Alias them to PAL equivalents so reused components render unchanged. */
+  --font-sans: var(--font-ui);
+  --rim: var(--border);
+  --depth: var(--surface-2);
+  --prime: var(--yellow);
+  --violet: var(--accent);
+  --ink-hi: var(--text);
+  --ink-low: var(--text-muted);
+  --surface-tint: var(--surface-2);
+
+  /* GSL GateOverlay tokens */
+  --gal-build: var(--accent);
+  --gal-build-tint: var(--accent-bg);
+  --gal-build-border: var(--accent-border);
+}
+
+:root[data-theme="dark"] {
+  /* Casefile dark warm — for portals/modals rendered outside app-layout */
+  --bg: #15120D;
+  --surface: #201B14;
+  --surface-2: #251E16;
+  --surface-raised: #2A231A;
+  --border: #3A3024;
+  --border-subtle: #2E2519;
+  --border-strong: #5A4733;
+  --text: #F5EFE4;
+  --text-secondary: #E2D4C2;
+  --text-muted: #B4A693;
+  --text-dim: #8C7B6A;
+  --accent: #7EA2FF;
+  --accent-hover: #A6BCFF;
+  --accent-light: #A6BCFF;
+  --accent-bg: rgba(126,162,255,0.12);
+  --accent-border: rgba(126,162,255,0.28);
+  --teal: #4DB6AC;
+  --teal-bg: rgba(77,182,172,0.12);
+  --teal-border: rgba(77,182,172,0.28);
+  --yellow: #F2B84B;
+  --yellow-bg: rgba(242,184,75,0.12);
+  --yellow-border: rgba(242,184,75,0.28);
+  --yellow-text: #F2B84B;
+  --green: #61D394;
+  --green-bg: rgba(97,211,148,0.1);
+  --green-border: rgba(97,211,148,0.25);
+  --green-text: #61D394;
+  --red: #FF7A70;
+  --red-bg: rgba(255,122,112,0.1);
+  --red-border: rgba(255,122,112,0.25);
+  --red-text: #FF7A70;
+  --purple: #C4A8FF;
+  --purple-bg: rgba(196,168,255,0.1);
+  --purple-border: rgba(196,168,255,0.25);
+  --purple-text: #C4A8FF;
+  --blue-text: #93c5fd;
+  --blue-bg: rgba(147,197,253,0.1);
+  --blue-border: rgba(147,197,253,0.25);
+  --header-bg: rgba(21,18,13,0.97);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow: 0 2px 8px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.35);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.65), 0 8px 24px rgba(0,0,0,0.45);
+  --shadow-glow: 0 0 0 3px rgba(126,162,255,0.25);
+  --input-bg: #201B14;
+  --gradient-accent: linear-gradient(135deg, #7EA2FF 0%, #A6BCFF 100%);
+  --gradient-warm: linear-gradient(135deg, #F2B84B 0%, #E8900A 100%);
+  --gradient-teal: linear-gradient(135deg, #4DB6AC 0%, #26A69A 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(126,162,255,0.08) 0%, rgba(77,182,172,0.04) 50%, rgba(242,184,75,0.03) 100%);
+  --discovery: #F2B84B;
+  --transition-fast: 0.1s ease;
+  --transition: 0.16s ease;
+  --transition-slow: 0.26s ease;
+}
+
+/* ── Animations (PAL keyframes, verbatim) ────────────────────────────────── */
+@keyframes palPageEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes palCardEnter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes palShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes palFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pal-page-enter {
+  animation: palPageEnter 0.22s ease both;
+}
+
+/* ── Landing page animations ───────────────────────────── */
+@keyframes palLandingIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes palLandingGlow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(36,87,214,0.18), 0 1px 6px rgba(36,87,214,0.1); }
+  50%      { box-shadow: 0 8px 32px rgba(36,87,214,0.28), 0 2px 10px rgba(36,87,214,0.15); }
+}
+@keyframes palGhostFade {
+  0%, 100% { opacity: 0; }
+  30%, 70%  { opacity: 1; }
+}
+@keyframes palLandingBgDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -20px) scale(1.08); }
+  66%      { transform: translate(-20px, 15px) scale(0.95); }
+}
+.pal-landing-el {
+  animation: palLandingIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pal-landing-glow {
+  animation: palLandingGlow 2.8s ease-in-out infinite;
+}
+
+.pal-card-enter {
+  animation: palCardEnter 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pal-shimmer-box {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface-2, var(--border)) 50%,
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: palShimmer 1.5s ease infinite;
+  border-radius: var(--radius);
+  min-height: 200px;
+}
+
+/* ── Bold moment keyframes ───────────────────────────────────────────────── */
+@keyframes palRevealIn {
+  0%   { opacity: 0; transform: translateY(28px) scale(0.96); }
+  55%  { opacity: 1; transform: translateY(-5px) scale(1.008); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes palSuccessRipple {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.5), 0 0 0 0 rgba(34,197,94,0.25); }
+  55%  { box-shadow: 0 0 0 9px rgba(34,197,94,0.12), 0 0 0 18px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+@keyframes palShake {
+  0%, 100% { transform: translateX(0); }
+  14%  { transform: translateX(-6px); }
+  29%  { transform: translateX(6px); }
+  43%  { transform: translateX(-4px); }
+  57%  { transform: translateX(4px); }
+  71%  { transform: translateX(-2px); }
+  86%  { transform: translateX(2px); }
+}
+
+@keyframes palPop {
+  0%   { transform: scale(1); }
+  38%  { transform: scale(1.28); }
+  68%  { transform: scale(0.93); }
+  100% { transform: scale(1); }
+}
+
+@keyframes palGlowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(36,87,214,0), var(--shadow); }
+  50%       { box-shadow: 0 0 0 5px rgba(36,87,214,0.22), var(--shadow-md); }
+}
+
+@keyframes palSlideUp {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes palSpotlight {
+  0%   { background-position: -250% center; }
+  100% { background-position: 350% center; }
+}
+
+/* ── Bold utility classes ─────────────────────────────────────────────────── */
+.pal-reveal-in {
+  animation: palRevealIn 0.42s cubic-bezier(0.34, 1.18, 0.64, 1) both;
+}
+
+.pal-success-ring {
+  animation: palSuccessRipple 0.7s ease-out both;
+}
+
+.pal-shake {
+  animation: palShake 0.4s ease both;
+}
+
+.pal-pop {
+  animation: palPop 0.42s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.pal-glow-pulse {
+  animation: palGlowPulse 2.2s ease-in-out infinite;
+}
+
+.pal-slide-up {
+  animation: palSlideUp 0.3s cubic-bezier(0.34, 1.12, 0.64, 1) both;
+}
+
+.pal-spotlight {
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255,255,255,0.14) 50%,
+    transparent 65%
+  );
+  background-size: 300% 100%;
+  animation: palSpotlight 0.85s ease-out both;
+}
+
+/* ── Global press feedback ───────────────────────────────────────────────── */
+button:not(:disabled):active {
+  transform: scale(0.96) !important;
+  transition: transform 0.08s ease !important;
+}
+.pal-card-hover:active {
+  transform: translateY(1px) scale(0.985) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+@keyframes palArmDraw {
+  from { stroke-dashoffset: 160; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes palNodeAppear {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes palLoopDraw {
+  from { stroke-dashoffset: 350; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pal-page-enter,
+  .pal-card-enter,
+  .pal-reveal-in,
+  .pal-slide-up,
+  .pal-spotlight { animation: none !important; }
+  .pal-shimmer-box,
+  .pal-glow-pulse { animation: none !important; }
+  .pal-success-ring { animation: none !important; }
+  .pal-arm-draw,
+  .pal-loop-draw { animation: none !important; }
+  .pal-node-appear { animation: none !important; }
+  .pal-shake { animation: none !important; }
+  .animate-spin { animation: none !important; }
+  .pal-landing-el,
+  .pal-landing-glow { animation: none !important; }
+}
+
+/* ── Utility: card hover lift ────────────────────────────────────────────── */
+.pal-card-hover {
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  cursor: pointer;
+}
+.pal-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Utility: gradient text ──────────────────────────────────────────────── */
+.pal-gradient-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Utility: primary gradient button ───────────────────────────────────── */
+.pal-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.55rem 1.2rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: background var(--transition), transform var(--transition-fast), box-shadow var(--transition);
+}
+.pal-btn-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.pal-btn-primary:active {
+  background: var(--accent-hover);
+  transform: translateY(0);
+}
+
+/* ── Utility: subtle glow focus ring ────────────────────────────────────── */
+.pal-focus:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+}
+
+/* ── Badge: gradient accent pill ────────────────────────────────────────── */
+.pal-badge-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--gradient-accent);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 99px;
+}
+
+/* ── Sidebar active pill ─────────────────────────────────────────────────── */
+.sidebar-nav-active {
+  background: var(--accent-bg) !important;
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+  box-shadow: inset 3px 0 0 var(--accent) !important;
+}
+.sidebar-nav-active-sub {
+  background: var(--accent-bg) !important;
+  color: var(--accent) !important;
+  font-weight: 600 !important;
+  box-shadow: inset 2px 0 0 var(--accent) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PL BASE + LAYOUT  (minimal — supports the reused Sidebar + IDE components)
+   ═══════════════════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root { min-height: 100vh; }
+
+/* ── App shell ──────────────────────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  width: 232px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.app-main-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: 1.75rem 2rem 4rem;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Mobile top bar + drawer ───────────────────────────────────────────── */
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+
+.mobile-menu-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.6rem;
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+@media (max-width: 860px) {
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform var(--transition-slow);
+    box-shadow: var(--shadow-xl);
+  }
+  .app-sidebar.open { transform: translateX(0); }
+  .mobile-topbar { display: flex; }
+  .app-main { padding: 1.25rem 1rem 3rem; }
+}
+
+/* ── IDE / Python cell output (MSL PythonCell selectors) ──────────────────── */
+.btn-run {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+.btn-run:hover:not(:disabled) {
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-sm);
+}
+.btn-run:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.py-output {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: var(--leading-code);
+  color: var(--green-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.py-output.py-error {
+  color: var(--red);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* ── Difficulty + cluster chips ───────────────────────────────────────────── */
+.pl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.16rem 0.5rem;
+  border-radius: 99px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* ── CodeMirror surface tweaks (editor in PythonCell) ─────────────────────── */
+.cm-editor { background: transparent; }
+.cm-editor.cm-focused { outline: none; }
