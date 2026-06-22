@@ -5,6 +5,18 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.3.0] - 2026-06-23 — BreakLabs logo (D-19)
+
+> The unified BreakLabs lockup lands. `break⌇labs · Programming` — one brand, distinct rooms.
+
+### Added
+- **`BrandMark` component** (`src/components/shared/BrandMark.jsx`) per `HQ/BRANDMARK-ROLLOUT.md` (D-19). Three variants (full / wordmark / monogram). Constant across all labs: the red fault-glyph seam + the `break⌇labs` wordmark. Per-lab: descriptor `Programming` + violet `#8B5CF6` accent.
+- Wired into **7 slots**: sidebar header (full), favicon (shared red monogram), OG share card, hero (wordmark), gate header (wordmark), footer (wordmark + "part of BreakLabs"), loading (monogram).
+- **OG share card** — `public/og-image.png` (1200×630, the instrument card + lockup) + `og:`/`twitter:` meta in `index.html`.
+
+### Changed
+- Favicon is now the shared BreakLabs red glyph (was the violet PL stopgap — archived to `_legacy/`, D-18).
+
 ## [PL 0.2.0] - 2026-06-23 — Instrument identity + dark/light
 
 > PL stops wearing PAL's skin and takes its own. Direction: **Instrument** (the BreakLabs "dark glass-box that exposes the machine"), the most on-brand and most distinct of three proposed.

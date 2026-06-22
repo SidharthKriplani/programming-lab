@@ -13,6 +13,7 @@
 //   </GateOverlay>
 import { createPortal } from 'react-dom';
 import { isUnlocked } from '../../utils/unlock.js';
+import { BrandMark } from './BrandMark.jsx';
 
 // ─── Contextual, outcome-framed copy per locked surface ──────────────────────
 const GATE_COPY = {
@@ -65,6 +66,9 @@ function LockScreen({ context }) {
           display: 'flex', flexDirection: 'column', gap: '1rem',
         }}
       >
+        <div style={{ marginBottom: '0.1rem' }}>
+          <BrandMark variant="wordmark" size={16} />
+        </div>
         <div style={{
           width: 44, height: 44, borderRadius: 14, margin: '0 auto',
           display: 'flex', alignItems: 'center', justifyContent: 'center',

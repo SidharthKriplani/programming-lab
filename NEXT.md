@@ -2,6 +2,9 @@
 
 _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The SWE-for-data fluency lab; Python now, OOP included; DSA + pandas later. HQ dispatches build briefs here (D-13). A PL build session opens, reads this + `PL-BUILD-SPEC.md`, builds, then writes its own STATUS/LINEAGE._
 
+## ✅ DONE — BreakLabs logo (D-19) implemented 2026-06-23 (PL 0.3.0)
+`BrandMark` built (`src/components/shared/BrandMark.jsx`) per `docs/BRANDMARK-ROLLOUT.md` (canonical in HQ); descriptor `Programming`, accent violet `#8B5CF6`, red seam + wordmark constant. Wired into all 7 in-scope slots: sidebar header (full), favicon (shared red monogram — old violet favicon archived to `_legacy/`), OG card (`public/og-image.png` 1200×630 + meta tags), hero (wordmark), gate header (wordmark), footer (wordmark + "part of BreakLabs"), loading (monogram). esbuild-verified; awaiting macOS build + push.
+
 ## ✅ §0 RESOLVED — both sign-offs in, build is unblocked
 - **Option A approved** (Sidharth: "approve yes"): rebuild as a **React + Vite + Pyodide SPA**, sibling-consistent with PAL/MSL/GAL; archive the legacy FastAPI/Docker/`modules` scaffold to `_legacy/` (don't delete).
 - **Rename approved + DONE (2026-06-23):** lab = **PL (Programming Lab)**. The GitHub repo slug was renamed to **`programming-lab`** and the local remote repointed (`git remote set-url`); `a7677fc` pushed. (Slug rename pulled forward from "deferred" — Sidharth did it during deploy.) **Local folder stays `labs/production-systems-lab`** so the mount + CLAUDE.md paths keep working. Vercel: first deploy via dashboard import off `programming-lab`.
@@ -11,7 +14,7 @@ _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The 
 PL was held behind the distribution keystone (D-01/D-10). **Sidharth is overriding that to dogfood PL early.** The override holds *only* because B1's content **is** the distribution: every Bank-A gotcha doubles as a LinkedIn post. **Condition: the daily LinkedIn post keeps running alongside the build** — PL build does not replace the keystone, it feeds it. If the daily slips, PL pauses.
 
 ## ✅ B0 + B1 SHIPPED — 2026-06-23 (this pass)
-Built and verified (esbuild bundle exit 0; data + Python snippets verified). See `docs/STATUS.md`.
+Built and verified (esbuild bundle exit 0; data + Python snippets verified). See `STATUS.md`.
 - **B0:** legacy archived to `_legacy/`; React+Vite+Pyodide SPA scaffolded sibling-consistent; MVP IDE (`PythonCell`: CodeMirror → Pyodide 0.25.1) + **glass-box built early** (time + peak-mem footer; `raceMethods` ready for DSA). Inherited Sidebar/Icon/HowToStrip/ForwardPointerCard/GateOverlay/unlock.
 - **B1:** Bank A = **23 Python gotchas**, 7 clusters, predict→run→reveal→fix→"copy as post". Seeded by PY1–PY7 + 16 new. `src/data/gotchaProblems.js`.
 - **Not done in-sandbox:** `npm install` + `vite build` (macOS-only). Run on Mac before deploy. Git prepared approve-first, not pushed.

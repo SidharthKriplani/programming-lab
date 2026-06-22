@@ -8,6 +8,7 @@ import { Icon } from '../shared/Icon.jsx';
 import { getCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
+import { BrandMark } from '../shared/BrandMark.jsx';
 
 const ZONES = [
   {
@@ -43,19 +44,9 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
           borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left',
         }}
       >
-        <span style={{
-          width: 30, height: 30, borderRadius: 9, flexShrink: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--surface-2)', border: '1px solid var(--border)',
-        }}>
-          <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M19 6 L12.5 15 L17.5 16.5 L11 26" fill="none" stroke="var(--accent)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="22.5" cy="9.5" r="1.7" fill="var(--yellow)" />
-          </svg>
-        </span>
-        <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-          <span style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--text)' }}>Programming Lab</span>
-          <span style={{ fontSize: '0.64rem', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>SWE for data people</span>
+        <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <BrandMark variant="full" descriptor="Programming" accent="#8B5CF6" size={14} />
+          <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)', paddingLeft: '2px' }}>SWE for data people</span>
         </span>
       </button>
 
@@ -112,13 +103,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
       {/* Footer — break⌇labs wordmark + theme toggle */}
       <div style={{ padding: '0.7rem 1.05rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
-            break
-            <svg width="6" height="13" viewBox="0 0 6 14" style={{ margin: '0 1px' }} aria-hidden="true">
-              <path d="M4 0 L1 6 L5 8 L2 14" stroke="var(--red)" strokeWidth="1.6" fill="none" />
-            </svg>
-            labs
-          </span>
+          <BrandMark variant="wordmark" size={13} />
           <button
             onClick={() => setThemeState(toggleTheme())}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -128,7 +113,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
             <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} color="var(--text-muted)" />
           </button>
         </div>
-        <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>Beta · real Python in your browser</div>
+        <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>part of BreakLabs · Beta</div>
       </div>
     </aside>
   );

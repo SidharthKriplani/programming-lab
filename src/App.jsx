@@ -4,6 +4,7 @@
 import { lazy, Suspense, useState } from 'react';
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Icon } from './components/shared/Icon.jsx';
+import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
 
 const GotchaBrowser = lazy(() =>
@@ -13,6 +14,9 @@ const GotchaBrowser = lazy(() =>
 function Home({ onNavigate }) {
   return (
     <div className="pal-page-enter" style={{ maxWidth: '640px' }}>
+      <div style={{ marginBottom: '1.4rem' }}>
+        <BrandMark variant="wordmark" size={30} />
+      </div>
       <span className="pal-badge-accent" style={{ marginBottom: '1rem' }}>DO · Fluency</span>
       <h1 style={{ margin: '0 0 0.6rem', fontSize: '2rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1.15 }}>
         Feel the machine.
@@ -54,7 +58,12 @@ export default function App() {
         </div>
 
         <main className="app-main">
-          <Suspense fallback={<div className="pal-shimmer-box" style={{ height: 220, borderRadius: 12 }} />}>
+          <Suspense fallback={
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 260, gap: '0.75rem' }}>
+              <BrandMark variant="monogram" size={40} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>loading…</span>
+            </div>
+          }>
             {view === 'gotchas' ? <GotchaBrowser /> : <Home onNavigate={navigate} />}
           </Suspense>
         </main>

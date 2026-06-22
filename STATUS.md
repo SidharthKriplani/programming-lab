@@ -25,6 +25,8 @@ Programming Lab — the SWE-for-data fluency lab (D-07). React + Vite + Pyodide 
 ## Identity (2026-06-23)
 **Instrument** theme — dark-first, **violet `#8B5CF6`** on void `#0A0A0B`, Inter + JetBrains Mono; gold = signal, red = break, green = fix (BreakLabs master palette). Light "Field Notes" mode via `[data-theme]` toggle (sidebar footer), `localStorage`-persisted, anti-flash inline script. break-glyph favicon + `break⌇labs` wordmark. Pure token swap in `index.css` (no component rewrites). Supersedes the inherited PAL light/indigo skin.
 
+**BreakLabs logo (D-19, PL 0.3.0):** `BrandMark` component (`break⌇labs · Programming`, red seam constant + violet descriptor) wired into 7 slots — sidebar header, favicon (shared red monogram), OG card (`public/og-image.png`), hero, gate, footer, loading. Per `docs/BRANDMARK-ROLLOUT.md`.
+
 ## Deploy
 GitHub: `github.com/SidharthKriplani/programming-lab` (pushed `a7677fc`, build verified locally). **Vercel import pending** — first deploy via dashboard (Add New → Project → import `programming-lab`, Vite auto-detected). After import, every push to `main` auto-deploys.
 
