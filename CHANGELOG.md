@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.2.0] - 2026-06-23 — Instrument identity + dark/light
+
+> PL stops wearing PAL's skin and takes its own. Direction: **Instrument** (the BreakLabs "dark glass-box that exposes the machine"), the most on-brand and most distinct of three proposed.
+
+### Added
+- **Instrument theme (dark-first):** void `#0A0A0B` base, panel surfaces, **violet `#8B5CF6`** accent (PL's assigned BreakLabs track colour), with the master semantics — gold `#F2B233` = signal, red `#FB5247` = break, green `#19C37D` = fix. Type switched to **Inter + JetBrains Mono** (the brand's display + voice).
+- **Light "Field Notes" mode:** warm paper `#F4F1EA` + ink, violet kept. Toggled via `[data-theme]` on `<html>` (the sibling-lab mechanism), saved to `localStorage`, with an inline anti-flash script in `index.html`. Toggle (sun/moon) lives in the sidebar footer.
+- **break-glyph identity:** `public/favicon.svg` (fault-glyph monogram, violet + gold) replacing the 404; the `break⌇labs` wordmark + fault-glyph mark in the sidebar.
+- New `src/utils/theme.js`; `sun`/`moon` added to `Icon.jsx`.
+
+### Notes
+- Token swap only — no component rewrites. esbuild bundle verified (exit 0). Build/deploy on push (Vercel connected).
+
 ## [PL 0.1.0] - 2026-06-23 — Re-scope to Programming Lab + B0/B1
 
 > Lab re-scoped from **Production Systems Lab** (infra ops) to **Programming Lab (PL)** — the SWE-for-data fluency lab (HQ D-07/D-15). The Dec-2024 infra modules below are archived in `_legacy/`. From here, this changelog tracks PL.

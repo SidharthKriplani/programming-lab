@@ -4,7 +4,7 @@ _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The 
 
 ## ✅ §0 RESOLVED — both sign-offs in, build is unblocked
 - **Option A approved** (Sidharth: "approve yes"): rebuild as a **React + Vite + Pyodide SPA**, sibling-consistent with PAL/MSL/GAL; archive the legacy FastAPI/Docker/`modules` scaffold to `_legacy/` (don't delete).
-- **Rename approved:** the lab is **PL (Programming Lab)** in all user-facing copy and docs. **Defer the repo-slug / Vercel-URL rename** (`production-systems-lab` → `programming-lab`) — it has a URL cost; do it in a dedicated infra pass, not mid-build. Until then: stale slug on disk, "PL / Programming Lab" everywhere a human reads.
+- **Rename approved + DONE (2026-06-23):** lab = **PL (Programming Lab)**. The GitHub repo slug was renamed to **`programming-lab`** and the local remote repointed (`git remote set-url`); `a7677fc` pushed. (Slug rename pulled forward from "deferred" — Sidharth did it during deploy.) **Local folder stays `labs/production-systems-lab`** so the mount + CLAUDE.md paths keep working. Vercel: first deploy via dashboard import off `programming-lab`.
 - **`PSL-BUILD-SPEC.md` → treat as `PL-BUILD-SPEC.md`** (rename the file in B0; same content, scope is fixed by D-07 + D-15).
 
 ## ⚠ Distribution-gate override (conscious)

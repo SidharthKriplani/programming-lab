@@ -3,9 +3,11 @@
 // (.sidebar-nav-active), same getIsActive mapping. Nav groups are the four
 // Competence-Model frames (D-15): KNOW / DO / BUILD / JUDGE. PL's first live
 // surface is the DO rung -> "Python Gotchas". The other zones are stubbed "Soon".
+import { useState } from 'react';
 import { Icon } from '../shared/Icon.jsx';
 import { getCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
+import { getTheme, toggleTheme } from '../../utils/theme.js';
 
 const ZONES = [
   {
@@ -28,6 +30,7 @@ const ZONES = [
 
 export function Sidebar({ view, onNavigate, open = false, onClose }) {
   const counts = getCounts();
+  const [theme, setThemeState] = useState(getTheme());
 
   return (
     <aside className={`app-sidebar${open ? ' open' : ''}`}>
@@ -43,9 +46,12 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
         <span style={{
           width: 30, height: 30, borderRadius: 9, flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--gradient-accent)', color: '#fff',
+          background: 'var(--surface-2)', border: '1px solid var(--border)',
         }}>
-          <Icon name="cpu" size={17} color="#fff" />
+          <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M19 6 L12.5 15 L17.5 16.5 L11 26" fill="none" stroke="var(--accent)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="22.5" cy="9.5" r="1.7" fill="var(--yellow)" />
+          </svg>
         </span>
         <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
           <span style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--text)' }}>Programming Lab</span>
@@ -103,9 +109,26 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
         ))}
       </nav>
 
-      {/* Footer */}
-      <div style={{ padding: '0.8rem 1.15rem', borderTop: '1px solid var(--border)', fontSize: '0.64rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
-        Beta · runs real Python in your browser
+      {/* Footer — break⌇labs wordmark + theme toggle */}
+      <div style={{ padding: '0.7rem 1.05rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.01em' }}>
+            break
+            <svg width="6" height="13" viewBox="0 0 6 14" style={{ margin: '0 1px' }} aria-hidden="true">
+              <path d="M4 0 L1 6 L5 8 L2 14" stroke="var(--red)" strokeWidth="1.6" fill="none" />
+            </svg>
+            labs
+          </span>
+          <button
+            onClick={() => setThemeState(toggleTheme())}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)' }}
+          >
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} color="var(--text-muted)" />
+          </button>
+        </div>
+        <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>Beta · real Python in your browser</div>
       </div>
     </aside>
   );

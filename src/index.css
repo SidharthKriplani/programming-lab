@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -200,6 +200,123 @@
   --transition-fast: 0.1s ease;
   --transition: 0.16s ease;
   --transition-slow: 0.26s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INSTRUMENT IDENTITY (2026-06-23) — supersedes the two PAL token blocks above.
+   PL = the dark glass-box instrument. DARK is the default identity;
+   [data-theme='light'] is the warm "Field Notes" mode. Accent = BreakLabs PL
+   violet #8B5CF6; gold #F2B233 = signal, red #FB5247 = break, green #19C37D = fix.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root, :root[data-theme='dark'] {
+  --bg: #0A0A0B;
+  --surface: #141417;
+  --surface-2: #1B1B20;
+  --surface-raised: #1F1F26;
+  --border: #2A2A31;
+  --border-subtle: #202026;
+  --border-strong: #3F3F46;
+  --text: #ECE9E2;
+  --text-secondary: #B7B3AB;
+  --text-muted: #8C8C94;
+  --text-dim: #66666E;
+  --accent: #8B5CF6;
+  --accent-hover: #A78BFA;
+  --accent-light: #A78BFA;
+  --accent-bg: rgba(139,92,246,0.14);
+  --accent-border: rgba(139,92,246,0.34);
+  --teal: #45C8B8;
+  --teal-bg: rgba(69,200,184,0.12);
+  --teal-border: rgba(69,200,184,0.30);
+  --green: #19C37D;
+  --green-bg: rgba(25,195,125,0.12);
+  --green-border: rgba(25,195,125,0.34);
+  --green-text: #4ADE9E;
+  --red: #FB5247;
+  --red-bg: rgba(251,82,71,0.12);
+  --red-border: rgba(251,82,71,0.34);
+  --red-text: #FF8A82;
+  --yellow: #F2B233;
+  --yellow-bg: rgba(242,178,51,0.13);
+  --yellow-border: rgba(242,178,51,0.34);
+  --yellow-text: #F2B233;
+  --purple: #B79CFF;
+  --purple-bg: rgba(183,156,255,0.12);
+  --purple-border: rgba(183,156,255,0.30);
+  --purple-text: #C9B8FF;
+  --blue-text: #7EA2FF;
+  --blue-bg: rgba(126,162,255,0.10);
+  --blue-border: rgba(126,162,255,0.28);
+  --header-bg: rgba(10,10,11,0.97);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 0 3px rgba(139,92,246,0.30);
+  --input-bg: #141417;
+  --gradient-accent: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  --gradient-warm: linear-gradient(135deg, #F2B233 0%, #E8900A 100%);
+  --gradient-teal: linear-gradient(135deg, #45C8B8 0%, #2BA89A 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(242,178,51,0.05) 55%, transparent 100%);
+  --overlay: rgba(0,0,0,0.62);
+  --discovery: #F2B233;
+  --font-ui: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+:root[data-theme='light'] {
+  --bg: #F4F1EA;
+  --surface: #FFFFFF;
+  --surface-2: #EFEBE0;
+  --surface-raised: #FFFFFF;
+  --border: #E1DBCC;
+  --border-subtle: #ECE7DA;
+  --border-strong: #C9C0AD;
+  --text: #15130F;
+  --text-secondary: #4A4338;
+  --text-muted: #756B60;
+  --text-dim: #9B8E80;
+  --accent: #7C4DE0;
+  --accent-hover: #6A3FCB;
+  --accent-light: #9D7BEA;
+  --accent-bg: rgba(124,77,224,0.08);
+  --accent-border: rgba(124,77,224,0.26);
+  --teal: #0E8C7E;
+  --teal-bg: rgba(14,140,126,0.08);
+  --teal-border: rgba(14,140,126,0.26);
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --green-border: #86EFAC;
+  --green-text: #14532D;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --red-border: #FCA5A5;
+  --red-text: #7F1D1D;
+  --yellow: #B8801A;
+  --yellow-bg: rgba(184,128,26,0.10);
+  --yellow-border: rgba(184,128,26,0.30);
+  --yellow-text: #7A4500;
+  --purple: #6D4DB8;
+  --purple-bg: rgba(109,77,184,0.08);
+  --purple-border: rgba(109,77,184,0.24);
+  --purple-text: #3D2060;
+  --blue-text: #1D4ED8;
+  --blue-bg: #EFF6FF;
+  --blue-border: #BFDBFE;
+  --header-bg: rgba(244,241,234,0.97);
+  --shadow-sm: 0 1px 3px rgba(20,18,12,0.05), 0 1px 2px rgba(20,18,12,0.04);
+  --shadow: 0 2px 8px rgba(20,18,12,0.07), 0 1px 3px rgba(20,18,12,0.04);
+  --shadow-md: 0 4px 16px rgba(20,18,12,0.08), 0 2px 6px rgba(20,18,12,0.05);
+  --shadow-lg: 0 8px 24px rgba(20,18,12,0.08), 0 4px 10px rgba(20,18,12,0.05);
+  --shadow-xl: 0 16px 48px rgba(20,18,12,0.10), 0 6px 18px rgba(20,18,12,0.06);
+  --shadow-glow: 0 0 0 3px rgba(124,77,224,0.25);
+  --input-bg: #FFFFFF;
+  --gradient-accent: linear-gradient(135deg, #7C4DE0 0%, #9D7BEA 100%);
+  --gradient-warm: linear-gradient(135deg, #B8801A 0%, #E8900A 100%);
+  --gradient-teal: linear-gradient(135deg, #0E8C7E 0%, #12A594 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(124,77,224,0.07) 0%, rgba(184,128,26,0.04) 55%, transparent 100%);
+  --overlay: rgba(20,15,10,0.42);
+  --discovery: #B8801A;
 }
 
 /* ── Animations (PAL keyframes, verbatim) ────────────────────────────────── */

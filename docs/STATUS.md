@@ -15,12 +15,18 @@ Programming Lab — the SWE-for-data fluency lab (D-07). React + Vite + Pyodide 
 ## Verified
 - `node --check` + esbuild bundle of the whole import graph → exit 0 (99.4kb JS / 14.8kb CSS). Data file: 23 unique ids, integrity clean, balanced delimiters, all clusters covered.
 - Every gotcha `code` + `fix` output verified in CPython 3.10; outputs chosen to be stable on Pyodide's 3.11.
-- **NOT verified in-sandbox:** real `npm install` + `vite build` (macOS-only — Rollup ARM64). Must run on Sidharth's Mac before deploy.
+- **Build verified on macOS (2026-06-23):** `vite 8.0.16`, 44 modules, `✓ built in 217ms` — dist JS 243kB (gzip 77kB) + lazy GotchaBrowser/CodeMirror chunk 372kB (gzip 124kB) + CSS 20kB. Committed `a7677fc`, pushed to `origin/main`.
 
 ## Known deviations / debt
 - **Pyodide runs on the main thread** (adopted from MSL verbatim), not a Web Worker as the spec/NEXT suggested. Fine for short gotcha snippets; long-running DSA/pandas later should move to a worker. Flagged for a hardening pass.
-- Repo slug / Vercel URL rename (`production-systems-lab` → `programming-lab`) deferred to a dedicated infra pass.
+- **Repo slug renamed → `programming-lab`** (GitHub repo renamed, local remote repointed via `git remote set-url`, 2026-06-23). **Local folder is still `labs/production-systems-lab`** — left as-is so the Cowork mount + BreakLabs/CLAUDE.md paths keep working; rename the local dir in a later infra pass if desired. Remote: `github.com/SidharthKriplani/programming-lab`.
 - Cost-gotchas (#13–16) use small runnable `n` for speed; the scale lesson lives in the text + post (the glass-box footer still shows the relative cost).
+
+## Identity (2026-06-23)
+**Instrument** theme — dark-first, **violet `#8B5CF6`** on void `#0A0A0B`, Inter + JetBrains Mono; gold = signal, red = break, green = fix (BreakLabs master palette). Light "Field Notes" mode via `[data-theme]` toggle (sidebar footer), `localStorage`-persisted, anti-flash inline script. break-glyph favicon + `break⌇labs` wordmark. Pure token swap in `index.css` (no component rewrites). Supersedes the inherited PAL light/indigo skin.
+
+## Deploy
+GitHub: `github.com/SidharthKriplani/programming-lab` (pushed `a7677fc`, build verified locally). **Vercel import pending** — first deploy via dashboard (Add New → Project → import `programming-lab`, Vite auto-detected). After import, every push to `main` auto-deploys.
 
 ## Gate
 Distribution-gate override is conscious + conditioned (NEXT.md): PL build proceeds only because every Bank-A gotcha doubles as a LinkedIn post. If the daily slips, PL pauses.
