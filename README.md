@@ -1,6 +1,6 @@
 # Programming Lab
 
-The SWE-for-data fluency lab — the Python, DSA, and pandas fluency that analytics and ML work assumes you already have. It runs **real CPython in your browser** (via Pyodide) and shows you the cost: the time and memory the interpreter actually spends.
+The SWE-for-data fluency lab — the Python, DSA, and pandas fluency that analytics and ML work assumes you already have. Practice the Python traps that pass code review and fail in production — **predict the output, watch it break, keep the reflex.** Real CPython, in your browser, via Pyodide.
 
 Part of [BreakLabs](https://github.com/SidharthKriplani) — _how real data & AI systems work, and how they silently fail._
 

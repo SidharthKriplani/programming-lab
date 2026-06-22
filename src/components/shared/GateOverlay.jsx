@@ -27,7 +27,7 @@ const GATE_COPY = {
   },
   default: {
     title: 'Unlock Programming Lab',
-    body: 'Run real Python in the browser, see the timing and memory the interpreter actually spends, and keep a daily post ready to ship. Full access starts here.',
+    body: 'Predict the output, watch it break, keep the reflex — across every gotcha, then pandas, DSA, and the judgment calls behind them. Full access starts here.',
   },
 };
 

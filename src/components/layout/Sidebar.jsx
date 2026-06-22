@@ -44,9 +44,10 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
           borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left',
         }}
       >
-        <span style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-          <BrandMark variant="full" descriptor="Programming" accent="#8B5CF6" size={14} />
-          <span style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)', paddingLeft: '2px' }}>SWE for data people</span>
+        <span style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+          <BrandMark variant="wordmark" size={16} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 500, fontSize: '0.82rem', color: 'var(--accent)', letterSpacing: '-0.01em' }}>Programming</span>
+          <span style={{ fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>SWE for data people</span>
         </span>
       </button>
 

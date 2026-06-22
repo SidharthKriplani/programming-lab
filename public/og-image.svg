@@ -10,8 +10,8 @@
 
   <!-- tagline -->
   <text x="80" y="338" font-family="DejaVu Sans Mono, monospace" font-size="58" font-weight="500" fill="#ECE9E2">Feel the machine.</text>
-  <text x="82" y="386" font-family="DejaVu Sans Mono, monospace" font-size="26" fill="#9A958C">Run real Python. See the cost.</text>
-  <text x="82" y="430" font-family="DejaVu Sans Mono, monospace" font-size="22" fill="#8C8C94">SWE-for-data fluency &#183; part of BreakLabs</text>
+  <text x="82" y="384" font-family="DejaVu Sans Mono, monospace" font-size="27" fill="#B7B3AB">Predict the output. Watch it break.</text>
+  <text x="82" y="424" font-family="DejaVu Sans Mono, monospace" font-size="27" fill="#8B5CF6">Keep the reflex.</text>
 
   <text x="80" y="566" font-family="DejaVu Sans Mono, monospace" font-size="23" fill="#66666E">programming-lab.vercel.app</text>
 

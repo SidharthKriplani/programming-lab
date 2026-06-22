@@ -23,9 +23,8 @@ function Home({ onNavigate }) {
       </h1>
       <p style={{ margin: '0 0 1.4rem', fontSize: '1.02rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
         Programming Lab is the SWE layer for data people — the Python, DSA, and pandas fluency the
-        analytics and ML work assumes you already have. It runs real Python in your browser and shows
-        you the cost: the time and memory the interpreter actually spends. Start with the traps that
-        pass code review and fail in production.
+        analytics and ML work assumes you already have. Start with the traps that pass code review and
+        fail in production: predict the output, watch it break, and keep the reflex.
       </p>
       <button onClick={() => onNavigate('gotchas')} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
         <Icon name="terminal" size={16} color="#fff" />
