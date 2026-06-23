@@ -21,6 +21,7 @@ const ProblemBrowser = lazy(() =>
 const KnowBrowser = lazy(() => import('./pages/KnowBrowser.jsx').then(m => ({ default: m.KnowBrowser })));
 const JudgeBrowser = lazy(() => import('./pages/JudgeBrowser.jsx').then(m => ({ default: m.JudgeBrowser })));
 const BuildBrowser = lazy(() => import('./pages/BuildBrowser.jsx').then(m => ({ default: m.BuildBrowser })));
+const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx').then(m => ({ default: m.ProgressPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -103,6 +104,7 @@ export default function App() {
                   problems={oopProblems} patterns={OOP_PATTERNS} patternOrder={OOP_PATTERN_ORDER}
                   progressKey={OOP_KEY} packages={[]} />
               )
+              : view === 'progress' ? <ProgressPage onNavigate={navigate} />
               : view === 'know' ? <KnowBrowser />
               : view === 'judge' ? <JudgeBrowser />
               : view === 'build' ? <BuildBrowser />

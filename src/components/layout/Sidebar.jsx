@@ -72,7 +72,10 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 }
 
 // ── nav model ──
-const TRACK = [{ label: 'Home', view: 'home', icon: 'layout' }];
+const TRACK = [
+  { label: 'Home', view: 'home', icon: 'layout' },
+  { label: 'Progress', view: 'progress', icon: 'bar-chart' },
+];
 
 const FRAMES = [
   { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' }] },

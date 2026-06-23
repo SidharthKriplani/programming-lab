@@ -5,6 +5,17 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.10.0] - 2026-06-23 — Progress dashboard + deeper KNOW
+
+> Added the TRACK-level "flow" (a Progress room, like PAL) and made KNOW the rich room it should be.
+
+### Added
+- **Progress dashboard** (`ProgressPage` + `src/data/banks.js` registry) — total completion across all rooms, continue-where-you-left-off, and readiness-by-bank bars grouped by the four frames. New **TRACK** nav item.
+- **KNOW deepened 6 → 20** — Python-internals explainers: identity vs equality + int/intern caches, truthiness (`__bool__`/`__len__`), operator dispatch (the data model), `*args`/`**kwargs` binding, decorators from scratch + `functools.wraps`, the iterator + context-manager protocols, the `__eq__`/`__hash__` contract, what `@dataclass` generates, properties/descriptors, EAFP vs LBYL, "hints don't enforce at runtime", modules run once. Every demo verified **deterministic for Pyodide** (no `getsizeof`/`id`/`hash`/set-order outputs that would differ in-browser).
+
+### Notes
+- **185 items across 8 banks** (KNOW 20 · DO 155 · BUILD 4 · JUDGE 6). esbuild green; audit 155 / 0 Tier-1.
+
 ## [PL 0.9.0] - 2026-06-23 — Two new DO banks: Idioms + OOP (programming depth)
 
 > Reframed back to PL's core — deep Python/coding fluency, not AI tooling. First pass of the "go deep on programming" plan.

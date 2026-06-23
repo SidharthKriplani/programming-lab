@@ -1,0 +1,30 @@
+// banks — the single registry of every content bank in PL (frame, view, total,
+// progress key, accent). Used by the Progress dashboard. Mirrors the nav.
+import { gotchaProblems } from './gotchaProblems.js';
+import { pythonProblems } from './pythonProblems.js';
+import { idiomsProblems } from './idiomsProblems.js';
+import { oopProblems } from './oopProblems.js';
+import { pandasProblems } from './pandasProblems.js';
+import { knowModules } from './knowModules.js';
+import { judgeProblems } from './judgeProblems.js';
+import { buildProjects } from './buildProjects.js';
+import { PYTHON_KEY, PANDAS_KEY, IDIOMS_KEY, OOP_KEY, BUILD_KEY } from '../utils/problemProgress.js';
+
+export const FRAMES = {
+  KNOW:  { label: 'Know',  sub: 'Understand the why', icon: 'book-open' },
+  DO:    { label: 'Do',    sub: 'Code it, fast & correct', icon: 'terminal' },
+  BUILD: { label: 'Build', sub: 'Own something real', icon: 'hammer' },
+  JUDGE: { label: 'Judge', sub: 'Choose & defend', icon: 'scale' },
+};
+export const FRAME_ORDER = ['KNOW', 'DO', 'BUILD', 'JUDGE'];
+
+export const BANKS = [
+  { id: 'know',    label: 'Python & OOP Depth', frame: 'KNOW',  view: 'know',    accent: 'var(--accent)', total: knowModules.length,   progressKey: 'pl-know-progress-v1' },
+  { id: 'gotchas', label: 'Python Gotchas',     frame: 'DO',    view: 'gotchas', accent: 'var(--yellow)', total: gotchaProblems.length, progressKey: 'pl-gotcha-progress-v1' },
+  { id: 'python',  label: 'Python Drills',      frame: 'DO',    view: 'python',  accent: 'var(--accent)', total: pythonProblems.length, progressKey: PYTHON_KEY },
+  { id: 'idioms',  label: 'Python Idioms',      frame: 'DO',    view: 'idioms',  accent: 'var(--accent)', total: idiomsProblems.length, progressKey: IDIOMS_KEY },
+  { id: 'oop',     label: 'Python OOP',         frame: 'DO',    view: 'oop',     accent: 'var(--purple)', total: oopProblems.length,    progressKey: OOP_KEY },
+  { id: 'pandas',  label: 'pandas / numpy',     frame: 'DO',    view: 'pandas',  accent: 'var(--teal)',   total: pandasProblems.length, progressKey: PANDAS_KEY },
+  { id: 'build',   label: 'Mini-Projects',      frame: 'BUILD', view: 'build',   accent: 'var(--green)',  total: buildProjects.length,  progressKey: BUILD_KEY },
+  { id: 'judge',   label: 'Spot the Flaw',      frame: 'JUDGE', view: 'judge',   accent: 'var(--red)',    total: judgeProblems.length,  progressKey: 'pl-judge-progress-v1' },
+];
