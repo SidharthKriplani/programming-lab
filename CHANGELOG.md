@@ -5,6 +5,24 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.25.0] - 2026-06-24 — Dark mode is now Graphite (Platinum at night); green-screen retired
+
+> Sidharth: "get rid of the black-green thing as our dark mode" — mocked up three dark-Platinum directions, **Graphite** chosen. The dark mode is no longer a separate green CRT skin; it's Platinum itself, dressed for night.
+
+### Changed
+- **Dark mode = Graphite Platinum** (`src/index.css`, new `:root[data-skin='platinum'][data-theme='dark']` block) — charcoal desktop, raised graphite cards, the same beveled chrome + Geneva type + red seam glyph. The toggle now flips `data-theme` (light ⇄ dark) with the skin **always Platinum**, so the menu bar, bevels, and text-only nav carry across both modes. Scoped specificity (skin+theme) wins over both the light Platinum tokens and the old base green tokens.
+- **Footer toggle rewired** (`Sidebar.jsx`) from skin-cycle (platinum⇄greenscreen) to theme-toggle (light⇄dark). `theme.js` default flipped to **light** (Platinum is the adopted base); `skin.js` coerces any stale stored skin back to platinum (`LIVE=['platinum']`), so a user previously on green-screen lands on Platinum. `PlatinumMenuBar` colors tokenized so it themes.
+- **Green-screen CRT retired** as the dark identity (supersedes D-PL-18). The green tokens + `.pl-crt-overlay` remain in the stylesheet but are now unreachable (skin coerced to platinum); the overlay div stays mounted and dormant. Cleanup of the dead green CSS deferred.
+
+### Decisions
+- **D-PL-23** — the dark mode is Graphite (a dark theme of Platinum), not a separate skin. Supersedes D-PL-18 (green-screen identity). Platinum is the single skin; light/dark are its two themes.
+
+### Verified
+- esbuild clean (App, Sidebar, PlatinumMenuBar, theme.js, skin.js); `index.css` brace-balanced (164/164), graphite block present. macOS `npm run build` + approve-first push pending.
+
+### Next
+- Polish: the CodeMirror editor (`PythonCell`) still renders light — give it a graphite editor theme under dark. Then Phase 3 cont. (spaced repetition / mock-loop / follow-ups).
+
 ## [PL 0.24.0] - 2026-06-24 — PyLab Phase 3 opens: the Trap Museum
 
 > First of the Phase-3 surfaces. A browsable gallery of every runs-but-wrong trap in the bank — the catalogue of code that passes review and fails in production. Pure lens over gated data: **zero new content, zero new gates.**

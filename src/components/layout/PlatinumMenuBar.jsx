@@ -38,9 +38,9 @@ export function PlatinumMenuBar() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, height: '22px', zIndex: 1000,
         display: 'flex', alignItems: 'center', gap: '16px',
-        background: '#f0f0f0', borderBottom: '1px solid #000',
+        background: 'var(--header-bg)', borderBottom: '1px solid var(--border)',
         padding: '0 11px', fontFamily: "Geneva, 'Helvetica Neue', Helvetica, Arial, sans-serif",
-        fontSize: '13px', color: '#000', userSelect: 'none',
+        fontSize: '13px', color: 'var(--text)', userSelect: 'none',
       }}
     >
       <BreakSeam />

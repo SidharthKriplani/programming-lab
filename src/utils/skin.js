@@ -11,12 +11,15 @@
 // blocks scoped to :root[data-skin='...'] do the rest. (D-PL-19)
 const KEY = 'pl-skin-v1';
 export const SKINS = ['platinum', 'greenscreen', 'aqua', 'hybrid'];
+// LIVE = skins reachable at runtime. greenscreen is RETIRED — the dark mode is now a
+// THEME of Platinum (Graphite), so any stale stored skin coerces back to platinum.
+const LIVE = ['platinum'];
 const DEFAULT_SKIN = 'platinum';
 
 export function getSkin() {
   try {
     const s = localStorage.getItem(KEY);
-    return SKINS.includes(s) ? s : DEFAULT_SKIN;
+    return LIVE.includes(s) ? s : DEFAULT_SKIN;
   } catch {
     return DEFAULT_SKIN;
   }
