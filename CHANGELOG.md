@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.33.0] - 2026-06-24 — Editor lettering visibility (active-line tint + comment/gutter contrast)
+
+> **0.22–0.32 deployed live** (confirmed on programming-lab.vercel.app: two-pane solve view, schema panel, shape-only target, Graphite — all on). Follow-up to a visibility nit: the editor's active-line band fought the comment text on it, and comments/gutter ran low-contrast in both themes.
+
+### Changed
+- **`.cm-activeLine`** is now a faint neutral tint (new `--cm-active`: `rgba(0,0,0,0.05)` light / `rgba(255,255,255,0.06)` graphite) instead of the solid `--accent-bg` band — text on the active line stays readable.
+- **Comment contrast bumped** (`--cm-comment`: light `#7a7a7a`→`#5f5f5f`, graphite `#7f848e`→`#99a0ac`); **gutter line numbers** `--text-dim`→`--text-muted`; **cursor** widened to 2px in `--text`.
+
+### Verified
+- esbuild clean (PythonCell); CSS brace-balanced; `--cm-active` defined in both theme blocks. Editor surface only — no data/logic touched.
+
+### Next
+- Confirm lettering on next deploy; if specific text is still dim, pinpoint it (screenshot). Then Phase 4.
+
 ## [PL 0.32.0] - 2026-06-24 — PyLab Phase 3 complete: Follow-up chains
 
 > A real interviewer doesn't stop when your code works — they escalate. The last Phase-3 surface; Phase 3 done.

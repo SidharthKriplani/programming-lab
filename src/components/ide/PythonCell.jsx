@@ -108,11 +108,13 @@ export function PythonCell({
           },
           '.cm-gutters': {
             background: 'var(--surface-2)',
-            color: 'var(--text-dim)',
+            color: 'var(--text-muted)',
             border: 'none',
           },
-          '.cm-activeLine': { background: 'var(--accent-bg)' },
-          '.cm-activeLineGutter': { background: 'var(--accent-bg)' },
+          // subtle active line — a faint neutral tint so it never fights the text on it
+          '.cm-activeLine': { background: 'var(--cm-active)' },
+          '.cm-activeLineGutter': { background: 'var(--cm-active)' },
+          '.cm-cursor': { borderLeftColor: 'var(--text)', borderLeftWidth: '2px' },
           '.cm-content': { padding: '10px 4px' },
         }),
         EditorView.updateListener.of(v => {

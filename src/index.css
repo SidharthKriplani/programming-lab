@@ -843,7 +843,7 @@ body {
   --bevel-dark: #8f8f8f;
   /* editor syntax (light) — reads on the gray editor surface */
   --cm-keyword: #a626a4; --cm-string: #3d8b40; --cm-number: #b76b01;
-  --cm-comment: #7a7a7a; --cm-function: #3a6db5; --cm-type: #9a6b00;
+  --cm-comment: #5f5f5f; --cm-function: #3a6db5; --cm-type: #9a6b00; --cm-active: rgba(0,0,0,0.05);
   --cm-prop: #c4451c; --cm-op: #4d4d4d; --cm-var: #1a1a1a;
 }
 
@@ -947,7 +947,7 @@ body {
   --bevel-dark: #161618;
   /* editor syntax (graphite dark) — One-Dark family, reads on charcoal */
   --cm-keyword: #c678dd; --cm-string: #98c379; --cm-number: #d19a66;
-  --cm-comment: #7f848e; --cm-function: #61afef; --cm-type: #e5c07b;
+  --cm-comment: #99a0ac; --cm-function: #61afef; --cm-type: #e5c07b; --cm-active: rgba(255,255,255,0.06);
   --cm-prop: #e06c75; --cm-op: #abb2bf; --cm-var: #e9e9ec;
 }
 
