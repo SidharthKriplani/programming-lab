@@ -5,6 +5,7 @@
 import { useState, useEffect } from 'react';
 import { pyLabProblems, PYLAB_TOPICS, PYLAB_TOPIC_ORDER } from '../data/pyLabProblems.js';
 import { pyLabFixtures } from '../data/pyLabFixtures.js';
+import { companyFor } from '../data/pyLabCompanies.js';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
 import { ScaleRace } from '../components/shared/ScaleRace.jsx';
@@ -135,6 +136,14 @@ function PyLabRunner({ problem, onBack, onSolved }) {
 }
 
 // ── Browse ──────────────────────────────────────────────────────────────────
+// a one-line gist of a problem, derived from its prompt's first sentence
+function oneLine(p) {
+  const s = (p.prompt || '').replace(/\s+/g, ' ').trim();
+  const dot = s.indexOf('. ');
+  const first = (dot > 24 && dot < 130) ? s.slice(0, dot + 1) : s;
+  return first.length > 130 ? first.slice(0, 128).trim() + '…' : first;
+}
+
 export function PyLabBrowser() {
   const [activeId, setActiveId] = useState(null);
   const [role, setRole] = useState('all');
@@ -205,21 +214,29 @@ export function PyLabBrowser() {
         <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" style={{ flex: 1, minWidth: 140, padding: '0.35rem 0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }} />
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(290px, 100%), 1fr))', gap: '0.7rem' }}>
         {shown.map(p => {
           const solved = !!progress.solved[p.id];
+          const co = companyFor(p);
+          const isTrap = (p.methods || []).some(m => m.isTrap);
           return (
-            <button key={p.id} onClick={() => { setActiveId(p.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pal-card-hover" style={{ textAlign: 'left', cursor: 'pointer', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-              {solved ? <Icon name="clipboard-check" size={15} color="var(--green-text)" /> : <span style={{ width: 15, display: 'inline-block' }} />}
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{p.title}</span>
-                <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{PYLAB_TOPICS[p.topic]} · {LEVELS[levelOf(p)].label}{(p.methods || []).some(m => m.isTrap) ? ' · trap' : ''}</span>
-              </span>
-              <Chip label={DIFF_LABEL[p.difficulty] || p.difficulty} color="var(--text-muted)" />
+            <button key={p.id} onClick={() => { setActiveId(p.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pal-card-hover" style={{ textAlign: 'left', cursor: 'pointer', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.85rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', minHeight: 152 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                <span style={{ width: 18, height: 18, borderRadius: 4, background: co.hue, color: '#fff', fontSize: '0.62rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{co.initial}</span>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>{co.name}</span>
+                {solved && <span style={{ marginLeft: 'auto', display: 'inline-flex' }}><Icon name="clipboard-check" size={13} color="var(--green-text)" /></span>}
+              </div>
+              <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.25 }}>{p.title}</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{oneLine(p)}</span>
+              <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: 'auto' }}>
+                <Chip label={PYLAB_TOPICS[p.topic] || p.topic} color="var(--accent)" />
+                <Chip label={LEVELS[levelOf(p)].label} color="var(--text-muted)" />
+                {isTrap && <Chip label="trap" color="var(--red-text)" />}
+              </div>
             </button>
           );
         })}
-        {shown.length === 0 && <div style={{ color: 'var(--text-muted)', fontSize: '0.88rem', padding: '1rem' }}>No problems match.</div>}
+        {shown.length === 0 && <div style={{ gridColumn: '1 / -1', color: 'var(--text-muted)', fontSize: '0.88rem', padding: '1rem' }}>{reviewMode ? 'Nothing due for review right now.' : 'No problems match.'}</div>}
       </div>
     </div>
   );

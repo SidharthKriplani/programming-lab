@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.27.0] - 2026-06-24 — PyLab grid → square company cards
+
+> UI change (Sidharth): the PyLab list becomes a grid of square cards, each mapped to a representative company, with a one-line gist. The WARMUP/CORE difficulty badge drops from display (it's a filtering signal, not a label).
+
+### Changed
+- **PyLab grid is now square cards** (`src/pages/PyLabBrowser.jsx`) — company tag (brand-hue monogram + name) on top, the title, a **one-line gist** (first sentence of the prompt), then the tags (topic · level · trap). Responsive `auto-fill minmax(290px)` grid; the WARMUP/CORE difficulty badge is removed from the card.
+- **`src/data/pyLabCompanies.js`** (new) — a representative company per problem, deterministic per id (FNV-1a) from a topic-appropriate pool (analytics → Airbnb/Meta/DoorDash/…, vectorize → NVIDIA/OpenAI/quant, core → Google/Amazon/…). A flavour cue like LeetCode's company tags, **not a verified "asked at X"** — easy to curate or relabel.
+
+### Verified
+- esbuild clean (PyLabBrowser), `node --check` (pyLabCompanies); 19 companies across 136 problems, healthy spread (max Microsoft 18), deterministic.
+
+### Next
+- Curate/lock specific company tags or relabel framing if wanted. Then Phase 3 Mock-loop.
+
 ## [PL 0.26.0] - 2026-06-24 — PyLab Phase 3: spaced repetition (SM-2 review queue)
 
 > Interview prep is a memory game and the reflexes fade. PyLab now resurfaces what you'll forget, on a growing schedule.
@@ -124,8 +138,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`DecoratorModel.jsx`** (stepper, Room 1) — step a decorated call: the name resolves to the wrapper, which runs before/after around the original and passes the value back out.
 - **Ten driven models now** across Rooms 1/2/4 (the last two render inside their backed modules&apos; `KnowRunner` slot). esbuild exit 0. Widgets use `var()` tokens → theme correctly under the new Graphite dark mode (D-PL-23).
 
+### Templated — driven models become DATA (the scalable turn, D-PL-24)
+- **`StateTrace.jsx`** — a config-driven template for the recurring "binding & identity" model shape (drive ops → build Python → run live → render values + an `is` verdict). **`foundationsModels.js`** holds the configs. A new such model is now a **data entry, not a component**.
+- **Collapsed aliasing + copy-vs-view onto it** (the two bespoke `AliasingModel.jsx`/`CopyVsViewModel.jsx` are now dead — `git rm` them) and **added mutable-default as config-only** — the proof that a new driven module = data. All three verified: the template generates correct CPython (a is b, x[0] is y[0], the shared default accumulating [1,2,3]). esbuild exit 0.
+- Bespoke widgets stay only where the picture/dynamics need custom viz (call stack, Big-O, hashing, broadcasting, numpy race, index-align, truthiness, decorators).
+
 ### Still to do (F1 cont.)
-- Keep authoring driven models (generators stepper, the GIL/async timeline, dict insertion-order); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
+- `git rm` the two superseded bespoke files (sandbox couldn't delete). Migrate is-vs-== onto the template (needs a slider variant); keep authoring bespoke where needed (generators, async timeline). macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
