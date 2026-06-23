@@ -203,35 +203,40 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   INSTRUMENT IDENTITY (2026-06-23) — supersedes the two PAL token blocks above.
-   PL = the dark glass-box instrument. DARK is the default identity;
-   [data-theme='light'] is the warm "Field Notes" mode. Accent = BreakLabs PL
-   violet #8B5CF6; gold #F2B233 = signal, red #FB5247 = break, green #19C37D = fix.
+   GREEN-SCREEN IDENTITY (2026-06-23) — supersedes the violet "Instrument" pick
+   and the two PAL token blocks above. PL = the old-school CRT terminal: P1
+   phosphor green on a near-black void, with scanlines, glow and monospace chrome
+   layered on by the CRT TREATMENT section below. DARK is the default identity;
+   [data-theme='light'] is the SHARED family "Field Notes" mode (left untouched).
+   Palette logic (the predict-break-fix loop in CRT colors):
+     green = baseline / OK   ·   red = break   ·   amber = signal.
+   Body text is a soft greenish-white (readable); green is the accent + chrome.
    ═══════════════════════════════════════════════════════════════════════════ */
 :root, :root[data-theme='dark'] {
-  --bg: #0A0A0B;
-  --surface: #141417;
-  --surface-2: #1B1B20;
-  --surface-raised: #1F1F26;
-  --border: #2A2A31;
-  --border-subtle: #202026;
-  --border-strong: #3F3F46;
-  --text: #ECE9E2;
-  --text-secondary: #B7B3AB;
-  --text-muted: #8C8C94;
-  --text-dim: #66666E;
-  --accent: #8B5CF6;
-  --accent-hover: #A78BFA;
-  --accent-light: #A78BFA;
-  --accent-bg: rgba(139,92,246,0.14);
-  --accent-border: rgba(139,92,246,0.34);
-  --teal: #45C8B8;
-  --teal-bg: rgba(69,200,184,0.12);
-  --teal-border: rgba(69,200,184,0.30);
-  --green: #19C37D;
-  --green-bg: rgba(25,195,125,0.12);
-  --green-border: rgba(25,195,125,0.34);
-  --green-text: #4ADE9E;
+  --bg: #060A07;
+  --surface: #0B120D;
+  --surface-2: #0E1711;
+  --surface-raised: #121C15;
+  --border: #1C3E2A;
+  --border-subtle: #142A1C;
+  --border-strong: #2E6E48;
+  --text: #D6E4D8;
+  --text-secondary: #9DB3A2;
+  --text-muted: #6E8274;
+  --text-dim: #47564B;
+  --accent: #46E08A;
+  --accent-hover: #7FF5B0;
+  --accent-light: #7FF5B0;
+  --accent-bg: rgba(70,224,138,0.12);
+  --accent-border: rgba(70,224,138,0.30);
+  --on-accent: #04130B;
+  --teal: #3FD9C0;
+  --teal-bg: rgba(63,217,192,0.12);
+  --teal-border: rgba(63,217,192,0.30);
+  --green: #46E08A;
+  --green-bg: rgba(70,224,138,0.12);
+  --green-border: rgba(70,224,138,0.30);
+  --green-text: #7FF5B0;
   --red: #FB5247;
   --red-bg: rgba(251,82,71,0.12);
   --red-border: rgba(251,82,71,0.34);
@@ -240,27 +245,27 @@
   --yellow-bg: rgba(242,178,51,0.13);
   --yellow-border: rgba(242,178,51,0.34);
   --yellow-text: #F2B233;
-  --purple: #B79CFF;
-  --purple-bg: rgba(183,156,255,0.12);
-  --purple-border: rgba(183,156,255,0.30);
-  --purple-text: #C9B8FF;
-  --blue-text: #7EA2FF;
-  --blue-bg: rgba(126,162,255,0.10);
-  --blue-border: rgba(126,162,255,0.28);
-  --header-bg: rgba(10,10,11,0.97);
+  --purple: #9CE0B0;
+  --purple-bg: rgba(156,224,176,0.12);
+  --purple-border: rgba(156,224,176,0.30);
+  --purple-text: #BFF0CE;
+  --blue-text: #7FF5B0;
+  --blue-bg: rgba(70,224,138,0.10);
+  --blue-border: rgba(70,224,138,0.28);
+  --header-bg: rgba(6,10,7,0.97);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
   --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.35);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
   --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
-  --shadow-glow: 0 0 0 3px rgba(139,92,246,0.30);
-  --input-bg: #141417;
-  --gradient-accent: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  --shadow-glow: 0 0 0 3px rgba(70,224,138,0.30);
+  --input-bg: #0B120D;
+  --gradient-accent: linear-gradient(135deg, #46E08A 0%, #7FF5B0 100%);
   --gradient-warm: linear-gradient(135deg, #F2B233 0%, #E8900A 100%);
-  --gradient-teal: linear-gradient(135deg, #45C8B8 0%, #2BA89A 100%);
-  --gradient-hero: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(242,178,51,0.05) 55%, transparent 100%);
-  --overlay: rgba(0,0,0,0.62);
-  --discovery: #F2B233;
+  --gradient-teal: linear-gradient(135deg, #3FD9C0 0%, #2BA89A 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(70,224,138,0.10) 0%, rgba(70,224,138,0.04) 55%, transparent 100%);
+  --overlay: rgba(0,0,0,0.66);
+  --discovery: #46E08A;
   --font-ui: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
@@ -584,6 +589,69 @@ button:not(:disabled):active {
   font-weight: 600 !important;
   box-shadow: inset 2px 0 0 var(--accent) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CRT GREEN-SCREEN TREATMENT (dark identity only)
+   Scanlines + vignette, phosphor glow, inverse-video active nav, and the
+   box-drawing legend panel + HUD readout utilities. The shared light
+   "Field Notes" mode shows none of this.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* full-screen scanline + vignette overlay (mounted once in App.jsx) */
+.pl-crt-overlay { display: none; }
+:root[data-theme='dark'] .pl-crt-overlay {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,0,0,0.15) 3px);
+  box-shadow: inset 0 0 160px rgba(0,0,0,0.45);
+}
+
+/* phosphor glow — subtle, dark only */
+:root[data-theme='dark'] h1,
+:root[data-theme='dark'] h2,
+:root[data-theme='dark'] .pl-glow {
+  text-shadow: 0 0 7px rgba(70,224,138,0.26);
+}
+
+/* inverse-video active nav — the TUI installer highlight bar (dark only) */
+:root[data-theme='dark'] .sidebar-nav-active,
+:root[data-theme='dark'] .sidebar-nav-active-sub {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* box-drawing legend panel — conky / TUI fieldset, usable in any room */
+.pl-panel {
+  position: relative;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  padding: 0.85rem 0.95rem;
+}
+.pl-panel > .pl-panel-legend {
+  position: absolute;
+  top: -0.62rem;
+  left: 0.7rem;
+  background: var(--bg);
+  padding: 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--accent-hover);
+}
+:root[data-theme='dark'] .pl-panel-legend { text-shadow: 0 0 6px rgba(70,224,138,0.4); }
+
+/* HUD readout (glass-box) — the Star-Trek-style status strip */
+.pl-hud { display: flex; flex-wrap: wrap; gap: 1.2rem; font-family: var(--font-mono); }
+.pl-hud-cell { display: flex; flex-direction: column; gap: 2px; }
+.pl-hud-key { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; }
+.pl-hud-val { font-size: 0.8rem; color: var(--accent); }
+:root[data-theme='dark'] .pl-hud-val { text-shadow: 0 0 6px rgba(70,224,138,0.4); }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PL BASE + LAYOUT  (minimal — supports the reused Sidebar + IDE components)

@@ -112,6 +112,9 @@ export default function App() {
           </Suspense>
         </main>
       </div>
+
+      {/* CRT green-screen scanline + vignette overlay (dark identity only; CSS-gated) */}
+      <div className="pl-crt-overlay" aria-hidden="true" />
     </div>
   );
 }

@@ -59,10 +59,10 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
         cursor: soon ? 'default' : 'pointer', opacity: soon ? 0.7 : 1,
       }}
     >
-      {icon && <Icon name={icon} size={14} color={active ? 'var(--accent)' : 'var(--text-muted)'} />}
+      {icon && <Icon name={icon} size={14} color={active ? 'currentColor' : 'var(--text-muted)'} />}
       <span style={{ flex: 1 }}>{label}</span>
       {!soon && total > 0 && (
-        <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{count}/{total}</span>
+        <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', color: active ? 'currentColor' : 'var(--text-muted)' }}>{count}/{total}</span>
       )}
       {soon && (
         <span style={{ fontSize: '0.5rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-dim)', border: '1px solid var(--border)', borderRadius: 999, padding: '1px 6px', fontFamily: 'var(--font-mono)' }}>SOON</span>

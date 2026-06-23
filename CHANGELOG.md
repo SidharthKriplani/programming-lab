@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.12.0] - 2026-06-23 — Green-screen identity (the old-school CRT dark mode)
+
+> Sidharth: PL needs its own single defining color like PAL's blue — old-school, the base layer everything boots from — and that color *is* its dark mode (light mode is shared across the family). Researched the old-school monochrome phosphors (P1 green / P3 amber / P4 white); amber is already MSL, so PL's authentic slot is the **green screen**. The earlier violet "Instrument" pick is retired (supersedes D-PL-04).
+
+### Changed — dark mode only (shared light "Field Notes" mode untouched)
+- **Phosphor-green token swap** — the governing dark block retargeted from violet to P1 phosphor green: near-black green-tinted void (`#060A07`), soft greenish-white body text (`#D6E4D8`, kept readable), green accent (`#46E08A`) + green hairline borders throughout. Palette logic is the predict→break→fix loop in CRT colors: green = baseline/OK, red = break, amber = signal. Cluster hues folded into the green family for a monochrome read.
+- **CRT treatment layer** (`index.css`) — a full-screen scanline + vignette overlay (mounted once in `App.jsx`, dark-only, `pointer-events:none`), subtle phosphor text-glow on headings, plus reusable `pl-panel` (box-drawing legend panel) and `pl-hud` (Star-Trek-style status readout) utilities.
+- **Inverse-video active nav** — the TUI-installer highlight: active sidebar item is solid green with dark ink (icon + label + count follow via `currentColor`). Light mode keeps the pill.
+- **Glass-box footer → HUD** — the run readout is now a labeled `status · runtime · peak mem` strip (emoji-free, `glassBoxParts`), styled like the references.
+- `BrandMark` PL descriptor accent → green; the red seam stays (cross-lab brand constant, HQ D-19).
+
+### Notes
+- Verified: esbuild transform of App/Sidebar/PythonCell, `node --check` glassbox, zero violet left in `index.css`, light-mode tokens intact.
+
 ## [PL 0.11.0] - 2026-06-23 — KNOW becomes Foundations-grade (leveled MCQ + Senior Read)
 
 > Sidharth: "look at the foundations of PAL - I want Python KNOW to be similar." Studied PAL's richest *data-driven* concept room - the **Stats Room** (`statsModules.js` + `StatsRunner`), not the literal "Foundations" rooms (those are hardcoded-per-module JSX that doesn't scale) - and ported its judgment + depth layer onto KNOW, keeping PL's signature runnable demo.

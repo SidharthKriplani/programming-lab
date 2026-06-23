@@ -4,7 +4,7 @@ import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirro
 import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
 import { python } from '@codemirror/lang-python';
 import { loadPython, runPython, runPythonGlassBox } from './pyodideRuntime.js';
-import { formatGlassBox } from './glassbox.js';
+import { glassBoxParts } from './glassbox.js';
 
 /**
  * PythonCell — editable code cell with stdout + glass-box (time/memory) footer.
@@ -205,18 +205,21 @@ export function PythonCell({
         </div>
       )}
 
-      {/* Glass-box footer */}
+      {/* Glass-box footer — CRT HUD readout */}
       {metrics && (
-        <div style={{
-          padding: '7px 14px',
-          background: 'var(--surface-2)',
-          borderTop: '1px solid var(--border)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '11px',
-          color: 'var(--text-muted)',
-          letterSpacing: '0.01em',
-        }}>
-          {formatGlassBox(metrics)}
+        <div className="pl-hud" style={{ padding: '9px 14px', background: 'var(--surface-2)', borderTop: '1px solid var(--border)' }}>
+          <div className="pl-hud-cell">
+            <span className="pl-hud-key">status</span>
+            <span className="pl-hud-val" style={{ color: status === 'error' ? 'var(--red)' : 'var(--accent)' }}>{status === 'error' ? 'broke' : 'ran ✓'}</span>
+          </div>
+          <div className="pl-hud-cell">
+            <span className="pl-hud-key">runtime</span>
+            <span className="pl-hud-val">{glassBoxParts(metrics).time} ms</span>
+          </div>
+          <div className="pl-hud-cell">
+            <span className="pl-hud-key">peak mem</span>
+            <span className="pl-hud-val">{glassBoxParts(metrics).mem}</span>
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 // BrandMark — the canonical BreakLabs lockup (HQ D-19, BRANDMARK-ROLLOUT.md).
 // Constant everywhere: red fault-glyph seam + the `break⌇labs` wordmark.
-// Per lab (PL): descriptor 'Programming', accent violet #8B5CF6.
+// Per lab (PL): descriptor 'Programming', accent phosphor green #46E08A (green-screen identity).
+// The red seam stays constant across all labs (cross-lab brand DNA, HQ D-19).
 // House rule: single quotes, no template literals.
 const SEAM = '#FB5247'; // brand red — the fault-glyph (constant across all labs)
 
@@ -14,8 +15,8 @@ function Seam({ h = 28 }) {
 }
 
 // variant: 'full' (wordmark + descriptor) | 'wordmark' | 'monogram'
-// accent: the lab's track accent hex (PL violet #8B5CF6)
-export function BrandMark({ variant = 'full', descriptor = '', accent = '#8B5CF6', size = 28 }) {
+// accent: the lab's track accent hex (PL phosphor green #46E08A)
+export function BrandMark({ variant = 'full', descriptor = '', accent = '#46E08A', size = 28 }) {
   if (variant === 'monogram') {
     return (
       <span aria-label='BreakLabs' style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center',

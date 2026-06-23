@@ -40,3 +40,15 @@ export function formatGlassBox({ timeMs, peakKb }) {
   const mStr = m < 1024 ? `${m.toFixed(m < 10 ? 1 : 0)} KB` : `${(m / 1024).toFixed(2)} MB`;
   return `⏱ ${tStr} ms · 🧠 ${mStr} peak`;
 }
+
+/**
+ * glassBoxParts({ timeMs, peakKb }) -> { time: '0.42', mem: '1.2 MB' }
+ * Structured values for the CRT HUD readout (emoji-free, labeled cells).
+ */
+export function glassBoxParts({ timeMs, peakKb }) {
+  const t = typeof timeMs === 'number' ? timeMs : 0;
+  const m = typeof peakKb === 'number' ? peakKb : 0;
+  const time = t < 1 ? t.toFixed(3) : t < 10 ? t.toFixed(2) : t.toFixed(1);
+  const mem = m < 1024 ? `${m.toFixed(m < 10 ? 1 : 0)} KB` : `${(m / 1024).toFixed(2)} MB`;
+  return { time, mem };
+}
