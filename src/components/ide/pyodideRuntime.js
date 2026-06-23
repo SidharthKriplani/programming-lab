@@ -214,4 +214,87 @@ export async function runProblem(userCode, testSource) {
   }
 }
 
+/**
+ * previewExample — runs the example setup + the canonical solution to produce the
+ * INPUT data preview + the EXPECTED OUTPUT, computed live from the solution (the
+ * SQL-Lab pattern: never hand-maintain the expected answer). Seeds pd/np into the
+ * namespace so example setups can use pandas/numpy without importing.
+ * Returns: { inputs:[{name, kind, ...}], output:{kind, ...}|null, error }.
+ */
+export async function previewExample(solution, setup, call, inputs) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_solution', solution || '');
+  pyodideInstance.globals.set('__pl_setup', setup || '');
+  pyodideInstance.globals.set('__pl_call', call || '');
+  pyodideInstance.globals.set('__pl_inputs_json', JSON.stringify(inputs || []));
+
+  const harness = [
+    'import json',
+    'try:',
+    '    import pandas as pd',
+    'except Exception:',
+    '    pd = None',
+    'try:',
+    '    import numpy as np',
+    'except Exception:',
+    '    np = None',
+    'def __pl_cell(v):',
+    '    try:',
+    '        if pd is not None and pd.isna(v):',
+    '            return ""',
+    '    except Exception:',
+    '        pass',
+    '    if isinstance(v, float):',
+    '        if v != v:',
+    '            return "NaN"',
+    '        return ("%.4f" % v).rstrip("0").rstrip(".")',
+    '    return str(v)',
+    'def __pl_repr(o):',
+    '    r = repr(o)',
+    '    return r if len(r) <= 500 else r[:500] + " ..."',
+    'def __pl_serialize(o):',
+    '    if pd is not None and isinstance(o, pd.DataFrame):',
+    '        cols = [str(c) for c in o.columns]',
+    '        rows = []',
+    '        for i in range(min(len(o), 14)):',
+    '            rows.append([__pl_cell(o.iloc[i][c]) for c in o.columns])',
+    '        return {"kind": "df", "columns": cols, "rows": rows, "shape": [int(o.shape[0]), int(o.shape[1])]}',
+    '    if pd is not None and isinstance(o, pd.Series):',
+    '        s = o.head(14)',
+    '        return {"kind": "series", "name": (str(o.name) if o.name is not None else "value"), "index": [str(i) for i in s.index], "values": [__pl_cell(v) for v in s.values], "length": int(len(o))}',
+    '    return {"kind": "value", "repr": __pl_repr(o)}',
+    '__pl_ns = {"pd": pd, "np": np}',
+    '__pl_err = None',
+    '__pl_inputs = []',
+    '__pl_output = None',
+    'try:',
+    '    exec(__pl_solution, __pl_ns)',
+    '    if __pl_setup.strip():',
+    '        exec(__pl_setup, __pl_ns)',
+    '    for __n in json.loads(__pl_inputs_json):',
+    '        if __n in __pl_ns:',
+    '            __pl_inputs.append(dict({"name": __n}, **__pl_serialize(__pl_ns[__n])))',
+    '    if __pl_call.strip():',
+    '        __pl_output = __pl_serialize(eval(__pl_call, __pl_ns))',
+    'except Exception:',
+    '    import traceback',
+    '    __pl_err = traceback.format_exc().strip().splitlines()[-1]',
+    'json.dumps({"inputs": __pl_inputs, "output": __pl_output, "error": __pl_err})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    return JSON.parse(raw);
+  } catch (err) {
+    return { inputs: [], output: null, error: String(err.message || err) };
+  } finally {
+    try {
+      pyodideInstance.globals.delete('__pl_solution');
+      pyodideInstance.globals.delete('__pl_setup');
+      pyodideInstance.globals.delete('__pl_call');
+      pyodideInstance.globals.delete('__pl_inputs_json');
+    } catch { /* ignore */ }
+  }
+}
+
 export { PYODIDE_VERSION, PYODIDE_INDEX_URL };

@@ -31,6 +31,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("first non-repeat", lambda: first_unique_event(["a","b","a","c","b"]) == "c"),\n  ("all repeat -> None", lambda: first_unique_event(["x","x"]) is None),\n  ("empty -> None", lambda: first_unique_event([]) is None),\n  ("single", lambda: first_unique_event(["z"]) == "z"),\n]',
     solution: 'from collections import Counter\n\ndef first_unique_event(events):\n    counts = Counter(events)\n    for e in events:\n        if counts[e] == 1:\n            return e\n    return None',
     glassBox: { lesson: 'Two passes with a dict is O(n): one to count, one to find the first count==1. The nested-loop version (for each event, scan the rest) is O(n^2) — fine on a tiny log, a timeout at scale.' },
+    example: { setup: '', call: 'first_unique_event(["a", "b", "a", "c", "b"])', inputs: [] },
   },
   {
     id: 'py-two-sum',
@@ -43,6 +44,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: find_pair([2,7,11,15], 9) == [0,1]),\n  ("middle", lambda: find_pair([3,2,4], 6) == [1,2]),\n  ("no pair", lambda: find_pair([1,2], 10) is None),\n]',
     solution: 'def find_pair(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen:\n            return [seen[target - n], i]\n        seen[n] = i\n    return None',
     glassBox: { lesson: 'The trick is to look for the *complement* (target - n) in a dict as you go. Membership in a dict is O(1), so the whole thing is one O(n) pass — versus the O(n^2) double loop most people write first.' },
+    example: { setup: '', call: 'find_pair([2, 7, 11, 15], 9)', inputs: [] },
   },
   {
     id: 'py-anagram',
@@ -55,6 +57,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("anagram", lambda: is_anagram("listen","silent") is True),\n  ("not", lambda: is_anagram("rat","car") is False),\n  ("empty", lambda: is_anagram("","") is True),\n  ("count matters", lambda: is_anagram("aab","abb") is False),\n]',
     solution: 'from collections import Counter\n\ndef is_anagram(a, b):\n    return Counter(a) == Counter(b)',
     glassBox: { lesson: 'Counter(a) == Counter(b) compares character frequencies in O(n). Sorting both and comparing is O(n log n) — correct, but slower, and it allocates two sorted copies.' },
+    example: { setup: '', call: 'is_anagram("listen", "silent")', inputs: [] },
   },
   {
     id: 'py-sliding-window',
@@ -67,6 +70,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("abcabcbb", lambda: longest_unique_run("abcabcbb") == 3),\n  ("bbbbb", lambda: longest_unique_run("bbbbb") == 1),\n  ("empty", lambda: longest_unique_run("") == 0),\n  ("pwwkew", lambda: longest_unique_run("pwwkew") == 3),\n  ("list works too", lambda: longest_unique_run([1,2,3,1,2]) == 3),\n]',
     solution: 'def longest_unique_run(seq):\n    seen = {}\n    start = 0\n    best = 0\n    for i, x in enumerate(seq):\n        if x in seen and seen[x] >= start:\n            start = seen[x] + 1\n        seen[x] = i\n        best = max(best, i - start + 1)\n    return best',
     glassBox: { lesson: 'The window [start, i] holds a run with no repeats. On a repeat inside the window, jump start to just past the previous occurrence — never walk backwards. Each index is visited once: O(n). The brute force checks every substring: O(n^2) or worse.' },
+    example: { setup: '', call: 'longest_unique_run("abcabcbb")', inputs: [] },
   },
   {
     id: 'py-balanced',
@@ -79,6 +83,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("matched", lambda: is_balanced("()[]{}") is True),\n  ("mismatch", lambda: is_balanced("(]") is False),\n  ("nested", lambda: is_balanced("([])") is True),\n  ("unclosed", lambda: is_balanced("(") is False),\n  ("empty", lambda: is_balanced("") is True),\n]',
     solution: 'def is_balanced(s):\n    pairs = {")": "(", "]": "[", "}": "{"}\n    stack = []\n    for ch in s:\n        if ch in "([{":\n            stack.append(ch)\n        elif ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n    return not stack',
     glassBox: { lesson: 'A stack remembers the most recent unclosed opener — exactly what a closer must match. Push on open, pop+check on close, and the stack must be empty at the end. Trying to do this with counters alone fails on "([)]".' },
+    example: { setup: '', call: 'is_balanced("([])")', inputs: [] },
   },
   {
     id: 'py-prefix-sum',
@@ -91,6 +96,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("crosses day 3", lambda: first_day_over([10,20,30,40], 55) == 3),\n  ("never", lambda: first_day_over([1,1,1], 100) == -1),\n  ("day 1", lambda: first_day_over([100], 50) == 1),\n  ("empty", lambda: first_day_over([], 5) == -1),\n]',
     solution: 'def first_day_over(daily, target):\n    total = 0\n    for i, x in enumerate(daily):\n        total += x\n        if total > target:\n            return i + 1\n    return -1',
     glassBox: { lesson: 'A running total turns "cumulative-over-time" questions into a single pass. Re-summing daily[:i] inside the loop would make it O(n^2) — the prefix sum keeps it O(n).' },
+    example: { setup: '', call: 'first_day_over([10, 20, 30, 40], 55)', inputs: [] },
   },
   {
     id: 'py-group-anagrams',
@@ -103,6 +109,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: group_anagrams(["eat","tea","tan","ate","nat","bat"]) == [["bat"],["eat","tea","ate"],["tan","nat"]]),\n  ("empty", lambda: group_anagrams([]) == []),\n  ("single", lambda: group_anagrams(["a"]) == [["a"]]),\n]',
     solution: 'from collections import defaultdict\n\ndef group_anagrams(tags):\n    buckets = defaultdict(list)\n    for t in tags:\n        key = "".join(sorted(t))\n        buckets[key].append(t)\n    return [buckets[k] for k in sorted(buckets)]',
     glassBox: { lesson: 'The sorted-letter string is a canonical key: all anagrams collapse to it. Building the dict is O(n * k log k) for n strings of length k — far better than comparing every pair, which is O(n^2 * k).' },
+    example: { setup: '', call: 'group_anagrams(["eat", "tea", "tan", "ate", "nat", "bat"])', inputs: [] },
   },
   {
     id: 'py-dup-within-k',
@@ -115,6 +122,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("within", lambda: has_close_duplicate([1,2,3,1], 3) is True),\n  ("too far", lambda: has_close_duplicate([1,2,3,1], 2) is False),\n  ("adjacent", lambda: has_close_duplicate([1,0,1,1], 1) is True),\n  ("no dup", lambda: has_close_duplicate([1,2,3,4], 5) is False),\n  ("empty", lambda: has_close_duplicate([], 3) is False),\n]',
     solution: 'def has_close_duplicate(ids, k):\n    last = {}\n    for i, v in enumerate(ids):\n        if v in last and i - last[v] <= k:\n            return True\n        last[v] = i\n    return False',
     glassBox: { lesson: 'Storing the most recent index per id lets you check the distance in O(1). One pass, O(n) time and O(n) space. The naive "compare each pair within k" approach is O(n*k).' },
+    example: { setup: '', call: 'has_close_duplicate([1, 2, 3, 1], 3)', inputs: [] },
   },
   {
     id: 'py-majority-element',
@@ -127,6 +135,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: majority([3,2,3]) == 3),\n  ("longer", lambda: majority([2,2,1,1,1,2,2]) == 2),\n  ("single", lambda: majority([7]) == 7),\n]',
     solution: 'from collections import Counter\n\ndef majority(votes):\n    return Counter(votes).most_common(1)[0][0]',
     glassBox: { lesson: 'Counter tallies in O(n) and most_common(1) returns the top entry. Boyer-Moore voting does it in O(1) space, but for an interview the counting version is clearer and still linear time.' },
+    example: { setup: '', call: 'majority([2, 2, 1, 1, 1, 2, 2])', inputs: [] },
   },
   {
     id: 'py-first-k-frequent',
@@ -139,6 +148,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: top_k_events([1,1,1,2,2,3], 2) == [1,2]),\n  ("tie by id", lambda: top_k_events([4,4,5,5,6], 2) == [4,5]),\n  ("k=1", lambda: top_k_events([9,9,8], 1) == [9]),\n  ("all", lambda: top_k_events([1,2,3], 3) == [1,2,3]),\n]',
     solution: 'from collections import Counter\n\ndef top_k_events(events, k):\n    counts = Counter(events)\n    ranked = sorted(counts, key=lambda x: (-counts[x], x))\n    return ranked[:k]',
     glassBox: { lesson: 'Count in O(n), then sort the distinct keys by (-count, id) so frequency dominates and id breaks ties. Sorting m distinct keys is O(m log m). A heap of size k can do top-k in O(m log k) when m is huge.' },
+    example: { setup: '', call: 'top_k_events([1, 1, 1, 2, 2, 3], 2)', inputs: [] },
   },
   {
     id: 'py-pair-sum-sorted',
@@ -151,6 +161,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: pair_sum([1,2,4,7,11], 9) == [1,3]),\n  ("ends", lambda: pair_sum([2,3,8], 10) == [0,2]),\n  ("none", lambda: pair_sum([1,2,3], 100) is None),\n  ("two", lambda: pair_sum([5,5], 10) == [0,1]),\n]',
     solution: 'def pair_sum(amounts, target):\n    lo, hi = 0, len(amounts) - 1\n    while lo < hi:\n        s = amounts[lo] + amounts[hi]\n        if s == target:\n            return [lo, hi]\n        if s < target:\n            lo += 1\n        else:\n            hi -= 1\n    return None',
     glassBox: { lesson: 'On a sorted array, if the sum is too small move the left pointer up, too big move the right pointer down. Each step eliminates one element, so it is O(n) time and O(1) space — the dict approach also works but uses O(n) memory.' },
+    example: { setup: '', call: 'pair_sum([1, 2, 4, 7, 11], 9)', inputs: [] },
   },
   {
     id: 'py-remove-duplicates',
@@ -163,6 +174,7 @@ export const pythonProblems = [
     testSource: 'def run(nums):\n    k = dedupe_in_place(nums)\n    return (k, nums[:k])\n\n__pl_checks = [\n  ("basic", lambda: run([1,1,2]) == (2, [1,2])),\n  ("longer", lambda: run([0,0,1,1,1,2,2,3,3,4]) == (5, [0,1,2,3,4])),\n  ("empty", lambda: run([]) == (0, [])),\n  ("all same", lambda: run([5,5,5]) == (1, [5])),\n]',
     solution: 'def dedupe_in_place(nums):\n    if not nums:\n        return 0\n    w = 1\n    for r in range(1, len(nums)):\n        if nums[r] != nums[w - 1]:\n            nums[w] = nums[r]\n            w += 1\n    return w',
     glassBox: { lesson: 'A slow write pointer w trails a fast read pointer r: only advance w when a new value appears. One pass, O(n) time, O(1) extra space — no second list allocated.' },
+    example: { setup: 'def demo():\n    nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4]\n    k = dedupe_in_place(nums)\n    return (k, nums[:k])', call: 'demo()', inputs: [] },
   },
   {
     id: 'py-merge-sorted',
@@ -175,6 +187,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("interleave", lambda: merge_sorted([1,3,5],[2,4,6]) == [1,2,3,4,5,6]),\n  ("one empty", lambda: merge_sorted([],[1,2]) == [1,2]),\n  ("both empty", lambda: merge_sorted([],[]) == []),\n  ("dups", lambda: merge_sorted([1,1],[1,2]) == [1,1,1,2]),\n]',
     solution: 'def merge_sorted(a, b):\n    i = j = 0\n    out = []\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            out.append(a[i]); i += 1\n        else:\n            out.append(b[j]); j += 1\n    out.extend(a[i:])\n    out.extend(b[j:])\n    return out',
     glassBox: { lesson: 'Two pointers compare the front of each list and emit the smaller, then drain the leftovers. O(n + m), the merge step at the heart of merge sort. Concatenating and re-sorting would be O((n+m) log (n+m)).' },
+    example: { setup: '', call: 'merge_sorted([1, 3, 5], [2, 4, 6])', inputs: [] },
   },
   {
     id: 'py-valid-palindrome',
@@ -187,6 +200,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("classic", lambda: is_clean_palindrome("A man, a plan, a canal: Panama") is True),\n  ("not", lambda: is_clean_palindrome("race a car") is False),\n  ("empty", lambda: is_clean_palindrome(" ") is True),\n  ("alnum", lambda: is_clean_palindrome("0P") is False),\n]',
     solution: 'def is_clean_palindrome(s):\n    lo, hi = 0, len(s) - 1\n    while lo < hi:\n        while lo < hi and not s[lo].isalnum():\n            lo += 1\n        while lo < hi and not s[hi].isalnum():\n            hi -= 1\n        if s[lo].lower() != s[hi].lower():\n            return False\n        lo += 1; hi -= 1\n    return True',
     glassBox: { lesson: 'Two pointers march inward, skipping junk characters, comparing one pair at a time. O(n) time, O(1) space. Filtering into a new cleaned string then reversing also works but allocates two extra strings.' },
+    example: { setup: '', call: 'is_clean_palindrome("A man, a plan, a canal: Panama")', inputs: [] },
   },
   {
     id: 'py-move-zeroes',
@@ -199,6 +213,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: move_zeroes([0,1,0,3,12]) == [1,3,12,0,0]),\n  ("no zeros", lambda: move_zeroes([1,2,3]) == [1,2,3]),\n  ("all zeros", lambda: move_zeroes([0,0]) == [0,0]),\n  ("leading", lambda: move_zeroes([0,0,1]) == [1,0,0]),\n]',
     solution: 'def move_zeroes(nums):\n    w = 0\n    for r in range(len(nums)):\n        if nums[r] != 0:\n            nums[w], nums[r] = nums[r], nums[w]\n            w += 1\n    return nums',
     glassBox: { lesson: 'Swap each non-zero forward into the write slot; zeroes naturally bubble to the back. One pass, O(n) time, O(1) space — no second array and stable order preserved.' },
+    example: { setup: '', call: 'move_zeroes([0, 1, 0, 3, 12])', inputs: [] },
   },
   {
     id: 'py-max-water',
@@ -211,6 +226,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("classic", lambda: max_water([1,8,6,2,5,4,8,3,7]) == 49),\n  ("two", lambda: max_water([1,1]) == 1),\n  ("incr", lambda: max_water([1,2,3,4,5]) == 6),\n  ("tiny", lambda: max_water([4,3,2,1,4]) == 16),\n]',
     solution: 'def max_water(heights):\n    lo, hi = 0, len(heights) - 1\n    best = 0\n    while lo < hi:\n        area = min(heights[lo], heights[hi]) * (hi - lo)\n        best = max(best, area)\n        if heights[lo] < heights[hi]:\n            lo += 1\n        else:\n            hi -= 1\n    return best',
     glassBox: { lesson: 'Width is largest at the ends; moving the taller wall can never help (height is capped by the shorter), so always move the shorter one inward. O(n) versus checking all pairs at O(n^2).' },
+    example: { setup: '', call: 'max_water([1, 8, 6, 2, 5, 4, 8, 3, 7])', inputs: [] },
   },
   {
     id: 'py-max-window-sum',
@@ -223,6 +239,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: max_window_sum([1,4,2,10,2,3,1,0,20], 4) == 24),\n  ("k=1", lambda: max_window_sum([5,1,9], 1) == 9),\n  ("whole", lambda: max_window_sum([2,3], 2) == 5),\n  ("too short", lambda: max_window_sum([1,2], 3) == 0),\n]',
     solution: 'def max_window_sum(counts, k):\n    if k <= 0 or len(counts) < k:\n        return 0\n    window = sum(counts[:k])\n    best = window\n    for i in range(k, len(counts)):\n        window += counts[i] - counts[i - k]\n        best = max(best, window)\n    return best',
     glassBox: { lesson: 'Keep a running window sum: each step adds one entry and removes the one leaving the window, so it stays O(1) per slide and O(n) overall. Re-summing each window is O(n*k).' },
+    example: { setup: '', call: 'max_window_sum([1, 4, 2, 10, 2, 3, 1, 0, 20], 4)', inputs: [] },
   },
   {
     id: 'py-min-window-len',
@@ -235,6 +252,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: min_window_len([2,3,1,2,4,3], 7) == 2),\n  ("whole", lambda: min_window_len([1,1,1,1], 4) == 4),\n  ("none", lambda: min_window_len([1,1], 5) == 0),\n  ("single", lambda: min_window_len([10], 7) == 1),\n]',
     solution: 'def min_window_len(counts, target):\n    lo = 0\n    total = 0\n    best = float("inf")\n    for hi in range(len(counts)):\n        total += counts[hi]\n        while total >= target:\n            best = min(best, hi - lo + 1)\n            total -= counts[lo]\n            lo += 1\n    return 0 if best == float("inf") else best',
     glassBox: { lesson: 'A variable-size window: expand right to reach the target, then contract left as far as it stays valid to find the shortest. Each index enters and leaves the window once, so O(n) — versus O(n^2) checking every start.' },
+    example: { setup: '', call: 'min_window_len([2, 3, 1, 2, 4, 3], 7)', inputs: [] },
   },
   {
     id: 'py-longest-k-distinct',
@@ -247,6 +265,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("k=2", lambda: longest_at_most_k_distinct("eceba", 2) == 3),\n  ("k=3", lambda: longest_at_most_k_distinct("aaabbccc", 3) == 8),\n  ("k=0", lambda: longest_at_most_k_distinct("abc", 0) == 0),\n  ("k=1", lambda: longest_at_most_k_distinct([1,2,1,1,3], 1) == 2),\n]',
     solution: 'from collections import defaultdict\n\ndef longest_at_most_k_distinct(seq, k):\n    if k <= 0:\n        return 0\n    counts = defaultdict(int)\n    lo = 0\n    best = 0\n    for hi, x in enumerate(seq):\n        counts[x] += 1\n        while len(counts) > k:\n            counts[seq[lo]] -= 1\n            if counts[seq[lo]] == 0:\n                del counts[seq[lo]]\n            lo += 1\n        best = max(best, hi - lo + 1)\n    return best',
     glassBox: { lesson: 'The count dict tracks how many distinct values sit in the window; when it exceeds k, shrink from the left until it fits. Each element is added and removed once: O(n). Removing zero-count keys keeps len(counts) honest.' },
+    example: { setup: '', call: 'longest_at_most_k_distinct("eceba", 2)', inputs: [] },
   },
   {
     id: 'py-max-vowels-window',
@@ -259,6 +278,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: max_vowels("abciiidef", 3) == 3),\n  ("aeiou", lambda: max_vowels("aeiou", 2) == 2),\n  ("none", lambda: max_vowels("bcdfg", 2) == 0),\n  ("too short", lambda: max_vowels("ae", 3) == 0),\n]',
     solution: 'def max_vowels(s, k):\n    if len(s) < k or k <= 0:\n        return 0\n    vowels = set("aeiou")\n    cur = sum(1 for c in s[:k] if c in vowels)\n    best = cur\n    for i in range(k, len(s)):\n        if s[i] in vowels:\n            cur += 1\n        if s[i - k] in vowels:\n            cur -= 1\n        best = max(best, cur)\n    return best',
     glassBox: { lesson: 'Carry the vowel count for the current window; on each slide, +1 if the entering char is a vowel and -1 if the leaving one was. O(n) versus recounting each window at O(n*k).' },
+    example: { setup: '', call: 'max_vowels("abciiidef", 3)', inputs: [] },
   },
   {
     id: 'py-subarray-sum-k',
@@ -271,6 +291,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: count_subarrays([1,1,1], 2) == 2),\n  ("mixed", lambda: count_subarrays([1,2,3], 3) == 2),\n  ("negatives", lambda: count_subarrays([1,-1,0], 0) == 3),\n  ("none", lambda: count_subarrays([1,2,3], 100) == 0),\n]',
     solution: 'from collections import defaultdict\n\ndef count_subarrays(nums, k):\n    seen = defaultdict(int)\n    seen[0] = 1\n    total = 0\n    count = 0\n    for x in nums:\n        total += x\n        count += seen[total - k]\n        seen[total] += 1\n    return count',
     glassBox: { lesson: 'A subarray sums to k exactly when (running_total - k) was a previous prefix sum. Counting prefixes in a dict turns this into one O(n) pass; the brute force over all subarrays is O(n^2). Seeding seen[0]=1 handles prefixes that themselves equal k.' },
+    example: { setup: '', call: 'count_subarrays([1, 1, 1], 2)', inputs: [] },
   },
   {
     id: 'py-running-max',
@@ -283,6 +304,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: running_max([3,1,4,1,5,9,2]) == [3,3,4,4,5,9,9]),\n  ("decreasing", lambda: running_max([5,4,3]) == [5,5,5]),\n  ("empty", lambda: running_max([]) == []),\n  ("single", lambda: running_max([7]) == [7]),\n]',
     solution: 'def running_max(readings):\n    out = []\n    cur = float("-inf")\n    for x in readings:\n        cur = max(cur, x)\n        out.append(cur)\n    return out',
     glassBox: { lesson: 'Carry the best value seen and append it each step — a prefix-style scan in O(n). Recomputing max(readings[:i+1]) at every index would be O(n^2).' },
+    example: { setup: '', call: 'running_max([3, 1, 4, 1, 5, 9, 2])', inputs: [] },
   },
   {
     id: 'py-equilibrium-index',
@@ -295,6 +317,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("middle", lambda: equilibrium_index([1,7,3,6,5,6]) == 3),\n  ("first", lambda: equilibrium_index([0,1,-1]) == 0),\n  ("none", lambda: equilibrium_index([1,2,3]) == -1),\n  ("single", lambda: equilibrium_index([42]) == 0),\n]',
     solution: 'def equilibrium_index(nums):\n    total = sum(nums)\n    left = 0\n    for i, x in enumerate(nums):\n        if left == total - left - x:\n            return i\n        left += x\n    return -1',
     glassBox: { lesson: 'Right sum is just total - left - current, so one precomputed total plus a running left sum solves it in O(n). Summing both sides at each index would be O(n^2).' },
+    example: { setup: '', call: 'equilibrium_index([1, 7, 3, 6, 5, 6])', inputs: [] },
   },
   {
     id: 'py-range-sum-prefix',
@@ -307,6 +330,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: range_sums([1,2,3,4,5], [(0,2),(1,3),(4,4)]) == [6,9,5]),\n  ("whole", lambda: range_sums([2,2,2], [(0,2)]) == [6]),\n  ("none", lambda: range_sums([1,2,3], []) == []),\n  ("single", lambda: range_sums([9], [(0,0)]) == [9]),\n]',
     solution: 'def range_sums(nums, queries):\n    prefix = [0]\n    for x in nums:\n        prefix.append(prefix[-1] + x)\n    return [prefix[hi + 1] - prefix[lo] for (lo, hi) in queries]',
     glassBox: { lesson: 'prefix[i] holds the sum of the first i elements, so any range sum is prefix[hi+1] - prefix[lo] in O(1). Building it is O(n) once; answering q queries by re-summing would be O(n*q).' },
+    example: { setup: '', call: 'range_sums([1, 2, 3, 4, 5], [(0, 2), (1, 3), (4, 4)])', inputs: [] },
   },
   {
     id: 'py-daily-temperatures',
@@ -319,6 +343,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: days_until_warmer([73,74,75,71,69,72,76,73]) == [1,1,4,2,1,1,0,0]),\n  ("increasing", lambda: days_until_warmer([30,40,50,60]) == [1,1,1,0]),\n  ("flat", lambda: days_until_warmer([30,30,30]) == [0,0,0]),\n  ("single", lambda: days_until_warmer([50]) == [0]),\n]',
     solution: 'def days_until_warmer(temps):\n    out = [0] * len(temps)\n    stack = []\n    for i, t in enumerate(temps):\n        while stack and temps[stack[-1]] < t:\n            j = stack.pop()\n            out[j] = i - j\n        stack.append(i)\n    return out',
     glassBox: { lesson: 'A monotonic stack holds indices whose warmer day is still unknown; when a hotter reading arrives, it resolves all of them. Each index is pushed and popped once: O(n). The pairwise scan is O(n^2).' },
+    example: { setup: '', call: 'days_until_warmer([73, 74, 75, 71, 69, 72, 76, 73])', inputs: [] },
   },
   {
     id: 'py-next-greater',
@@ -331,6 +356,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: next_greater([2,1,2,4,3]) == [4,2,4,-1,-1]),\n  ("increasing", lambda: next_greater([1,2,3]) == [2,3,-1]),\n  ("decreasing", lambda: next_greater([3,2,1]) == [-1,-1,-1]),\n  ("single", lambda: next_greater([5]) == [-1]),\n]',
     solution: 'def next_greater(prices):\n    out = [-1] * len(prices)\n    stack = []\n    for i, p in enumerate(prices):\n        while stack and prices[stack[-1]] < p:\n            out[stack.pop()] = p\n        stack.append(i)\n    return out',
     glassBox: { lesson: 'Same monotonic-stack idea as daily temperatures, but you store the value instead of the gap. Each index is pushed and popped at most once, so O(n) total.' },
+    example: { setup: '', call: 'next_greater([2, 1, 2, 4, 3])', inputs: [] },
   },
   {
     id: 'py-min-stack',
@@ -343,6 +369,7 @@ export const pythonProblems = [
     testSource: 'def run():\n    s = MinStack()\n    s.push(5); s.push(3); s.push(7)\n    a = s.get_min()      # 3\n    b = s.top()          # 7\n    s.pop()\n    c = s.get_min()      # 3\n    s.pop()\n    d = s.get_min()      # 5\n    return (a, b, c, d)\n\n__pl_checks = [\n  ("sequence", lambda: run() == (3, 7, 3, 5)),\n  ("single", lambda: (lambda s: (s.push(9), s.get_min())[1])(MinStack()) == 9),\n]',
     solution: 'class MinStack:\n    def __init__(self):\n        self._stack = []\n    def push(self, x):\n        cur_min = x if not self._stack else min(x, self._stack[-1][1])\n        self._stack.append((x, cur_min))\n    def pop(self):\n        return self._stack.pop()[0]\n    def top(self):\n        return self._stack[-1][0]\n    def get_min(self):\n        return self._stack[-1][1]',
     glassBox: { lesson: 'Each entry carries the minimum of the stack up to that point, so get_min is just reading the top: O(1). The cost is O(n) extra space for the cached minima — a classic time/space trade.' },
+    example: { setup: 'def demo():\n    s = MinStack()\n    s.push(5); s.push(3); s.push(7)\n    return {"top": s.top(), "min": s.get_min()}', call: 'demo()', inputs: [] },
   },
   {
     id: 'py-eval-rpn',
@@ -355,6 +382,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: eval_rpn(["2","1","+","3","*"]) == 9),\n  ("div", lambda: eval_rpn(["4","13","5","/","+"]) == 6),\n  ("neg trunc", lambda: eval_rpn(["10","6","-","-3","/"]) == -1),\n  ("single", lambda: eval_rpn(["42"]) == 42),\n]',
     solution: 'def eval_rpn(tokens):\n    stack = []\n    ops = {"+", "-", "*", "/"}\n    for tok in tokens:\n        if tok in ops:\n            b = stack.pop(); a = stack.pop()\n            if tok == "+": stack.append(a + b)\n            elif tok == "-": stack.append(a - b)\n            elif tok == "*": stack.append(a * b)\n            else: stack.append(int(a / b))\n        else:\n            stack.append(int(tok))\n    return stack.pop()',
     glassBox: { lesson: 'RPN needs no parentheses: a stack holds operands until an operator consumes the top two. One O(n) pass. Note int(a / b) truncates toward zero, unlike Python\'s // which floors for negatives.' },
+    example: { setup: '', call: 'eval_rpn(["2", "1", "+", "3", "*"])', inputs: [] },
   },
   {
     id: 'py-binary-search',
@@ -367,6 +395,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("found", lambda: binary_search([1,3,5,7,9], 7) == 3),\n  ("first", lambda: binary_search([1,3,5], 1) == 0),\n  ("absent", lambda: binary_search([1,3,5], 4) == -1),\n  ("empty", lambda: binary_search([], 1) == -1),\n]',
     solution: 'def binary_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1',
     glassBox: { lesson: 'Halving the search space each step gives O(log n) versus a linear scan at O(n). The invariant: the target, if present, always lies within [lo, hi].' },
+    example: { setup: '', call: 'binary_search([1, 3, 5, 7, 9], 7)', inputs: [] },
   },
   {
     id: 'py-search-insert',
@@ -379,6 +408,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("present", lambda: search_insert([1,3,5,6], 5) == 2),\n  ("between", lambda: search_insert([1,3,5,6], 2) == 1),\n  ("end", lambda: search_insert([1,3,5,6], 7) == 4),\n  ("start", lambda: search_insert([1,3,5,6], 0) == 0),\n  ("empty", lambda: search_insert([], 5) == 0),\n]',
     solution: 'def search_insert(nums, target):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo',
     glassBox: { lesson: 'A half-open [lo, hi) search converges on the leftmost slot where target could go. O(log n). This is exactly what bisect.bisect_left computes.' },
+    example: { setup: '', call: 'search_insert([1, 3, 5, 6], 2)', inputs: [] },
   },
   {
     id: 'py-first-geq',
@@ -391,6 +421,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("mid", lambda: first_geq([1,2,4,4,5], 4) == 2),\n  ("all below", lambda: first_geq([1,2,3], 10) == 3),\n  ("first", lambda: first_geq([5,6,7], 1) == 0),\n  ("exact end", lambda: first_geq([1,2,3], 3) == 2),\n  ("empty", lambda: first_geq([], 1) == 0),\n]',
     solution: 'def first_geq(nums, threshold):\n    lo, hi = 0, len(nums)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if nums[mid] < threshold:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo',
     glassBox: { lesson: 'The lower-bound pattern: shrink toward the first index where the predicate (value >= threshold) becomes true. O(log n), and the basis for counting how many elements fall in a range.' },
+    example: { setup: '', call: 'first_geq([1, 2, 4, 4, 5], 4)', inputs: [] },
   },
   {
     id: 'py-integer-sqrt',
@@ -403,6 +434,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("perfect", lambda: int_sqrt(16) == 4),\n  ("floor", lambda: int_sqrt(8) == 2),\n  ("zero", lambda: int_sqrt(0) == 0),\n  ("one", lambda: int_sqrt(1) == 1),\n  ("big", lambda: int_sqrt(2147395600) == 46340),\n]',
     solution: 'def int_sqrt(n):\n    if n < 2:\n        return n\n    lo, hi = 1, n\n    ans = 0\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if mid * mid <= n:\n            ans = mid\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return ans',
     glassBox: { lesson: 'Binary-search the largest mid whose square does not exceed n. O(log n) multiplications, exact integer math, no floating-point rounding errors that math.sqrt can introduce near perfect squares.' },
+    example: { setup: '', call: 'int_sqrt(8)', inputs: [] },
   },
   {
     id: 'py-koko-rate',
@@ -415,6 +447,7 @@ export const pythonProblems = [
     testSource: 'import math\n__pl_checks = [\n  ("basic", lambda: min_rate([3,6,7,11], 8) == 4),\n  ("tight", lambda: min_rate([30,11,23,4,20], 5) == 30),\n  ("loose", lambda: min_rate([30,11,23,4,20], 6) == 23),\n  ("single", lambda: min_rate([10], 2) == 5),\n]',
     solution: 'import math\n\ndef min_rate(piles, H):\n    def hours(r):\n        return sum(math.ceil(p / r) for p in piles)\n    lo, hi = 1, max(piles)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if hours(mid) <= H:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo',
     glassBox: { lesson: 'When the answer is monotonic (a faster rate never needs more time), binary-search the answer space [1, max(pile)]. Each check is O(n), so the whole search is O(n log(max pile)) versus O(max pile * n) if you tried every rate.' },
+    example: { setup: '', call: 'min_rate([3, 6, 7, 11], 8)', inputs: [] },
   },
   {
     id: 'py-k-largest',
@@ -427,6 +460,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: k_largest([3,1,5,12,2,11], 3) == [12,11,5]),\n  ("all", lambda: k_largest([4,2], 2) == [4,2]),\n  ("k=1", lambda: k_largest([7,7,9], 1) == [9]),\n  ("k=0", lambda: k_largest([1,2,3], 0) == []),\n]',
     solution: 'import heapq\n\ndef k_largest(nums, k):\n    if k <= 0:\n        return []\n    return heapq.nlargest(k, nums)',
     glassBox: { lesson: 'heapq.nlargest keeps a heap of size k while scanning once: O(n log k), better than fully sorting at O(n log n) when k is much smaller than n. The result comes back already sorted descending.' },
+    example: { setup: '', call: 'k_largest([3, 1, 5, 12, 2, 11], 3)', inputs: [] },
   },
   {
     id: 'py-kth-smallest',
@@ -439,6 +473,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: kth_smallest([7,10,4,3,20,15], 3) == 7),\n  ("first", lambda: kth_smallest([5,2,9], 1) == 2),\n  ("last", lambda: kth_smallest([5,2,9], 3) == 9),\n  ("dups", lambda: kth_smallest([1,1,2], 2) == 1),\n]',
     solution: 'import heapq\n\ndef kth_smallest(nums, k):\n    return heapq.nsmallest(k, nums)[-1]',
     glassBox: { lesson: 'heapq.nsmallest(k, nums) returns the k smallest in sorted order in O(n log k); the last is the answer. Quickselect can hit O(n) average, but the heap version is short and predictable.' },
+    example: { setup: '', call: 'kth_smallest([7, 10, 4, 3, 20, 15], 3)', inputs: [] },
   },
   {
     id: 'py-top-k-frequent-heap',
@@ -451,6 +486,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: top_k_frequent([1,1,1,2,2,3], 2) == [1,2]),\n  ("k=1", lambda: top_k_frequent(["a","a","b"], 1) == ["a"]),\n  ("all", lambda: top_k_frequent([5,6,6,5,5], 2) == [5,6]),\n]',
     solution: 'import heapq\nfrom collections import Counter\n\ndef top_k_frequent(tags, k):\n    counts = Counter(tags)\n    return [tag for tag, _ in heapq.nlargest(k, counts.items(), key=lambda kv: kv[1])]',
     glassBox: { lesson: 'Counting is O(n); pulling the top k from m distinct tags with a heap is O(m log k). For very large m this beats sorting all distinct tags at O(m log m). nlargest is stable on ties by first occurrence.' },
+    example: { setup: '', call: 'top_k_frequent([1, 1, 1, 2, 2, 3], 2)', inputs: [] },
   },
   {
     id: 'py-merge-k-sorted',
@@ -463,6 +499,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: merge_k_sorted([[1,4,5],[1,3,4],[2,6]]) == [1,1,2,3,4,4,5,6]),\n  ("empty inner", lambda: merge_k_sorted([[],[1],[]]) == [1]),\n  ("all empty", lambda: merge_k_sorted([[],[]]) == []),\n  ("one list", lambda: merge_k_sorted([[3,3,3]]) == [3,3,3]),\n]',
     solution: 'import heapq\n\ndef merge_k_sorted(lists):\n    heap = []\n    for li, lst in enumerate(lists):\n        if lst:\n            heapq.heappush(heap, (lst[0], li, 0))\n    out = []\n    while heap:\n        val, li, idx = heapq.heappop(heap)\n        out.append(val)\n        if idx + 1 < len(lists[li]):\n            heapq.heappush(heap, (lists[li][idx + 1], li, idx + 1))\n    return out',
     glassBox: { lesson: 'A heap of one head per list always surfaces the global minimum. For N total elements across k lists, each push/pop is O(log k), so the merge is O(N log k) — the standard external merge-sort step. The (val, li, idx) tuple keeps ties deterministic.' },
+    example: { setup: '', call: 'merge_k_sorted([[1, 4, 5], [1, 3, 4], [2, 6]])', inputs: [] },
   },
   {
     id: 'py-merge-intervals',
@@ -475,6 +512,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: merge_intervals([[1,3],[2,6],[8,10],[15,18]]) == [[1,6],[8,10],[15,18]]),\n  ("touching", lambda: merge_intervals([[1,4],[4,5]]) == [[1,5]]),\n  ("unsorted", lambda: merge_intervals([[5,6],[1,3],[2,4]]) == [[1,4],[5,6]]),\n  ("empty", lambda: merge_intervals([]) == []),\n]',
     solution: 'def merge_intervals(intervals):\n    if not intervals:\n        return []\n    intervals = sorted(intervals)\n    merged = [list(intervals[0])]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)\n        else:\n            merged.append([start, end])\n    return merged',
     glassBox: { lesson: 'Sorting by start (O(n log n)) lets a single sweep merge overlaps: if the next start is within the current end, extend; otherwise begin a new interval. The sweep itself is O(n).' },
+    example: { setup: '', call: 'merge_intervals([[1, 3], [2, 6], [8, 10], [15, 18]])', inputs: [] },
   },
   {
     id: 'py-can-attend',
@@ -487,6 +525,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("overlap", lambda: can_attend_all([[0,30],[5,10],[15,20]]) is False),\n  ("clear", lambda: can_attend_all([[7,10],[2,4]]) is True),\n  ("touching", lambda: can_attend_all([[1,2],[2,3]]) is True),\n  ("empty", lambda: can_attend_all([]) is True),\n]',
     solution: 'def can_attend_all(meetings):\n    meetings = sorted(meetings)\n    for i in range(1, len(meetings)):\n        if meetings[i][0] < meetings[i - 1][1]:\n            return False\n    return True',
     glassBox: { lesson: 'Once sorted by start, an overlap can only happen between neighbors: a conflict exists iff some meeting starts before the previous one ends. Sort is O(n log n), the check O(n).' },
+    example: { setup: '', call: 'can_attend_all([[0, 30], [5, 10], [15, 20]])', inputs: [] },
   },
   {
     id: 'py-min-meeting-rooms',
@@ -499,6 +538,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: min_meeting_rooms([[0,30],[5,10],[15,20]]) == 2),\n  ("serial", lambda: min_meeting_rooms([[7,10],[2,4]]) == 1),\n  ("triple", lambda: min_meeting_rooms([[1,5],[2,6],[3,7]]) == 3),\n  ("empty", lambda: min_meeting_rooms([]) == 0),\n]',
     solution: 'def min_meeting_rooms(meetings):\n    starts = sorted(m[0] for m in meetings)\n    ends = sorted(m[1] for m in meetings)\n    rooms = 0\n    best = 0\n    j = 0\n    for s in starts:\n        while j < len(ends) and ends[j] <= s:\n            rooms -= 1\n            j += 1\n        rooms += 1\n        best = max(best, rooms)\n    return best',
     glassBox: { lesson: 'Sweeping sorted starts and ends together tracks how many meetings are live at once; the peak is the rooms needed. O(n log n) for the sorts, O(n) for the sweep — equivalent to a heap of end times.' },
+    example: { setup: '', call: 'min_meeting_rooms([[0, 30], [5, 10], [15, 20]])', inputs: [] },
   },
   {
     id: 'py-insert-interval',
@@ -511,6 +551,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("merge one", lambda: insert_interval([[1,3],[6,9]], [2,5]) == [[1,5],[6,9]]),\n  ("merge many", lambda: insert_interval([[1,2],[3,5],[6,7],[8,10],[12,16]], [4,8]) == [[1,2],[3,10],[12,16]]),\n  ("append", lambda: insert_interval([[1,2]], [3,4]) == [[1,2],[3,4]]),\n  ("into empty", lambda: insert_interval([], [5,7]) == [[5,7]]),\n]',
     solution: 'def insert_interval(intervals, new):\n    res = []\n    s, e = new[0], new[1]\n    i = 0\n    n = len(intervals)\n    while i < n and intervals[i][1] < s:\n        res.append(intervals[i]); i += 1\n    while i < n and intervals[i][0] <= e:\n        s = min(s, intervals[i][0])\n        e = max(e, intervals[i][1])\n        i += 1\n    res.append([s, e])\n    while i < n:\n        res.append(intervals[i]); i += 1\n    return res',
     glassBox: { lesson: 'Three phases over the already-sorted list: copy intervals entirely before the new one, swallow every overlapper into one merged interval, then copy the rest. Single O(n) pass, no re-sort needed.' },
+    example: { setup: '', call: 'insert_interval([[1, 3], [6, 9]], [2, 5])', inputs: [] },
   },
   {
     id: 'py-max-subarray',
@@ -523,6 +564,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("classic", lambda: max_subarray([-2,1,-3,4,-1,2,1,-5,4]) == 6),\n  ("all neg", lambda: max_subarray([-3,-1,-2]) == -1),\n  ("all pos", lambda: max_subarray([1,2,3]) == 6),\n  ("single", lambda: max_subarray([5]) == 5),\n]',
     solution: 'def max_subarray(nums):\n    best = cur = nums[0]\n    for x in nums[1:]:\n        cur = max(x, cur + x)\n        best = max(best, cur)\n    return best',
     glassBox: { lesson: 'Kadane: at each element, either extend the running sum or restart from here (whichever is larger). One O(n) pass, O(1) space. The brute force over all subarrays is O(n^2).' },
+    example: { setup: '', call: 'max_subarray([-2, 1, -3, 4, -1, 2, 1, -5, 4])', inputs: [] },
   },
   {
     id: 'py-can-jump',
@@ -535,6 +577,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("reachable", lambda: can_jump([2,3,1,1,4]) is True),\n  ("stuck", lambda: can_jump([3,2,1,0,4]) is False),\n  ("single", lambda: can_jump([0]) is True),\n  ("first zero", lambda: can_jump([0,1]) is False),\n]',
     solution: 'def can_jump(nums):\n    reach = 0\n    for i, step in enumerate(nums):\n        if i > reach:\n            return False\n        reach = max(reach, i + step)\n    return True',
     glassBox: { lesson: 'Greedily keep the farthest index reachable so far; if you ever stand beyond it, you are stuck. One O(n) pass, O(1) space — no need for DP over every position.' },
+    example: { setup: '', call: 'can_jump([2, 3, 1, 1, 4])', inputs: [] },
   },
   {
     id: 'py-best-buy-sell',
@@ -547,6 +590,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: max_profit([7,1,5,3,6,4]) == 5),\n  ("decreasing", lambda: max_profit([7,6,4,3,1]) == 0),\n  ("empty", lambda: max_profit([]) == 0),\n  ("two", lambda: max_profit([1,5]) == 4),\n]',
     solution: 'def max_profit(prices):\n    min_price = float("inf")\n    best = 0\n    for p in prices:\n        min_price = min(min_price, p)\n        best = max(best, p - min_price)\n    return best',
     glassBox: { lesson: 'Carry the cheapest price so far; the best sell today is today\'s price minus that minimum. One O(n) pass, O(1) space — versus comparing every buy/sell pair at O(n^2).' },
+    example: { setup: '', call: 'max_profit([7, 1, 5, 3, 6, 4])', inputs: [] },
   },
   {
     id: 'py-gas-station',
@@ -559,6 +603,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: gas_station_start([1,2,3,4,5],[3,4,5,1,2]) == 3),\n  ("impossible", lambda: gas_station_start([2,3,4],[3,4,3]) == -1),\n  ("single ok", lambda: gas_station_start([5],[4]) == 0),\n  ("single bad", lambda: gas_station_start([1],[2]) == -1),\n]',
     solution: 'def gas_station_start(gas, cost):\n    if sum(gas) < sum(cost):\n        return -1\n    start = 0\n    tank = 0\n    for i in range(len(gas)):\n        tank += gas[i] - cost[i]\n        if tank < 0:\n            start = i + 1\n            tank = 0\n    return start',
     glassBox: { lesson: 'If total gas >= total cost a solution exists. Whenever the tank goes negative, no station up to here can be the start, so jump the start past it. One O(n) pass beats trying every start at O(n^2).' },
+    example: { setup: '', call: 'gas_station_start([1, 2, 3, 4, 5], [3, 4, 5, 1, 2])', inputs: [] },
   },
   {
     id: 'py-rmse',
@@ -571,6 +616,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("basic", lambda: abs(rmse([3,5,2,7],[2.5,5,4,8]) - 1.14564392373896) < 1e-9),\n  ("perfect", lambda: rmse([1,2,3],[1,2,3]) == 0.0),\n  ("const off", lambda: abs(rmse([0,0,0],[2,2,2]) - 2.0) < 1e-12),\n]',
     solution: 'import numpy as np\n\ndef rmse(y_true, y_pred):\n    yt = np.asarray(y_true, dtype=float)\n    yp = np.asarray(y_pred, dtype=float)\n    return float(np.sqrt(np.mean((yt - yp) ** 2)))',
     glassBox: { lesson: 'Vectorizing with numpy computes the squared errors, their mean, and the root in one C-level pass — O(n) but far faster than a Python loop. asarray(dtype=float) guards against integer overflow and integer division.' },
+    example: { setup: 'y_true = [3, 5, 2, 7]\ny_pred = [2.5, 5, 4, 8]', call: 'round(rmse(y_true, y_pred), 4)', inputs: ['y_true', 'y_pred'] },
   },
   {
     id: 'py-minmax-normalize',
@@ -583,6 +629,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("basic", lambda: np.allclose(minmax_normalize([10,20,30]), [0.0,0.5,1.0])),\n  ("constant", lambda: np.allclose(minmax_normalize([5,5,5]), [0.0,0.0,0.0])),\n  ("neg", lambda: np.allclose(minmax_normalize([-1,0,1]), [0.0,0.5,1.0])),\n]',
     solution: 'import numpy as np\n\ndef minmax_normalize(x):\n    arr = np.asarray(x, dtype=float)\n    lo = arr.min()\n    hi = arr.max()\n    span = hi - lo\n    if span == 0:\n        return np.zeros_like(arr)\n    return (arr - lo) / span',
     glassBox: { lesson: 'Min-max scaling maps the data linearly onto [0,1] so features with different units compare fairly. The span == 0 guard is the real gotcha: a constant column would otherwise divide by zero and yield NaNs.' },
+    example: { setup: 'x = [10, 20, 30]', call: 'minmax_normalize(x).tolist()', inputs: ['x'] },
   },
   {
     id: 'py-accuracy-score',
@@ -595,6 +642,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("basic", lambda: abs(accuracy([1,0,1,1],[1,1,1,0]) - 0.5) < 1e-12),\n  ("perfect", lambda: accuracy([2,2,2],[2,2,2]) == 1.0),\n  ("none", lambda: accuracy([1,2],[3,4]) == 0.0),\n  ("empty", lambda: accuracy([],[]) == 0.0),\n]',
     solution: 'import numpy as np\n\ndef accuracy(y_true, y_pred):\n    yt = np.asarray(y_true)\n    yp = np.asarray(y_pred)\n    if yt.size == 0:\n        return 0.0\n    return float(np.mean(yt == yp))',
     glassBox: { lesson: 'np.mean over a boolean array of matches gives the accuracy directly, since True counts as 1. O(n) vectorized. The empty guard avoids a NaN from 0/0.' },
+    example: { setup: 'y_true = [1, 0, 1, 1]\ny_pred = [1, 1, 1, 0]', call: 'accuracy(y_true, y_pred)', inputs: ['y_true', 'y_pred'] },
   },
   {
     id: 'py-cosine-similarity',
@@ -607,6 +655,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("identical", lambda: abs(cosine_similarity([1,2,3],[1,2,3]) - 1.0) < 1e-9),\n  ("orthogonal", lambda: abs(cosine_similarity([1,0],[0,1]) - 0.0) < 1e-12),\n  ("opposite", lambda: abs(cosine_similarity([1,0],[-1,0]) + 1.0) < 1e-9),\n  ("zero vec", lambda: cosine_similarity([0,0],[1,1]) == 0.0),\n]',
     solution: 'import numpy as np\n\ndef cosine_similarity(a, b):\n    va = np.asarray(a, dtype=float)\n    vb = np.asarray(b, dtype=float)\n    na = np.linalg.norm(va)\n    nb = np.linalg.norm(vb)\n    if na == 0 or nb == 0:\n        return 0.0\n    return float(np.dot(va, vb) / (na * nb))',
     glassBox: { lesson: 'Cosine similarity measures the angle between vectors, ignoring magnitude — the standard score for comparing embeddings. The zero-norm guard prevents a divide-by-zero; the cost is O(d) in the dimension.' },
+    example: { setup: 'a = [1, 2, 3]\nb = [2, 4, 6]', call: 'round(cosine_similarity(a, b), 4)', inputs: ['a', 'b'] },
   },
   {
     id: 'py-one-hot',
@@ -619,6 +668,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("basic", lambda: one_hot([0,2,1], 3) == [[1,0,0],[0,0,1],[0,1,0]]),\n  ("single", lambda: one_hot([1], 2) == [[0,1]]),\n  ("repeat", lambda: one_hot([0,0], 2) == [[1,0],[1,0]]),\n  ("empty", lambda: one_hot([], 3) == []),\n]',
     solution: 'import numpy as np\n\ndef one_hot(labels, num_classes):\n    arr = np.zeros((len(labels), num_classes), dtype=int)\n    for row, lab in enumerate(labels):\n        arr[row, lab] = 1\n    return arr.tolist()',
     glassBox: { lesson: 'One-hot turns categorical labels into orthogonal indicator vectors so a model treats classes as unordered. Allocating the zero matrix and setting one cell per row is O(n) rows times O(c) memory; tolist makes the structure easy to assert on.' },
+    example: { setup: 'labels = [0, 2, 1]', call: 'one_hot(labels, 3)', inputs: ['labels'] },
   },
   {
     id: 'py-softmax',
@@ -631,6 +681,7 @@ export const pythonProblems = [
     testSource: 'import numpy as np\n__pl_checks = [\n  ("sums to 1", lambda: abs(float(np.sum(softmax([1.0,2.0,3.0]))) - 1.0) < 1e-9),\n  ("uniform", lambda: np.allclose(softmax([0,0,0]), [1/3,1/3,1/3])),\n  ("stable big", lambda: bool(np.all(np.isfinite(softmax([1000.0,1001.0,1002.0]))))),\n  ("monotone", lambda: bool(softmax([1.0,2.0,3.0])[2] > softmax([1.0,2.0,3.0])[0])),\n]',
     solution: 'import numpy as np\n\ndef softmax(logits):\n    z = np.asarray(logits, dtype=float)\n    shifted = z - np.max(z)\n    exps = np.exp(shifted)\n    return exps / np.sum(exps)',
     glassBox: { lesson: 'Softmax turns logits into a probability distribution. Subtracting the max before exp shifts the inputs without changing the result, but prevents exp() from overflowing to inf on large logits — the classic stability trick.' },
+    example: { setup: 'logits = [1.0, 2.0, 3.0]', call: '[round(p, 4) for p in softmax(logits).tolist()]', inputs: ['logits'] },
   },
   {
     id: 'py-factorial',
@@ -643,6 +694,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("zero", lambda: factorial(0) == 1),\n  ("one", lambda: factorial(1) == 1),\n  ("five", lambda: factorial(5) == 120),\n  ("ten", lambda: factorial(10) == 3628800),\n]',
     solution: 'def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)',
     glassBox: { lesson: 'The base case (n <= 1 returns 1) stops the recursion; each call multiplies n by the smaller subproblem. O(n) calls deep — fine for small n, but Python\'s recursion limit (~1000) means an iterative loop is safer for large n.' },
+    example: { setup: '', call: 'factorial(5)', inputs: [] },
   },
   {
     id: 'py-fibonacci',
@@ -655,6 +707,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("base0", lambda: fib(0) == 0),\n  ("base1", lambda: fib(1) == 1),\n  ("ten", lambda: fib(10) == 55),\n  ("twenty", lambda: fib(20) == 6765),\n]',
     solution: 'def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a',
     glassBox: { lesson: 'Carrying the last two values forward is O(n) time and O(1) space. The naive recursion fib(n-1)+fib(n-2) recomputes the same subproblems and is O(2^n) — the textbook case for why memoization or iteration matters.' },
+    example: { setup: '', call: 'fib(10)', inputs: [] },
   },
   {
     id: 'py-fast-power',
@@ -667,6 +720,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: fast_power(2, 10) == 1024),\n  ("zero exp", lambda: fast_power(5, 0) == 1),\n  ("one", lambda: fast_power(7, 1) == 7),\n  ("odd exp", lambda: fast_power(3, 5) == 243),\n  ("base one", lambda: fast_power(1, 1000) == 1),\n]',
     solution: 'def fast_power(base, exp):\n    result = 1\n    while exp > 0:\n        if exp & 1:\n            result *= base\n        base *= base\n        exp >>= 1\n    return result',
     glassBox: { lesson: 'Squaring the base and halving the exponent each step gives O(log exp) multiplications instead of O(exp). Multiplying in the base only when the current exponent bit is 1 reconstructs the full power.' },
+    example: { setup: '', call: 'fast_power(2, 10)', inputs: [] },
   },
   {
     id: 'py-flatten-nested',
@@ -679,6 +733,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: flatten([1,[2,3],[4,[5,6]]]) == [1,2,3,4,5,6]),\n  ("deep", lambda: flatten([1,[2,[3,[4]]]]) == [1,2,3,4]),\n  ("empty", lambda: flatten([]) == []),\n  ("empties", lambda: flatten([[],[1],[[]]]) == [1]),\n]',
     solution: 'def flatten(nested):\n    out = []\n    for item in nested:\n        if isinstance(item, list):\n            out.extend(flatten(item))\n        else:\n            out.append(item)\n    return out',
     glassBox: { lesson: 'Recursion mirrors the structure: append plain values, recurse into lists and splice their results. Each element is touched once, so O(total elements). Recursion depth equals the nesting depth.' },
+    example: { setup: '', call: 'flatten([1, [2, 3], [4, [5, 6]]])', inputs: [] },
   },
   {
     id: 'py-gcd',
@@ -691,6 +746,7 @@ export const pythonProblems = [
     testSource: '__pl_checks = [\n  ("basic", lambda: gcd(48, 18) == 6),\n  ("coprime", lambda: gcd(17, 5) == 1),\n  ("zero", lambda: gcd(9, 0) == 9),\n  ("equal", lambda: gcd(12, 12) == 12),\n]',
     solution: 'def gcd(a, b):\n    if b == 0:\n        return a\n    return gcd(b, a % b)',
     glassBox: { lesson: 'Euclid: the gcd of (a, b) equals the gcd of (b, a mod b), shrinking fast toward a base case of b == 0. It runs in O(log(min(a, b))) steps — far quicker than testing every candidate divisor.' },
+    example: { setup: '', call: 'gcd(48, 18)', inputs: [] },
   },
 ];
 

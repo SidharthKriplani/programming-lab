@@ -75,7 +75,7 @@ export default function App() {
                   title="Python Drills" iconName="code-2" iconColor="var(--accent)"
                   subtitle="Famous Python problems by pattern — hashing, sliding window, stack, prefix sum. Write the function, run the hidden tests."
                   problems={pythonProblems} patterns={PY_PATTERNS} patternOrder={PY_PATTERN_ORDER}
-                  progressKey={PYTHON_KEY} packages={[]} />
+                  progressKey={PYTHON_KEY} packages={['numpy']} />
               )
               : view === 'pandas' ? (
                 <ProblemBrowser

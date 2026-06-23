@@ -730,6 +730,9 @@ body {
   white-space: nowrap;
 }
 
+/* ── Browse table row hover ──────────────────────────────────────────────── */
+.pl-row:hover { background: var(--surface-2); }
+
 /* ── CodeMirror surface tweaks (editor in PythonCell) ─────────────────────── */
 .cm-editor { background: transparent; }
 .cm-editor.cm-focused { outline: none; }

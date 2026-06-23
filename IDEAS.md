@@ -21,3 +21,13 @@ _Tiered. Most things don't belong here — only what's specific enough to build.
 - **Analytics + METRICS.md** — wire PostHog (env-gated, PII-stripped, like PAL) once there's traffic; then a real metrics spine.
 - **Local-folder rename** `production-systems-lab` → `programming-lab` (dedicated infra pass; updates mount + CLAUDE.md paths).
 - Stripe gate (flip `isUnlocked()`), when monetization is live.
+
+## Lessons from the Python canon (2026-06-23 — inspiration only; author original, moat D-07)
+Surveyed the standard Python books for their *pedagogical approach* (never content):
+- **Learn to Code by Solving Problems (Zingaro)** — online-judge *targeted feedback* + "why does this code work" MCQs + bonus exercises. → **Tier 1: hints that react to which test failed** (fixes the live UX hole — between a failing test and Reveal there's nothing) + the judgment-MCQ layer.
+- **The Hacker's Guide to Scaling Python (Danjou)** — profiling, memory, perf. → PL's glass-box IS this; add a **race-at-scale control** (O(n) vs O(n^2) made visual). Cost is the signature.
+- **Treading on Python / Python In-Depth** — decorators, generators, context managers, comprehensions. → the **idioms bank (Bank B)** content map.
+- **Real-World Python (Vaughan) · Python Playground / Invent Your Own Games (Sweigart)** — project-based, "ways to attack the problem." → the **BUILD rung** (scaffolded mini-projects) + the multi-method "which approach & why" (judgment dial).
+- **Classic CS Problems (Kopec)** — pattern-by-pattern w/ a real-world hook → validates the DO bank as-is. **Programming & Problem Solving (Kamthane)** — fundamentals + OOP → the **KNOW rung** + OOP coverage (D-07).
+- **UX fixes the live screenshot surfaced:** dead space below the buttons; two ambiguous run affordances (`Run` vs `Run tests`); no sense of what's being tested. Fold into the hints/feedback pass.
+Priority: targeted hints-on-failure → idioms bank (B) → judgment MCQs → BUILD projects.

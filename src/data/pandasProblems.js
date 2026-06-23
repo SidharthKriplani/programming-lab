@@ -30,6 +30,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"category":["a","b","a","b","a"], "revenue":[10,5,20,5,30]})\ndef _out():\n    return revenue_by_category(_df())\n__pl_checks = [\n  ("top category", lambda: _out().iloc[0]["category"] == "a"),\n  ("top total", lambda: _out().iloc[0]["revenue"] == 60),\n  ("second total", lambda: _out().iloc[1]["revenue"] == 10),\n  ("two groups", lambda: len(_out()) == 2),\n]',
     solution: 'def revenue_by_category(df):\n    return (df.groupby("category", as_index=False)["revenue"]\n              .sum()\n              .sort_values("revenue", ascending=False)\n              .reset_index(drop=True))',
     glassBox: { lesson: 'groupby splits the rows by category, applies sum to each group, and combines back. as_index=False keeps category as a column (not the index), so the result is a tidy two-column DataFrame ready to sort.' },
+    example: {
+      setup: 'df = pd.DataFrame({"category":["a","b","a","b","a"], "revenue":[10,5,20,5,30]})',
+      call: 'revenue_by_category(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-filter-before-aggregate',
@@ -42,6 +47,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"is_new":[True,True,False,False], "order_value":[100,200,999,999]})\n__pl_checks = [\n  ("filters first", lambda: new_user_aov(_df()) == 150.0),\n  ("ignores old users", lambda: new_user_aov(_df()) != 574.5),\n]',
     solution: 'def new_user_aov(df):\n    new = df[df["is_new"]]\n    return float(new["order_value"].mean())',
     glassBox: { lesson: 'Boolean indexing (df[df["is_new"]]) selects the population first; the mean then runs over only those rows. Aggregating before filtering — or averaging a per-user lifetime value and then filtering — contaminates the number with rows you do not want.' },
+    example: {
+      setup: 'df = pd.DataFrame({"is_new":[True,True,False,False], "order_value":[100,200,999,999]})',
+      call: 'new_user_aov(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-merge-no-fanout',
@@ -54,6 +64,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _orders():\n    return pd.DataFrame({"order_id":[1,2,3], "product_id":[10,20,10]})\ndef _products():\n    return pd.DataFrame({"product_id":[10,20,10], "price":[5.0,7.0,5.0]})\ndef _m():\n    return orders_with_price(_orders(), _products())\n__pl_checks = [\n  ("no row fan-out", lambda: _m().shape[0] == 3),\n  ("price attached", lambda: list(_m()["price"]) == [5.0, 7.0, 5.0]),\n]',
     solution: 'def orders_with_price(orders, products):\n    prices = products.drop_duplicates("product_id")\n    return orders.merge(prices, on="product_id", how="left")',
     glassBox: { lesson: 'A merge key that is non-unique on the right side fans out: each left row pairs with every matching right row. drop_duplicates on the join key first guarantees one match per order. The 30-second habit: compare merged.shape[0] to orders.shape[0] after every join.' },
+    example: {
+      setup: 'orders = pd.DataFrame({"order_id":[1,2,3], "product_id":[10,20,10]})\nproducts = pd.DataFrame({"product_id":[10,20,10], "price":[5.0,7.0,5.0]})',
+      call: 'orders_with_price(orders, products)',
+      inputs: ['orders', 'products'],
+    },
   },
   {
     id: 'pd-pivot',
@@ -66,6 +81,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"month":["Jan","Jan","Feb","Feb"], "category":["a","b","a","a"], "revenue":[10,20,30,5]})\ndef _p():\n    return monthly_pivot(_df())\n__pl_checks = [\n  ("jan a", lambda: _p().loc["Jan","a"] == 10),\n  ("feb a sums dupes", lambda: _p().loc["Feb","a"] == 35),\n  ("missing filled 0", lambda: _p().loc["Feb","b"] == 0),\n]',
     solution: 'def monthly_pivot(df):\n    return df.pivot_table(index="month", columns="category",\n                          values="revenue", aggfunc="sum", fill_value=0)',
     glassBox: { lesson: 'pivot_table aggregates duplicates via aggfunc (here sum) — that is why Feb/a (30 + 5) becomes 35. Plain df.pivot raises on duplicate index/column pairs. fill_value=0 turns absent combinations into 0 instead of NaN.' },
+    example: {
+      setup: 'df = pd.DataFrame({"month":["Jan","Jan","Feb","Feb"], "category":["a","b","a","a"], "revenue":[10,20,30,5]})',
+      call: 'monthly_pivot(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-vectorize',
@@ -78,6 +98,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"order_value":[50,100,150,99]})\ndef _o():\n    return add_tier(_df())\n__pl_checks = [\n  ("tiers", lambda: list(_o()["tier"]) == ["low","high","high","low"]),\n  ("does not mutate input", lambda: "tier" not in _df().columns),\n]',
     solution: 'import numpy as np\n\ndef add_tier(df):\n    df = df.copy()\n    df["tier"] = np.where(df["order_value"] >= 100, "high", "low")\n    return df',
     glassBox: { lesson: 'np.where runs the comparison across the whole column in compiled C — one vectorized operation. df.apply(..., axis=1) calls a Python function per row, 10–100x slower at scale. The glass-box timer makes that gap visible on a big frame. df.copy() keeps the mutation local.' },
+    example: {
+      setup: 'df = pd.DataFrame({"order_value":[50,100,150,99]})',
+      call: 'add_tier(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-topn-per-group',
@@ -90,6 +115,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E","E"], "rep":["a","b","c","d","e"], "sales":[10,30,5,40,40]})\ndef _o():\n    return top_per_region(_df())\n__pl_checks = [\n  ("one row per region", lambda: len(_o()) == 2),\n  ("west top rep", lambda: _o().set_index("region").loc["W","rep"] == "b"),\n  ("east top sales", lambda: _o().set_index("region").loc["E","sales"] == 40),\n]',
     solution: 'def top_per_region(df):\n    df = df.sort_values(["region", "sales"], ascending=[True, False])\n    return (df.groupby("region", as_index=False)\n              .head(1)\n              .sort_values("region")\n              .reset_index(drop=True))',
     glassBox: { lesson: 'Sorting by region then sales descending puts each region\'s winner first, and groupby(...).head(1) takes that first row per group. The pattern beats a manual idxmax loop and generalizes to top-N by changing head(N).' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","E","E"], "rep":["a","b","c","d","e"], "sales":[10,30,5,40,40]})',
+      call: 'top_per_region(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-rank-within',
@@ -102,6 +132,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E"], "rep":["a","b","c","d"], "sales":[10,30,40,40]})\ndef _o():\n    return rank_within_region(_df())\n__pl_checks = [\n  ("west rep a rank 2", lambda: _o().set_index("rep").loc["a","rnk"] == 2),\n  ("west rep b rank 1", lambda: _o().set_index("rep").loc["b","rnk"] == 1),\n  ("east ties share rank 1", lambda: _o().set_index("rep").loc["c","rnk"] == 1 and _o().set_index("rep").loc["d","rnk"] == 1),\n]',
     solution: 'def rank_within_region(df):\n    df = df.copy()\n    df["rnk"] = df.groupby("region")["sales"].rank(method="dense", ascending=False).astype(int)\n    return df',
     glassBox: { lesson: 'groupby(...)[col].rank(method="dense", ascending=False) ranks each group independently and broadcasts the result back to every row. method="dense" gives tied rows the same rank with no gaps. A global rank would mix regions together and be wrong.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","E"], "rep":["a","b","c","d"], "sales":[10,30,40,40]})',
+      call: 'rank_within_region(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-transform-broadcast',
@@ -114,6 +149,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E"], "sales":[10,30,40,60]})\ndef _o():\n    return add_region_mean(_df())\n__pl_checks = [\n  ("same length as input", lambda: len(_o()) == 4),\n  ("west mean broadcast", lambda: list(_o()[_o()["region"]=="W"]["region_mean"]) == [20.0, 20.0]),\n  ("east mean broadcast", lambda: list(_o()[_o()["region"]=="E"]["region_mean"]) == [50.0, 50.0]),\n]',
     solution: 'def add_region_mean(df):\n    df = df.copy()\n    df["region_mean"] = df.groupby("region")["sales"].transform("mean")\n    return df',
     glassBox: { lesson: 'transform("mean") returns a value per ORIGINAL row (the group mean broadcast back), so the frame keeps its length. agg/sum would collapse to one row per group. Reach for transform whenever you need a group statistic aligned next to the raw rows.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","E"], "sales":[10,30,40,60]})',
+      call: 'add_region_mean(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-named-agg',
@@ -126,6 +166,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E"], "sales":[10,30,40]})\ndef _o():\n    return region_summary(_df())\n__pl_checks = [\n  ("columns", lambda: list(_o().columns) == ["region","total_sales","avg_sales","n_orders"]),\n  ("west total", lambda: _o().set_index("region").loc["W","total_sales"] == 40),\n  ("west avg", lambda: _o().set_index("region").loc["W","avg_sales"] == 20.0),\n  ("east count", lambda: _o().set_index("region").loc["E","n_orders"] == 1),\n]',
     solution: 'def region_summary(df):\n    return (df.groupby("region")\n              .agg(total_sales=("sales", "sum"),\n                   avg_sales=("sales", "mean"),\n                   n_orders=("sales", "count"))\n              .reset_index()\n              .sort_values("region")\n              .reset_index(drop=True))',
     glassBox: { lesson: 'Named aggregation, agg(total_sales=("sales","sum"), ...), computes several statistics in one pass and names each output column explicitly. It is cleaner than chaining or a MultiIndex result you then have to flatten.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E"], "sales":[10,30,40]})',
+      call: 'region_summary(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-nunique',
@@ -138,6 +183,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","W","E","E"], "product":["x","x","y","z","z"]})\ndef _o():\n    return distinct_products_per_region(_df())\n__pl_checks = [\n  ("west distinct count", lambda: _o().set_index("region").loc["W","n_products"] == 2),\n  ("east distinct count", lambda: _o().set_index("region").loc["E","n_products"] == 1),\n  ("column renamed", lambda: "n_products" in _o().columns),\n]',
     solution: 'def distinct_products_per_region(df):\n    return (df.groupby("region", as_index=False)["product"]\n              .nunique()\n              .rename(columns={"product":"n_products"})\n              .sort_values("region")\n              .reset_index(drop=True))',
     glassBox: { lesson: 'nunique counts distinct values per group, ignoring repeats, which is what "how many different products" means. A plain count would count rows (including duplicates) and overstate the answer.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","W","E","E"], "product":["x","x","y","z","z"]})',
+      call: 'distinct_products_per_region(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-groupby-share-of-total',
@@ -150,6 +200,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E"], "sales":[30,30,40]})\ndef _o():\n    return region_share(_df())\n__pl_checks = [\n  ("west share", lambda: _o().set_index("region").loc["W","share"] == 60.0),\n  ("east share", lambda: _o().set_index("region").loc["E","share"] == 40.0),\n  ("shares sum to 100", lambda: round(_o()["share"].sum(), 1) == 100.0),\n]',
     solution: 'def region_share(df):\n    g = df.groupby("region", as_index=False)["sales"].sum()\n    g["share"] = (g["sales"] / g["sales"].sum() * 100).round(1)\n    return g.sort_values("region").reset_index(drop=True)',
     glassBox: { lesson: 'Aggregate to the group grain first, then divide each group total by the grand total of that same column. Dividing before aggregating, or against the wrong denominator, is the classic share-of-total bug.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E"], "sales":[30,30,40]})',
+      call: 'region_share(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-merge-anti-join',
@@ -162,6 +217,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _users():\n    return pd.DataFrame({"user_id":[1,2,3,4]})\ndef _orders():\n    return pd.DataFrame({"user_id":[2,4], "amount":[10,20]})\ndef _o():\n    return users_without_orders(_users(), _orders())\n__pl_checks = [\n  ("finds non-buyers", lambda: users_without_orders(_users(), _orders()) == [1, 3]),\n  ("returns a list", lambda: isinstance(_o(), list)),\n]',
     solution: 'def users_without_orders(users, orders):\n    merged = users.merge(orders, on="user_id", how="left", indicator=True)\n    only_left = merged[merged["_merge"] == "left_only"]\n    return sorted(only_left["user_id"].tolist())',
     glassBox: { lesson: 'A left merge with indicator=True tags each row left_only / right_only / both. Filtering to left_only gives the anti-join: rows in A with no match in B. This is the standard way to find non-buyers, churned accounts, or missing dimension keys.' },
+    example: {
+      setup: 'users = pd.DataFrame({"user_id":[1,2,3,4]})\norders = pd.DataFrame({"user_id":[2,4], "amount":[10,20]})',
+      call: 'users_without_orders(users, orders)',
+      inputs: ['users', 'orders'],
+    },
   },
   {
     id: 'pd-merge-left-vs-inner',
@@ -174,6 +234,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _left():\n    return pd.DataFrame({"key":[1,2,3], "val":["a","b","c"]})\ndef _right():\n    return pd.DataFrame({"key":[1,2], "extra":[10,20]})\n__pl_checks = [\n  ("left keeps all left rows", lambda: left_join_count(_left(), _right()) == 3),\n  ("not an inner join count", lambda: left_join_count(_left(), _right()) != 2),\n]',
     solution: 'def left_join_count(left, right):\n    return left.merge(right, on="key", how="left").shape[0]',
     glassBox: { lesson: 'how="left" keeps every left row, filling NaN where the right side has no match, so the count equals len(left). how="inner" would silently drop unmatched left rows, the most common cause of "my totals shrank after the join."' },
+    example: {
+      setup: 'left = pd.DataFrame({"key":[1,2,3], "val":["a","b","c"]})\nright = pd.DataFrame({"key":[1,2], "extra":[10,20]})',
+      call: 'left_join_count(left, right)',
+      inputs: ['left', 'right'],
+    },
   },
   {
     id: 'pd-merge-indicator-unmatched',
@@ -186,6 +251,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _left():\n    return pd.DataFrame({"key":[1,2,3]})\ndef _right():\n    return pd.DataFrame({"key":[2,3,4]})\ndef _o():\n    return count_unmatched(_left(), _right())\n__pl_checks = [\n  ("left only", lambda: _o()["left_only"] == 1),\n  ("right only", lambda: _o()["right_only"] == 1),\n  ("both", lambda: _o()["both"] == 2),\n]',
     solution: 'def count_unmatched(left, right):\n    merged = left.merge(right, on="key", how="outer", indicator=True)\n    counts = merged["_merge"].value_counts()\n    return {\n        "left_only": int(counts.get("left_only", 0)),\n        "right_only": int(counts.get("right_only", 0)),\n        "both": int(counts.get("both", 0)),\n    }',
     glassBox: { lesson: 'An outer merge with indicator=True keeps everything and labels each row\'s origin. Counting the labels tells you how many keys failed to match on each side, which is the first thing to check before relying on a join\'s output.' },
+    example: {
+      setup: 'left = pd.DataFrame({"key":[1,2,3]})\nright = pd.DataFrame({"key":[2,3,4]})',
+      call: 'count_unmatched(left, right)',
+      inputs: ['left', 'right'],
+    },
   },
   {
     id: 'pd-merge-concat-stack',
@@ -198,6 +268,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _jan():\n    return pd.DataFrame({"order_id":[1,2], "amount":[10,20]})\ndef _feb():\n    return pd.DataFrame({"order_id":[3,4], "amount":[30,40]})\ndef _o():\n    return stack_months(_jan(), _feb())\n__pl_checks = [\n  ("stacked length", lambda: len(_o()) == 4),\n  ("fresh index", lambda: _o().index.tolist() == [0,1,2,3]),\n  ("values preserved", lambda: _o()["amount"].tolist() == [10,20,30,40]),\n]',
     solution: 'def stack_months(jan, feb):\n    return pd.concat([jan, feb], ignore_index=True)',
     glassBox: { lesson: 'pd.concat([...], ignore_index=True) stacks frames vertically and renumbers the index 0..n-1. Without ignore_index you keep both frames\' original indices, producing duplicate index labels that break later .loc lookups.' },
+    example: {
+      setup: 'jan = pd.DataFrame({"order_id":[1,2], "amount":[10,20]})\nfeb = pd.DataFrame({"order_id":[3,4], "amount":[30,40]})',
+      call: 'stack_months(jan, feb)',
+      inputs: ['jan', 'feb'],
+    },
   },
   {
     id: 'pd-reshape-melt',
@@ -210,6 +285,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","E"], "q1":[10,30], "q2":[20,40]})\ndef _o():\n    return melt_quarters(_df())\n__pl_checks = [\n  ("long shape", lambda: _o().shape == (4, 3)),\n  ("columns", lambda: list(_o().columns) == ["region","quarter","sales"]),\n  ("west q2 value", lambda: int(_o()[(_o()["region"]=="W") & (_o()["quarter"]=="q2")]["sales"].iloc[0]) == 20),\n]',
     solution: 'def melt_quarters(df):\n    return df.melt(id_vars="region", value_vars=["q1","q2"],\n                   var_name="quarter", value_name="sales")',
     glassBox: { lesson: 'melt unpivots wide columns into two: a variable column (quarter) and a value column (sales), repeating the id_vars. Long/tidy format is what groupby, plotting, and most aggregations expect.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","E"], "q1":[10,30], "q2":[20,40]})',
+      call: 'melt_quarters(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-reshape-crosstab',
@@ -222,6 +302,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E","E"], "status":["paid","free","paid","paid","free"]})\ndef _o():\n    return region_status_counts(_df())\n__pl_checks = [\n  ("west paid", lambda: _o().loc["W","paid"] == 1),\n  ("east paid", lambda: _o().loc["E","paid"] == 2),\n  ("west free", lambda: _o().loc["W","free"] == 1),\n]',
     solution: 'def region_status_counts(df):\n    return pd.crosstab(df["region"], df["status"])',
     glassBox: { lesson: 'pd.crosstab(rows, cols) builds a frequency table in one call, counting co-occurrences of the two categoricals. It is the fast path for "how many of each combination" without a manual groupby(...).size().unstack().' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","E","E"], "status":["paid","free","paid","paid","free"]})',
+      call: 'region_status_counts(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-reshape-stack-unstack',
@@ -234,6 +319,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"month":["Jan","Jan","Feb"], "category":["a","b","a"], "revenue":[10,20,30]})\ndef _o():\n    return unstack_category(_df())\n__pl_checks = [\n  ("jan a", lambda: _o().loc["Jan","a"] == 10),\n  ("feb a", lambda: _o().loc["Feb","a"] == 30),\n  ("feb b filled zero", lambda: _o().loc["Feb","b"] == 0),\n]',
     solution: 'def unstack_category(df):\n    s = df.set_index(["month","category"])["revenue"]\n    return s.unstack(fill_value=0)',
     glassBox: { lesson: 'Setting a MultiIndex of (month, category) then calling unstack() moves the inner level (category) into columns, the index-aware twin of pivot. fill_value=0 turns absent combinations into 0 rather than NaN.' },
+    example: {
+      setup: 'df = pd.DataFrame({"month":["Jan","Jan","Feb"], "category":["a","b","a"], "revenue":[10,20,30]})',
+      call: 'unstack_category(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-reshape-pivot-table-dupes',
@@ -246,6 +336,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"store":["s1","s1","s2"], "product":["x","x","y"], "price":[10.0,20.0,5.0]})\ndef _o():\n    return avg_price_pivot(_df())\n__pl_checks = [\n  ("s1 x averages dupes", lambda: _o().loc["s1","x"] == 15.0),\n  ("s2 y", lambda: _o().loc["s2","y"] == 5.0),\n  ("missing filled zero", lambda: _o().loc["s1","y"] == 0),\n]',
     solution: 'def avg_price_pivot(df):\n    return df.pivot_table(index="store", columns="product",\n                          values="price", aggfunc="mean", fill_value=0)',
     glassBox: { lesson: 'pivot_table collapses duplicate index/column pairs with aggfunc (here mean), which is why repeated store-product rows average cleanly. df.pivot would raise ValueError on the duplicate keys. fill_value=0 handles absent pairs.' },
+    example: {
+      setup: 'df = pd.DataFrame({"store":["s1","s1","s2"], "product":["x","x","y"], "price":[10.0,20.0,5.0]})',
+      call: 'avg_price_pivot(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-window-rolling-mean',
@@ -258,6 +353,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"day":[1,2,3,4,5], "sales":[10,20,30,40,50]})\ndef _o():\n    return rolling_avg(_df())\n__pl_checks = [\n  ("first two are NaN", lambda: _o()["roll3"].iloc[0] != _o()["roll3"].iloc[0] and _o()["roll3"].iloc[1] != _o()["roll3"].iloc[1]),\n  ("third window mean", lambda: _o()["roll3"].iloc[2] == 20.0),\n  ("last window mean", lambda: _o()["roll3"].iloc[4] == 40.0),\n]',
     solution: 'def rolling_avg(df):\n    df = df.copy()\n    df["roll3"] = df["sales"].rolling(window=3).mean()\n    return df',
     glassBox: { lesson: 'rolling(window=3).mean() averages each row with the two before it. The first two rows lack a full window and are NaN by default, which is correct: do not silently treat a partial window as a complete one.' },
+    example: {
+      setup: 'df = pd.DataFrame({"day":[1,2,3,4,5], "sales":[10,20,30,40,50]})',
+      call: 'rolling_avg(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-window-diff',
@@ -270,6 +370,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"day":[1,2,3], "sales":[10,25,20]})\ndef _o():\n    return day_over_day(_df())\n__pl_checks = [\n  ("first delta NaN", lambda: _o()["delta"].iloc[0] != _o()["delta"].iloc[0]),\n  ("up day", lambda: _o()["delta"].iloc[1] == 15.0),\n  ("down day", lambda: _o()["delta"].iloc[2] == -5.0),\n]',
     solution: 'def day_over_day(df):\n    df = df.copy()\n    df["delta"] = df["sales"].diff()\n    return df',
     glassBox: { lesson: 'Series.diff() subtracts each row from the one before it, the building block of period-over-period deltas. The first row is NaN because there is no prior value. diff() is shift(1) subtracted from the column, done in one call.' },
+    example: {
+      setup: 'df = pd.DataFrame({"day":[1,2,3], "sales":[10,25,20]})',
+      call: 'day_over_day(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-window-cumsum',
@@ -282,6 +387,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"day":[1,2,3,4], "sales":[10,20,30,40]})\ndef _o():\n    return running_total(_df())\n__pl_checks = [\n  ("cumulative series", lambda: _o()["cumulative"].tolist() == [10,30,60,100]),\n  ("last equals total", lambda: _o()["cumulative"].iloc[-1] == _o()["sales"].sum()),\n]',
     solution: 'def running_total(df):\n    df = df.copy()\n    df["cumulative"] = df["sales"].cumsum()\n    return df',
     glassBox: { lesson: 'cumsum() accumulates the column top to bottom, so each row holds the total so far and the final row equals sum(). It is the vectorized way to build running totals without a Python loop.' },
+    example: {
+      setup: 'df = pd.DataFrame({"day":[1,2,3,4], "sales":[10,20,30,40]})',
+      call: 'running_total(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-window-pct-change',
@@ -294,6 +404,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"month":["Jan","Feb","Mar"], "sales":[100,150,120]})\ndef _o():\n    return growth_rate(_df())\n__pl_checks = [\n  ("first NaN", lambda: _o()["growth"].iloc[0] != _o()["growth"].iloc[0]),\n  ("feb growth", lambda: _o()["growth"].iloc[1] == 50.0),\n  ("mar decline", lambda: _o()["growth"].iloc[2] == -20.0),\n]',
     solution: 'def growth_rate(df):\n    df = df.copy()\n    df["growth"] = (df["sales"].pct_change() * 100).round(1)\n    return df',
     glassBox: { lesson: 'pct_change() computes (current - previous) / previous per row, the native growth-rate operator. Multiply by 100 for a percent. The first row is NaN because there is no prior period to compare against.' },
+    example: {
+      setup: 'df = pd.DataFrame({"month":["Jan","Feb","Mar"], "sales":[100,150,120]})',
+      call: 'growth_rate(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-window-resample-monthly',
@@ -306,6 +421,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"date":["2023-01-05","2023-01-20","2023-02-10"], "sales":[10,20,30]})\ndef _o():\n    return monthly_sum(_df())\n__pl_checks = [\n  ("two months", lambda: len(_o()) == 2),\n  ("jan sum", lambda: _o().iloc[0] == 30),\n  ("feb sum", lambda: _o().iloc[1] == 30),\n]',
     solution: 'def monthly_sum(df):\n    df = df.copy()\n    df["date"] = pd.to_datetime(df["date"])\n    return df.set_index("date")["sales"].resample("MS").sum()',
     glassBox: { lesson: 'resample("MS").sum() regroups a datetime-indexed series into calendar month-start buckets and sums each, a time-aware groupby. It handles uneven daily data and empty months correctly, unlike grouping on a manually extracted month string.' },
+    example: {
+      setup: 'df = pd.DataFrame({"date":["2023-01-05","2023-01-20","2023-02-10"], "sales":[10,20,30]})',
+      call: 'monthly_sum(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-missing-fillna-group-mean',
@@ -318,6 +438,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\nimport numpy as np\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E"], "score":[10.0, np.nan, 20.0, 40.0]})\ndef _o():\n    return fill_with_group_mean(_df())\n__pl_checks = [\n  ("west NaN filled with west mean", lambda: _o()["score"].iloc[1] == 10.0),\n  ("no NaNs remain", lambda: _o()["score"].isna().sum() == 0),\n  ("east untouched", lambda: _o()["score"].iloc[3] == 40.0),\n]',
     solution: 'def fill_with_group_mean(df):\n    df = df.copy()\n    df["score"] = df.groupby("region")["score"].transform(lambda s: s.fillna(s.mean()))\n    return df',
     glassBox: { lesson: 'groupby("region")["score"].transform(lambda s: s.fillna(s.mean())) computes each region\'s mean and fills that group\'s gaps with it, all aligned back to the original rows. Filling with a single global mean would wash out real between-region differences.' },
+    example: {
+      setup: 'import numpy as np\ndf = pd.DataFrame({"region":["W","W","E","E"], "score":[10.0, np.nan, 20.0, 40.0]})',
+      call: 'fill_with_group_mean(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-missing-dropna-thresh',
@@ -330,6 +455,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\nimport numpy as np\ndef _df():\n    return pd.DataFrame({"a":[1, 2, np.nan], "b":[2, 3, np.nan], "c":[3, np.nan, np.nan]})\ndef _o():\n    return drop_sparse_rows(_df())\n__pl_checks = [\n  ("keeps rows with >=2 non-null", lambda: len(_o()) == 2),\n  ("first row kept", lambda: _o()["a"].iloc[0] == 1),\n  ("all-sparse row dropped", lambda: _o()["a"].isna().sum() == 0),\n]',
     solution: 'def drop_sparse_rows(df):\n    return df.dropna(thresh=2).reset_index(drop=True)',
     glassBox: { lesson: 'dropna(thresh=2) keeps rows with 2 or more non-null values and drops the rest, a softer filter than dropping any row with a single NaN. Use it when partial records are still usable but near-empty ones are not.' },
+    example: {
+      setup: 'import numpy as np\ndf = pd.DataFrame({"a":[1, 2, np.nan], "b":[2, 3, np.nan], "c":[3, np.nan, np.nan]})',
+      call: 'drop_sparse_rows(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-missing-ffill',
@@ -342,6 +472,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\nimport numpy as np\ndef _df():\n    return pd.DataFrame({"day":[1,2,3,4], "price":[10.0, np.nan, np.nan, 15.0]})\ndef _o():\n    return forward_fill_price(_df())\n__pl_checks = [\n  ("carries last value forward", lambda: _o()["price"].tolist() == [10.0, 10.0, 10.0, 15.0]),\n  ("no NaNs remain", lambda: _o()["price"].isna().sum() == 0),\n]',
     solution: 'def forward_fill_price(df):\n    df = df.copy()\n    df["price"] = df["price"].ffill()\n    return df',
     glassBox: { lesson: 'ffill() propagates the last valid value forward into NaNs, the right tool for stale-but-valid readings like a price that holds until it next changes. Order matters: ffill assumes the rows are already sorted by time.' },
+    example: {
+      setup: 'import numpy as np\ndf = pd.DataFrame({"day":[1,2,3,4], "price":[10.0, np.nan, np.nan, 15.0]})',
+      call: 'forward_fill_price(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-missing-count-per-column',
@@ -354,6 +489,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\nimport numpy as np\ndef _df():\n    return pd.DataFrame({"a":[1, np.nan, 3], "b":[np.nan, np.nan, 6], "c":[7,8,9]})\ndef _o():\n    return nan_counts(_df())\n__pl_checks = [\n  ("a has one NaN", lambda: _o()["a"] == 1),\n  ("b has two NaNs", lambda: _o()["b"] == 2),\n  ("c has none", lambda: _o()["c"] == 0),\n]',
     solution: 'def nan_counts(df):\n    return df.isna().sum().to_dict()',
     glassBox: { lesson: 'df.isna().sum() counts True (missing) per column because booleans sum as 0/1. .to_dict() turns the result into a plain mapping. Run this first on any new dataset to see where the holes are before you trust a single aggregate.' },
+    example: {
+      setup: 'import numpy as np\ndf = pd.DataFrame({"a":[1, np.nan, 3], "b":[np.nan, np.nan, 6], "c":[7,8,9]})',
+      call: 'nan_counts(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-selection-multi-mask',
@@ -366,6 +506,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","W"], "amount":[150,50,200,100]})\ndef _o():\n    return high_value_west(_df())\n__pl_checks = [\n  ("two rows match", lambda: len(_o()) == 2),\n  ("amounts", lambda: sorted(_o()["amount"].tolist()) == [100, 150]),\n  ("all west", lambda: (_o()["region"] == "W").all()),\n]',
     solution: 'def high_value_west(df):\n    mask = (df["region"] == "W") & (df["amount"] >= 100)\n    return df[mask].reset_index(drop=True)',
     glassBox: { lesson: 'Combine boolean masks with & (element-wise and), wrapping each comparison in parentheses because & binds tighter than ==. Using Python\'s and instead of & raises on a Series; forgetting the parentheses misparses the expression.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","W"], "amount":[150,50,200,100]})',
+      call: 'high_value_west(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-selection-query',
@@ -378,6 +523,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["E","E","W"], "amount":[150,80,200]})\ndef _o():\n    return filter_query(_df())\n__pl_checks = [\n  ("one row", lambda: len(_o()) == 1),\n  ("the right row", lambda: _o()["amount"].iloc[0] == 150),\n]',
     solution: 'def filter_query(df):\n    return df.query("amount > 100 and region == \\"E\\"").reset_index(drop=True)',
     glassBox: { lesson: 'query() filters from a readable string expression, referencing columns by bare name and combining conditions with and/or. It is concise for multi-condition filters; string literals inside the expression need quoting (here escaped double quotes).' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["E","E","W"], "amount":[150,80,200]})',
+      call: 'filter_query(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-selection-nlargest',
@@ -390,6 +540,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"order_id":[1,2,3,4,5], "amount":[10,50,30,90,20]})\ndef _o():\n    return top3_orders(_df())\n__pl_checks = [\n  ("three rows", lambda: len(_o()) == 3),\n  ("sorted descending", lambda: _o()["amount"].tolist() == [90, 50, 30]),\n  ("top order id", lambda: _o()["order_id"].iloc[0] == 4),\n]',
     solution: 'def top3_orders(df):\n    return df.nlargest(3, "amount").reset_index(drop=True)',
     glassBox: { lesson: 'nlargest(3, "amount") returns the top rows by a column, pre-sorted, in one call, and is faster than sort_values(...).head(3) because it does not order the entire frame. nsmallest is the mirror image.' },
+    example: {
+      setup: 'df = pd.DataFrame({"order_id":[1,2,3,4,5], "amount":[10,50,30,90,20]})',
+      call: 'top3_orders(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-selection-loc-assign',
@@ -402,6 +557,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"order_id":[1,2,3], "amount":[50,100,150]})\ndef _o():\n    return flag_big_orders(_df())\n__pl_checks = [\n  ("flags", lambda: _o()["flag"].tolist() == ["small","big","big"]),\n  ("does not mutate input", lambda: "flag" not in _df().columns),\n]',
     solution: 'def flag_big_orders(df):\n    df = df.copy()\n    df.loc[df["amount"] >= 100, "flag"] = "big"\n    df["flag"] = df["flag"].fillna("small")\n    return df',
     glassBox: { lesson: 'Copy first, then df.loc[mask, "flag"] = value writes only to the matching rows on a frame you own, avoiding the SettingWithCopyWarning that comes from assigning into a slice of someone else\'s frame. Filling the untouched rows finishes the column.' },
+    example: {
+      setup: 'df = pd.DataFrame({"order_id":[1,2,3], "amount":[50,100,150]})',
+      call: 'flag_big_orders(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-metrics-safe-ctr',
@@ -414,6 +574,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\nimport numpy as np\ndef _df():\n    return pd.DataFrame({"clicks":[5,0,3], "impressions":[100,0,0]})\ndef _o():\n    return safe_ctr(_df())\n__pl_checks = [\n  ("normal ctr", lambda: _o()["ctr"].iloc[0] == 0.05),\n  ("zero impressions -> 0 not inf", lambda: _o()["ctr"].iloc[1] == 0.0),\n  ("clicks with zero impressions -> 0", lambda: _o()["ctr"].iloc[2] == 0.0),\n  ("no infinities", lambda: np.isfinite(_o()["ctr"]).all()),\n]',
     solution: 'def safe_ctr(df):\n    df = df.copy()\n    df["ctr"] = np.where(df["impressions"] > 0,\n                         df["clicks"] / df["impressions"],\n                         0.0)\n    return df',
     glassBox: { lesson: 'np.where(impressions > 0, clicks/impressions, 0.0) computes the rate only where the denominator is safe and substitutes 0 elsewhere, vectorized. A bare division yields inf or NaN on zero impressions, which then poisons any downstream sum or average.' },
+    example: {
+      setup: 'df = pd.DataFrame({"clicks":[5,0,3], "impressions":[100,0,0]})',
+      call: 'safe_ctr(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-metrics-conversion-rate',
@@ -426,6 +591,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"user_id":[1,2,3,4], "converted":[True, False, True, False]})\n__pl_checks = [\n  ("rate as percent", lambda: conversion_rate(_df()) == 50.0),\n  ("returns float", lambda: isinstance(conversion_rate(_df()), float)),\n]',
     solution: 'def conversion_rate(df):\n    converters = df[df["converted"]].shape[0]\n    total = df.shape[0]\n    return round(converters / total * 100, 1) if total else 0.0',
     glassBox: { lesson: 'Count the True rows, divide by the total, multiply by 100, and round. Guarding the empty case (total == 0) avoids a ZeroDivisionError on an empty cohort, the kind of edge case that crashes a dashboard at the worst time.' },
+    example: {
+      setup: 'df = pd.DataFrame({"user_id":[1,2,3,4], "converted":[True, False, True, False]})',
+      call: 'conversion_rate(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-metrics-rate-per-group',
@@ -438,6 +608,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"region":["W","W","E","E"], "converted":[True, False, True, True]})\ndef _o():\n    return conv_rate_by_region(_df())\n__pl_checks = [\n  ("west rate", lambda: _o().set_index("region").loc["W","rate"] == 50.0),\n  ("east rate", lambda: _o().set_index("region").loc["E","rate"] == 100.0),\n  ("east conversions", lambda: _o().set_index("region").loc["E","conversions"] == 2),\n]',
     solution: 'def conv_rate_by_region(df):\n    g = df.groupby("region", as_index=False).agg(\n        conversions=("converted", "sum"),\n        users=("converted", "count"))\n    g["rate"] = (g["conversions"] / g["users"] * 100).round(1)\n    return g.sort_values("region").reset_index(drop=True)',
     glassBox: { lesson: 'Aggregate to the group grain first (sum of converted, count of users), then form the rate from those group totals. Booleans sum as 1/0 so sum gives conversions directly. Computing a per-row rate and then averaging it would weight small and large regions equally and mislead.' },
+    example: {
+      setup: 'df = pd.DataFrame({"region":["W","W","E","E"], "converted":[True, False, True, True]})',
+      call: 'conv_rate_by_region(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-dedup-keep-last',
@@ -450,6 +625,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"user_id":[1,1,2,2,2], "status":["a","b","c","d","e"]})\ndef _o():\n    return latest_per_user(_df())\n__pl_checks = [\n  ("one row per user", lambda: len(_o()) == 2),\n  ("user 1 keeps last", lambda: _o().set_index("user_id").loc[1,"status"] == "b"),\n  ("user 2 keeps last", lambda: _o().set_index("user_id").loc[2,"status"] == "e"),\n]',
     solution: 'def latest_per_user(df):\n    return (df.drop_duplicates("user_id", keep="last")\n              .sort_values("user_id")\n              .reset_index(drop=True))',
     glassBox: { lesson: 'drop_duplicates("user_id", keep="last") keeps the final occurrence of each key, the right choice when rows are time-ordered and you want each user\'s current state. The default keep="first" would hand back their oldest, stale row instead.' },
+    example: {
+      setup: 'df = pd.DataFrame({"user_id":[1,1,2,2,2], "status":["a","b","c","d","e"]})',
+      call: 'latest_per_user(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-dedup-count-duplicates',
@@ -462,6 +642,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"a":[1,1,2,1], "b":["x","x","y","x"]})\n__pl_checks = [\n  ("counts dupes after first", lambda: duplicate_row_count(_df()) == 2),\n  ("returns int", lambda: isinstance(duplicate_row_count(_df()), int)),\n]',
     solution: 'def duplicate_row_count(df):\n    return int(df.duplicated().sum())',
     glassBox: { lesson: 'duplicated() flags every row that matches an earlier one (the first occurrence is False), so summing the flags counts the extra copies. It is the quick integrity check for "did my join or load double up any rows."' },
+    example: {
+      setup: 'df = pd.DataFrame({"a":[1,1,2,1], "b":["x","x","y","x"]})',
+      call: 'duplicate_row_count(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-dedup-dense-rank',
@@ -474,6 +659,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"rep":["a","b","c","d"], "sales":[100, 100, 80, 60]})\ndef _o():\n    return dense_rank_sales(_df())\n__pl_checks = [\n  ("ties share rank 1", lambda: _o().set_index("rep").loc["a","rank"] == 1 and _o().set_index("rep").loc["b","rank"] == 1),\n  ("dense has no gap", lambda: _o().set_index("rep").loc["c","rank"] == 2),\n  ("next dense rank", lambda: _o().set_index("rep").loc["d","rank"] == 3),\n]',
     solution: 'def dense_rank_sales(df):\n    df = df.copy()\n    df["rank"] = df["sales"].rank(method="dense", ascending=False).astype(int)\n    return df',
     glassBox: { lesson: 'rank(method="dense", ascending=False) gives tied rows the same rank and does NOT leave a gap afterward, so two reps tied at 1 are followed by rank 2, not 3. method="min" would skip to 3; choosing the tie policy deliberately is the whole point.' },
+    example: {
+      setup: 'df = pd.DataFrame({"rep":["a","b","c","d"], "sales":[100, 100, 80, 60]})',
+      call: 'dense_rank_sales(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-datetime-extract-month',
@@ -486,6 +676,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"date":["2023-01-15","2023-03-20","2023-12-31"]})\ndef _o():\n    return add_month(_df())\n__pl_checks = [\n  ("months extracted", lambda: _o()["month"].tolist() == [1, 3, 12]),\n  ("date is datetime", lambda: pd.api.types.is_datetime64_any_dtype(_o()["date"])),\n]',
     solution: 'def add_month(df):\n    df = df.copy()\n    df["date"] = pd.to_datetime(df["date"])\n    df["month"] = df["date"].dt.month\n    return df',
     glassBox: { lesson: 'pd.to_datetime turns strings into real timestamps, unlocking the .dt accessor for .month, .year, .dayofweek, and more. Slicing the month out of the raw string would break the instant a date format varies.' },
+    example: {
+      setup: 'df = pd.DataFrame({"date":["2023-01-15","2023-03-20","2023-12-31"]})',
+      call: 'add_month(df)',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-datetime-half-open-range',
@@ -498,6 +693,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"date":["2023-01-01","2023-01-15","2023-02-01"], "amount":[10,20,30]})\ndef _o():\n    return in_range(_df(), "2023-01-01", "2023-02-01")\n__pl_checks = [\n  ("includes start, excludes end", lambda: len(_o()) == 2),\n  ("end date excluded", lambda: (pd.to_datetime("2023-02-01") not in list(_o()["date"]))),\n  ("amounts kept", lambda: _o()["amount"].tolist() == [10, 20]),\n]',
     solution: 'def in_range(df, start, end):\n    df = df.copy()\n    df["date"] = pd.to_datetime(df["date"])\n    s = pd.Timestamp(start)\n    e = pd.Timestamp(end)\n    return df[(df["date"] >= s) & (df["date"] < e)].reset_index(drop=True)',
     glassBox: { lesson: 'A half-open interval [start, end) includes the start and excludes the end, so adjacent periods (e.g. consecutive months) never both claim the boundary day. Using <= on both ends double-counts that day, a subtle source of inflated period totals.' },
+    example: {
+      setup: 'df = pd.DataFrame({"date":["2023-01-01","2023-01-15","2023-02-01"], "amount":[10,20,30]})',
+      call: 'in_range(df, "2023-01-01", "2023-02-01")',
+      inputs: ['df'],
+    },
   },
   {
     id: 'pd-datetime-days-between',
@@ -510,6 +710,11 @@ export const pandasProblems = [
     testSource: 'import pandas as pd\ndef _df():\n    return pd.DataFrame({"signup":["2023-01-01","2023-01-10"], "purchase":["2023-01-08","2023-01-12"]})\ndef _o():\n    return days_to_convert(_df())\n__pl_checks = [\n  ("first gap 7 days", lambda: _o()["days"].iloc[0] == 7),\n  ("second gap 2 days", lambda: _o()["days"].iloc[1] == 2),\n  ("days is integer-like", lambda: int(_o()["days"].iloc[0]) == 7),\n]',
     solution: 'def days_to_convert(df):\n    df = df.copy()\n    df["signup"] = pd.to_datetime(df["signup"])\n    df["purchase"] = pd.to_datetime(df["purchase"])\n    df["days"] = (df["purchase"] - df["signup"]).dt.days\n    return df',
     glassBox: { lesson: 'Subtracting two datetime columns yields a timedelta Series; .dt.days extracts the whole-day count, the standard way to measure time-to-convert or account age. Both columns must be parsed to datetime first or the subtraction fails.' },
+    example: {
+      setup: 'df = pd.DataFrame({"signup":["2023-01-01","2023-01-10"], "purchase":["2023-01-08","2023-01-12"]})',
+      call: 'days_to_convert(df)',
+      inputs: ['df'],
+    },
   },
 ];
 

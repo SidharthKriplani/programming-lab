@@ -5,6 +5,22 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.7.0] - 2026-06-23 — Two-pane solve UI + browse table (SQL-Lab parity)
+
+> The drills were a bare single column. Rebuilt the whole solving experience to match PAL's SQL Lab.
+
+### Added
+- **Two-pane `ProblemRunner`** — left: prompt + a **DATA panel** (the example input, rendered as a table) + an **EXPECTED OUTPUT panel computed live from the canonical solution** (PAL's trick — never hand-maintained) + an elapsed timer + past-attempts; right: editor + **Run** (scratch) + **Submit** (hidden tests) with per-check pass/fail and targeted "compare to the expected output" feedback.
+- **`previewExample()` runtime** — runs the example setup + solution in Pyodide and serializes DataFrames / Series / scalars for the panels (seeds `pd`/`np`).
+- **Filterable `ProblemBrowser` table** — progress bar (X/N solved), search, difficulty filters (Warmup/Core/Stretch), solved/unsolved filter, dense `Level · Problem · Topic` rows.
+- **`example` field** ({setup, call, inputs}) on all 97 drills, powering the panels — every one verified.
+
+### Fixed
+- The python bank now loads numpy (the numpy-ml drills import it — was a latent runtime failure).
+
+### Notes
+- esbuild green; audit 120 problems / 0 Tier-1; `previewExample` verified on pandas / python / numpy samples.
+
 ## [PL 0.6.0] - 2026-06-23 — Committed audit gate + content standard (SQL-Lab alignment)
 
 > Studied how PAL's SQL Lab is built and adopted its rigor: a committed quality gate + a frozen content standard.
