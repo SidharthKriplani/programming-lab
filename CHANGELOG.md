@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.8.0] - 2026-06-23 — All four frames live: KNOW · DO · BUILD · JUDGE
+
+> The lab was DO-only with SOON stubs. After a deep SQL Lab study, every Competence-Model frame now has real content.
+
+### Added
+- **JUDGE — Spot the Flaw** (`judgeProblems.js` + `JudgeBrowser`): 6 forensic cases — pandas/Python that *runs and returns a plausibly-wrong result* (merge fan-out, chained-indexing no-op, groupby dropping NaN keys, integer division, inner-merge row drop, `fillna(0)` on a string col). Run it → watch it lie → reveal flaw/impact/fix. All 6 broken+fixed outputs verified.
+- **KNOW — Python & OOP Depth** (`knowModules.js` + `KnowBrowser`): 6 "how it actually works" explainers with a runnable demo + predict gate (names-are-bindings, lazy generators, mutable defaults, LEGB/closures, truthiness, the data model). All 6 demos verified.
+- **BUILD — Mini-Projects** (`buildProjects.js` + `BuildBrowser`): 4 scaffolded projects / 12 steps (retention pipeline, metric guardrails, ETL clean, funnel) — a sequential stepper, each step checked by hidden tests, later steps calling earlier ones. 57 checks verified.
+- **Shared `DebriefBlocks`** — the marker→collapsible colour-coded debrief renderer (PAL pattern), reused across all three frames.
+
+### Notes
+- All four frames wired live in the accordion nav (no more SOON). Built via three parallel agents, each self-verifying. esbuild green; audit 120 / 0 Tier-1. (Follow-up: extend the audit to gate the judge/know/build runnable code too.)
+
 ## [PL 0.7.0] - 2026-06-23 — Two-pane solve UI + browse table (SQL-Lab parity)
 
 > The drills were a bare single column. Rebuilt the whole solving experience to match PAL's SQL Lab.

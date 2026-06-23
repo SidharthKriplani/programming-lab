@@ -33,19 +33,19 @@ export function ForwardPointerCard({ room = 'gotchas', onNavigate, onNext }) {
               fontSize: '0.82rem', fontWeight: 700, color: 'var(--accent)', cursor: 'pointer',
             }}
           >
-            Next gotcha →
+            Next →
           </button>
         )}
         {onNavigate && (
           <button
-            onClick={() => onNavigate('gotchas')}
+            onClick={() => onNavigate()}
             style={{
               background: 'var(--surface-2)', border: '1px solid var(--border)',
               borderRadius: 'var(--radius-sm)', padding: '0.4rem 0.85rem',
               fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer',
             }}
           >
-            Back to all gotchas
+            Back to list
           </button>
         )}
       </div>

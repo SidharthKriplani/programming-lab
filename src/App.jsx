@@ -16,6 +16,9 @@ const GotchaBrowser = lazy(() =>
 const ProblemBrowser = lazy(() =>
   import('./pages/ProblemBrowser.jsx').then(m => ({ default: m.ProblemBrowser }))
 );
+const KnowBrowser = lazy(() => import('./pages/KnowBrowser.jsx').then(m => ({ default: m.KnowBrowser })));
+const JudgeBrowser = lazy(() => import('./pages/JudgeBrowser.jsx').then(m => ({ default: m.JudgeBrowser })));
+const BuildBrowser = lazy(() => import('./pages/BuildBrowser.jsx').then(m => ({ default: m.BuildBrowser })));
 
 function Home({ onNavigate }) {
   return (
@@ -84,6 +87,9 @@ export default function App() {
                   problems={pandasProblems} patterns={PD_PATTERNS} patternOrder={PD_PATTERN_ORDER}
                   progressKey={PANDAS_KEY} packages={['pandas']} />
               )
+              : view === 'know' ? <KnowBrowser />
+              : view === 'judge' ? <JudgeBrowser />
+              : view === 'build' ? <BuildBrowser />
               : <Home onNavigate={navigate} />}
           </Suspense>
         </main>

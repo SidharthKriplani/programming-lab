@@ -9,7 +9,10 @@ import { getCounts as gotchaCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
 import { pythonProblems } from '../../data/pythonProblems.js';
 import { pandasProblems } from '../../data/pandasProblems.js';
-import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY } from '../../utils/problemProgress.js';
+import { knowModules } from '../../data/knowModules.js';
+import { judgeProblems } from '../../data/judgeProblems.js';
+import { buildProjects } from '../../data/buildProjects.js';
+import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY, BUILD_KEY } from '../../utils/problemProgress.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
 
@@ -70,24 +73,30 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 const TRACK = [{ label: 'Home', view: 'home', icon: 'layout' }];
 
 const FRAMES = [
-  { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', soon: true }] },
+  { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' }] },
   { key: 'DO', icon: 'terminal', items: [
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
     { label: 'Python Drills', view: 'python', icon: 'code-2', bank: 'python' },
     { label: 'pandas / numpy', view: 'pandas', icon: 'layers', bank: 'pandas' },
   ] },
-  { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', soon: true }] },
-  { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', soon: true }] },
+  { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', view: 'build', icon: 'hammer', bank: 'build' }] },
+  { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', view: 'judge', icon: 'alert-triangle', bank: 'judge' }] },
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { gotchas: 'DO', python: 'DO', pandas: 'DO' };
+const VIEW_FRAME = { gotchas: 'DO', python: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
 
-const BANK_TOTAL = { gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length };
+const BANK_TOTAL = {
+  gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
+  know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
+};
 function bankSolved(bank) {
   if (bank === 'python') return problemCounts(PYTHON_KEY).solved;
   if (bank === 'pandas') return problemCounts(PANDAS_KEY).solved;
   if (bank === 'gotchas') return gotchaCounts().solved;
+  if (bank === 'know') return problemCounts('pl-know-progress-v1').solved;
+  if (bank === 'judge') return problemCounts('pl-judge-progress-v1').solved;
+  if (bank === 'build') return problemCounts(BUILD_KEY).solved;
   return 0;
 }
 

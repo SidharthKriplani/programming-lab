@@ -4,6 +4,7 @@
 
 export const PYTHON_KEY = 'pl-python-progress-v1';
 export const PANDAS_KEY = 'pl-pandas-progress-v1';
+export const BUILD_KEY = 'pl-build-progress-v1';
 
 function read(key) {
   try {
