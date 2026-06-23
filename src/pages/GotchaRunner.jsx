@@ -140,7 +140,7 @@ export function GotchaRunner({ problem, onBack, onNext, unlocked }) {
               <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem', lineHeight: 1.6 }}>{problem.glassBox.lesson}</p>
             </div>
 
-            <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid var(--teal)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+            <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
               <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.25rem' }}>What the machine does</div>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>{problem.glassBox.whatMachineDoes}</p>
             </div>

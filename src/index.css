@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/chicago');
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -853,9 +854,9 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 :root[data-skin='platinum'] {
   --bg: #6f8a8a;                 /* desktop teal-gray */
-  --surface: #dcdcdc;            /* platinum window */
-  --surface-2: #cfcfcf;
-  --surface-raised: #e6e6e6;
+  --surface: #ffffff;            /* content panes / cards — WHITE (real Platinum contrast) */
+  --surface-2: #e8e8e8;          /* light-gray secondary panels / headers */
+  --surface-raised: #f4f4f4;
   --border: #000000;             /* classic 1px black window border */
   --border-subtle: #9a9a9a;
   --border-strong: #000000;
@@ -886,7 +887,7 @@ body {
   --shadow-glow: 0 0 0 2px #3f6196;
   --input-bg: #ffffff;
   --radius: 3px; --radius-sm: 2px; --radius-lg: 4px; --radius-xl: 6px;
-  --font-ui: 'Helvetica Neue', Geneva, Helvetica, Arial, sans-serif;
+  --font-ui: 'Chicago', 'ChicagoFLF', 'Charcoal', Geneva, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Courier New', 'Courier Prime', monospace;
   --bevel-light: #ffffff;
   --bevel-dark: #8f8f8f;
@@ -902,23 +903,27 @@ body {
 :root[data-skin='platinum'] .app-main-wrapper { padding-top: 22px; }
 :root[data-skin='platinum'] .app-sidebar { top: 22px; height: calc(100vh - 22px); }
 
-/* the main content sits in a Platinum window on the teal desktop */
+/* the main content sits in a Platinum GRAY window on the teal desktop;
+   content cards inside it are WHITE — that's the contrast that was missing */
 :root[data-skin='platinum'] .app-main {
-  background: var(--surface);
+  background: #c6c6c6;
   border: 1px solid #000;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
   border-radius: 3px;
   margin: 14px auto 28px;
   padding: 1.4rem 1.6rem 2.4rem;
 }
+:root[data-skin='platinum'] .app-sidebar { background: #c6c6c6; }
 
-/* Platinum beveled cards (flat raised bevel, square-ish, no green glow) */
+/* Platinum content cards — WHITE pane, crisp black 1px frame, hard mini-drop */
 :root[data-skin='platinum'] .pal-card-hover {
-  box-shadow: inset 1px 1px 0 var(--bevel-light), inset -1px -1px 0 var(--bevel-dark) !important;
+  background: #ffffff !important;
+  border: 1px solid #000 !important;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.22) !important;
   border-radius: var(--radius-sm) !important;
 }
 :root[data-skin='platinum'] .pal-card-hover:hover {
-  border-color: #000 !important;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.32) !important;
   transform: none !important;
 }
 

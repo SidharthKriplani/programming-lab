@@ -25,7 +25,7 @@ function renderInline(s) {
 function Block({ label, color, body }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ border: '1px solid var(--border)', borderLeft: `3px solid ${color}`, borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: 'var(--surface)' }}>
+    <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', background: 'var(--surface)' }}>
       <button onClick={() => setOpen(o => !o)} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.5rem 0.8rem', background: 'var(--surface-2)', border: 'none', cursor: 'pointer' }}>
         <span style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color }}>{label}</span>
         <span style={{ display: 'inline-flex', transition: 'transform 0.2s ease', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', color: 'var(--text-muted)', fontSize: '0.7rem' }}>▾</span>

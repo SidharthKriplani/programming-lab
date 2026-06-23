@@ -21,7 +21,7 @@ function renderBold(text) {
 
 function Card({ icon, label, labelColor, bg, border, children, italic }) {
   return (
-    <div style={{ background: bg, border: '1px solid ' + border, borderLeft: '3px solid ' + labelColor, borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+    <div style={{ background: bg, border: '1px solid ' + border, borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.3rem' }}>
         <Icon name={icon} size={13} color={labelColor} />
         <span style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: labelColor }}>{label}</span>

@@ -18,7 +18,6 @@ export function HowToStrip({ skill, steps = [] }) {
         padding: '12px 16px',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
-        borderLeft: '3px solid var(--prime)',
         borderRadius: '8px',
         marginBottom: '24px',
         flexWrap: 'wrap',

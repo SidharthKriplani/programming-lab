@@ -74,7 +74,7 @@ function JudgeRunner({ problem, onBack, onNext, unlocked }) {
       </div>
 
       {/* Wrong output + symptom panel */}
-      <div style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderLeft: '3px solid var(--red)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <div style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red-text)' }}>What it returned</div>
         <pre style={{ margin: 0, fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.brokenOutput}</pre>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.4rem', marginTop: '0.1rem' }}>
@@ -102,7 +102,7 @@ function JudgeRunner({ problem, onBack, onNext, unlocked }) {
         <GateOverlay unlocked={unlocked} context="full-bank">
           <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1.1rem' }}>
             {/* The flaw (red) */}
-            <div style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderLeft: '3px solid var(--red)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+            <div style={{ background: 'var(--red-bg)', border: '1px solid var(--red-border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem' }}>
                 <Icon name="alert-triangle" size={15} color="var(--red-text)" />
                 <span style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--red-text)' }}>The flaw</span>
@@ -111,7 +111,7 @@ function JudgeRunner({ problem, onBack, onNext, unlocked }) {
             </div>
 
             {/* Impact (yellow) */}
-            <div style={{ background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderLeft: '3px solid var(--yellow)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+            <div style={{ background: 'var(--yellow-bg)', border: '1px solid var(--yellow-border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
               <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--yellow-text)', marginBottom: '0.25rem' }}>If you ship it</div>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>{problem.impact}</p>
             </div>
@@ -123,7 +123,7 @@ function JudgeRunner({ problem, onBack, onNext, unlocked }) {
             </div>
 
             {/* Correct output */}
-            <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderLeft: '3px solid var(--green)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+            <div style={{ background: 'var(--green-bg)', border: '1px solid var(--green-border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
               <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--green-text)', marginBottom: '0.25rem' }}>What it should return</div>
               <pre style={{ margin: 0, fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.fixedOutput}</pre>
             </div>

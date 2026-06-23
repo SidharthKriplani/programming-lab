@@ -60,7 +60,6 @@ function StepCard({ project, step, index, status, locked, solved, onSolved }) {
   return (
     <div style={{
       background: 'var(--surface)', border: '1px solid var(--border)',
-      borderLeft: `3px solid ${solved ? 'var(--green-text)' : (locked ? 'var(--border)' : 'var(--accent)')}`,
       borderRadius: 'var(--radius)', padding: '0.95rem 1.05rem', opacity: locked ? 0.55 : 1,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', marginBottom: '0.4rem' }}>
@@ -90,7 +89,7 @@ function StepCard({ project, step, index, status, locked, solved, onSolved }) {
                 <Icon name="zap" size={12} color="var(--yellow)" /> {showHint ? 'Hide hint' : 'Hint'}
               </button>
               {showHint && (
-                <p className="pal-reveal-in" style={{ margin: '0.4rem 0 0', padding: '0.5rem 0.7rem', background: 'var(--surface-2)', borderLeft: '3px solid var(--yellow)', borderRadius: 'var(--radius-sm)', color: 'var(--text-secondary)', fontSize: '0.84rem', lineHeight: 1.5 }}>{step.hint}</p>
+                <p className="pal-reveal-in" style={{ margin: '0.4rem 0 0', padding: '0.5rem 0.7rem', background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', color: 'var(--text-secondary)', fontSize: '0.84rem', lineHeight: 1.5 }}>{step.hint}</p>
               )}
             </div>
           )}
@@ -185,7 +184,7 @@ function BuildRunner({ project, unlocked, onBack, onNext }) {
       </div>
 
       {/* brief */}
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: '3px solid var(--accent)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem' }}>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.1rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.5rem' }}>
           <span className="pl-chip" style={{ color: 'var(--accent)', borderColor: 'var(--accent)', background: 'transparent' }}>{(BUILD_CLUSTERS[project.cluster] || {}).label || project.cluster}</span>
           <span className="pl-chip" style={{ color: (DIFF_META[project.difficulty] || DIFF_META.core).color, borderColor: 'var(--border)', background: 'transparent' }}>{(DIFF_META[project.difficulty] || DIFF_META.core).label}</span>
@@ -227,7 +226,7 @@ function BuildRunner({ project, unlocked, onBack, onNext }) {
           </div>
           <DebriefBlocks text={project.debrief} />
           {project.keyTakeaways && project.keyTakeaways.length > 0 && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: '3px solid var(--teal)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem' }}>
+            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.8rem 1rem' }}>
               <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.45rem' }}>Key takeaways</div>
               <ul style={{ margin: 0, paddingLeft: '1.1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 {project.keyTakeaways.map((t, i) => (

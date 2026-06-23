@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.16.0] - 2026-06-23 — Real Platinum: white panes, Chicago, no rails + one light/dark toggle
+
+> Sidharth on the deployed Platinum: greys too faint, side rails hated, and rightly — "you were told to supersede our constraints with *real* Platinum and you token-swapped instead." Rebuilt to the actual thing.
+
+### Changed
+- **Real-Platinum contrast** — content cards are now **white** on a gray (`#c6c6c6`) window frame, crisp black 1px borders + hard mini-drop shadows; the sidebar and main window are the gray chrome. Fixes the washed-out faint greys (the cards now read as panels on a window).
+- **Side rails removed** — stripped the colored 3px `borderLeft` accent from **all 16** panels/cards/debriefs across 9 files (only the sidebar's structural nav indent kept). Flat, fully-bordered.
+- **Chicago font** — the classic Mac system typeface (loaded via cdnfonts) now drives the Platinum UI, Charcoal/Geneva fallback. (approved)
+- **One light/dark toggle** — the footer button swaps **light = Platinum ⇄ dark = green-screen** (single sun/moon icon). The old warm casefile light mode is **retired**; Platinum is the only light mode (D-PL-19 refined, Sidharth's call).
+
+### Notes
+- Dark mode reframed (brainstorm, mockup shown, not yet built): **dark = Mac OS X Aqua terminal + ambient Matrix rain** (green demoted to the terminal *content*; rain dim behind work, full-bright only on load/reveal/idle). Two Apple eras: light = classic Mac, dark = OS X. That's the next unit.
+- esbuild-clean on all changed files; Chicago import + white panes + zero rails verified. Still no live preview in-sandbox — expect to tune once seen.
+
 ## [PL 0.15.0] - 2026-06-23 — Pluggable SKIN system + Platinum (classic Mac) skin
 
 > Sidharth (and a friend) on the mockups: make the whole app a classic-Mac **Platinum** workstation — Apple menu bar, rainbow apple, beveled gray — and *"make it switchable so changing it won't take a heavy build again."* Built the skin system first, then Platinum as the first skin. Platinum is now the active look; green-screen becomes a skin (it'll live inside terminal windows next).

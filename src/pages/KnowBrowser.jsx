@@ -94,7 +94,7 @@ function KnowRunner({ module: m, onBack, onNext }) {
       </div>
 
       {/* Hook */}
-      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid ' + cluster.accent, borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+      <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
         <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem', lineHeight: 1.6 }}>{m.hook}</p>
       </div>
 
@@ -136,7 +136,7 @@ function KnowRunner({ module: m, onBack, onNext }) {
               colour-coded by its level. Falls back to a generic line for legacy options. */}
           {answered && (
             predict.opts[picked].feedback ? (
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55, background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid ' + (LEVEL_STYLE[pickedLevel] || LEVEL_STYLE.wrong).text, borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.75rem' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.75rem' }}>
                 {predict.opts[picked].feedback}
               </div>
             ) : (
@@ -187,7 +187,7 @@ function KnowRunner({ module: m, onBack, onNext }) {
           ))}
 
           {/* Mental model callout — accent-bordered */}
-          <div style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderLeft: '3px solid var(--accent)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+          <div style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
             <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: '0.25rem' }}>Mental model</div>
             <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.92rem', lineHeight: 1.55, fontWeight: 600 }}>{m.mentalModel}</p>
           </div>

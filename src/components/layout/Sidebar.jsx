@@ -188,28 +188,16 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
       <div style={{ padding: '0.7rem 1.05rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <BrandMark variant="wordmark" size={13} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            {onCycleSkin && (
-              <button
-                onClick={onCycleSkin}
-                title="Switch skin"
-                aria-label="Switch skin"
-                style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 0.55rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.62rem', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'capitalize' }}
-              >
-                {skin === 'platinum' ? 'Platinum' : 'Green'}
-              </button>
-            )}
-            {skin !== 'platinum' && (
-              <button
-                onClick={() => setThemeState(toggleTheme())}
-                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)' }}
-              >
-                <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} color="var(--text-muted)" />
-              </button>
-            )}
-          </div>
+          {onCycleSkin && (
+            <button
+              onClick={onCycleSkin}
+              title={skin === 'platinum' ? 'Switch to dark' : 'Switch to light'}
+              aria-label="Toggle light or dark"
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)' }}
+            >
+              <Icon name={skin === 'platinum' ? 'moon' : 'sun'} size={15} color="var(--text-muted)" />
+            </button>
+          )}
         </div>
         <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>part of BreakLabs · Beta</div>
       </div>

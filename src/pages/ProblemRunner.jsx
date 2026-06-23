@@ -134,7 +134,7 @@ export function ProblemRunner({ problem, patterns, progressKey, packages = [], o
 
         {/* LEFT — problem + data + expected */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: `3px solid ${pat.accent}`, borderRadius: 'var(--radius)', padding: '0.9rem 1rem' }}>
+          <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '0.9rem 1rem' }}>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.45rem' }}>
               <Chip label={pat.label} color={pat.accent} />
               <Chip label={problem.difficulty === 'warmup' ? 'Warmup' : problem.difficulty === 'stretch' ? 'Stretch' : 'Core'} color="var(--text-muted)" />
@@ -231,7 +231,7 @@ export function ProblemRunner({ problem, patterns, progressKey, packages = [], o
               <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', borderTop: '1px solid var(--border)', paddingTop: '0.9rem' }}>
                 <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--green-text)' }}>Model solution</div>
                 <PythonCell initialCode={problem.solution} label="solution.py" readOnly glassBox={false} height={Math.min(320, 90 + problem.solution.split('\n').length * 19)} />
-                <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid var(--teal)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
+                <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}>
                   <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--teal)', marginBottom: '0.25rem' }}>Why it works</div>
                   <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.55 }}>{problem.glassBox.lesson}</p>
                 </div>

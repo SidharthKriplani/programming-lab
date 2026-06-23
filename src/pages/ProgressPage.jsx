@@ -27,7 +27,7 @@ export function ProgressPage({ onNavigate }) {
 
       {/* Continue */}
       {cont && (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', background: 'var(--surface)', border: '1px solid var(--border)', borderLeft: `3px solid ${cont.accent}`, borderRadius: 'var(--radius)', padding: '1rem 1.15rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1rem 1.15rem', marginBottom: '1rem' }}>
           <div>
             <div style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Continue where you left off</div>
             <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)' }}>{cont.label}</div>
