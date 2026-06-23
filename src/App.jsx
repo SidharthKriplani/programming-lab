@@ -8,7 +8,9 @@ import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
 import { pythonProblems, PY_PATTERNS, PY_PATTERN_ORDER } from './data/pythonProblems.js';
 import { pandasProblems, PD_PATTERNS, PD_PATTERN_ORDER } from './data/pandasProblems.js';
-import { PYTHON_KEY, PANDAS_KEY } from './utils/problemProgress.js';
+import { idiomsProblems, IDIOM_PATTERNS, IDIOM_PATTERN_ORDER } from './data/idiomsProblems.js';
+import { oopProblems, OOP_PATTERNS, OOP_PATTERN_ORDER } from './data/oopProblems.js';
+import { PYTHON_KEY, PANDAS_KEY, IDIOMS_KEY, OOP_KEY } from './utils/problemProgress.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
@@ -86,6 +88,20 @@ export default function App() {
                   subtitle="The analyst-native operations — groupby, merge, pivot, vectorize. Real pandas, running in your browser."
                   problems={pandasProblems} patterns={PD_PATTERNS} patternOrder={PD_PATTERN_ORDER}
                   progressKey={PANDAS_KEY} packages={['pandas']} />
+              )
+              : view === 'idioms' ? (
+                <ProblemBrowser
+                  title="Python Idioms" iconName="pen-line" iconColor="var(--accent)"
+                  subtitle="The fluent way to write Python — comprehensions, Counter/defaultdict, itertools/functools, context managers, decorators, dunder."
+                  problems={idiomsProblems} patterns={IDIOM_PATTERNS} patternOrder={IDIOM_PATTERN_ORDER}
+                  progressKey={IDIOMS_KEY} packages={[]} />
+              )
+              : view === 'oop' ? (
+                <ProblemBrowser
+                  title="Python OOP" iconName="layers" iconColor="var(--purple)"
+                  subtitle="Classes, dataclasses, properties, inheritance vs composition, and the dunder methods that make objects behave Pythonically."
+                  problems={oopProblems} patterns={OOP_PATTERNS} patternOrder={OOP_PATTERN_ORDER}
+                  progressKey={OOP_KEY} packages={[]} />
               )
               : view === 'know' ? <KnowBrowser />
               : view === 'judge' ? <JudgeBrowser />

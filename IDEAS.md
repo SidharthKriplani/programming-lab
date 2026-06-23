@@ -31,3 +31,15 @@ Surveyed the standard Python books for their *pedagogical approach* (never conte
 - **Classic CS Problems (Kopec)** — pattern-by-pattern w/ a real-world hook → validates the DO bank as-is. **Programming & Problem Solving (Kamthane)** — fundamentals + OOP → the **KNOW rung** + OOP coverage (D-07).
 - **UX fixes the live screenshot surfaced:** dead space below the buttons; two ambiguous run affordances (`Run` vs `Run tests`); no sense of what's being tested. Fold into the hints/feedback pass.
 Priority: targeted hints-on-failure → idioms bank (B) → judgment MCQs → BUILD projects.
+
+## Curriculum research → content roadmap (2026-06-23 — full doc: `docs/CURRICULUM-RESEARCH.md`)
+GitHub/PyPI/roadmap + book-pedagogy research. Finding: the 4 banks are the right spine; the **uncovered, high-value territory is the SWE→AIE bridge** — the rigor that separates a notebook analyst from someone who ships. Top-12 ranked there; the picks to build next:
+- **JUDGE — "read the LLM's code critically"** (hallucinated/deprecated APIs, mutable defaults, off-by-one). #1: nobody drills it; dead-on PL's "is the code an LLM handed you right?" thesis. Runnable.
+- **DO — Bank G: Testing & guardrails** (asserts, edge cases, fail-loud, schema-check). The most-cited notebook→prod habit. Runnable.
+- **DO — Bank E: Typing & validation** (dataclasses, pydantic, Enums — "make illegal states unrepresentable"). Runnable.
+- **DO — Bank F: APIs & async** (parse JSON, `asyncio.gather`, Semaphore, retry/backoff) — the biggest AI-eng crossover; frame the no-raw-socket sandbox limit as the lesson. Partial-Pyodide.
+- **DO clusters** — serialization & caching (`lru_cache`), the **Python↔SQL seam** (DataFrame→sqlite, parameterized query / injection trap).
+- **BUILD** — "a tiny tested pipeline" (cell-blob → 3 pure functions + tests), async fan-out client (serial-vs-concurrent glass-box race), validate-then-transform.
+- **KNOW** — Notebook→production · Typing for data code · Packaging & reproducibility (conceptual).
+- **Pedagogy borrowed (format, not content):** Effective Python "Item" card → debrief schema; Cosmic Python pain-first + pros/cons → the judgment dial; High Performance Python "measure before you optimize" → the glass-box (gate the fix behind the timing); Zingaro autograder → distinguish *wrong* (correctness) from *too-slow* (glass-box timing).
+- **Out of scope (named so they don't re-enter):** Docker/CI/Git *drills*, live FastAPI server, great-expectations bank, contest DP/segment-trees, ML model-training internals (MSL's lane).

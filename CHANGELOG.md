@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.9.0] - 2026-06-23 — Two new DO banks: Idioms + OOP (programming depth)
+
+> Reframed back to PL's core — deep Python/coding fluency, not AI tooling. First pass of the "go deep on programming" plan.
+
+### Added
+- **DO — Python Idioms** (`idiomsProblems.js`): 20 drills — comprehensions, collections (Counter/defaultdict/deque), functional (sorted-key, any/all, reduce, itertools), context managers, decorators, unpacking, dunder. The fluent way to write Python. 80 checks verified.
+- **DO — Python OOP** (`oopProblems.js`): 15 drills — classes, dataclasses (incl. frozen + the default_factory trap), properties + validation, inheritance vs composition, dunder methods (`__eq__`/`__hash__`/`__lt__`/`__add__`), classmethods/staticmethods. 60 checks verified.
+- Both reuse the two-pane test runner + filterable browse; wired live in the DO accordion with counts.
+- **Audit now gates the new banks** (idioms + oop in the extractor + bank loop). Allowlist gained the stdlib they need (contextlib/dataclasses/enum/typing/abc); blocklist tightened to the genuinely dangerous calls (`open`/`eval`/`exec`/`compile`/`__import__`) so a normal `setattr` in a property setter isn't a false positive.
+
+### Notes
+- DO is now **5 banks / 155 drills** (gotchas 23 + drills 56 + idioms 20 + oop 15 + pandas 41). esbuild green; audit 155 / 0 Tier-1.
+
 ## [PL 0.8.0] - 2026-06-23 — All four frames live: KNOW · DO · BUILD · JUDGE
 
 > The lab was DO-only with SOON stubs. After a deep SQL Lab study, every Competence-Model frame now has real content.

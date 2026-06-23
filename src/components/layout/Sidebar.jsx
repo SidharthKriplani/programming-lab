@@ -9,10 +9,12 @@ import { getCounts as gotchaCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
 import { pythonProblems } from '../../data/pythonProblems.js';
 import { pandasProblems } from '../../data/pandasProblems.js';
+import { idiomsProblems } from '../../data/idiomsProblems.js';
+import { oopProblems } from '../../data/oopProblems.js';
 import { knowModules } from '../../data/knowModules.js';
 import { judgeProblems } from '../../data/judgeProblems.js';
 import { buildProjects } from '../../data/buildProjects.js';
-import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY, BUILD_KEY } from '../../utils/problemProgress.js';
+import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY, BUILD_KEY, IDIOMS_KEY, OOP_KEY } from '../../utils/problemProgress.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
 
@@ -77,6 +79,8 @@ const FRAMES = [
   { key: 'DO', icon: 'terminal', items: [
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
     { label: 'Python Drills', view: 'python', icon: 'code-2', bank: 'python' },
+    { label: 'Python Idioms', view: 'idioms', icon: 'pen-line', bank: 'idioms' },
+    { label: 'OOP', view: 'oop', icon: 'building-2', bank: 'oop' },
     { label: 'pandas / numpy', view: 'pandas', icon: 'layers', bank: 'pandas' },
   ] },
   { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', view: 'build', icon: 'hammer', bank: 'build' }] },
@@ -84,16 +88,19 @@ const FRAMES = [
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { gotchas: 'DO', python: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
+const VIEW_FRAME = { gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
 
 const BANK_TOTAL = {
   gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
+  idioms: idiomsProblems.length, oop: oopProblems.length,
   know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
 };
 function bankSolved(bank) {
   if (bank === 'python') return problemCounts(PYTHON_KEY).solved;
   if (bank === 'pandas') return problemCounts(PANDAS_KEY).solved;
   if (bank === 'gotchas') return gotchaCounts().solved;
+  if (bank === 'idioms') return problemCounts(IDIOMS_KEY).solved;
+  if (bank === 'oop') return problemCounts(OOP_KEY).solved;
   if (bank === 'know') return problemCounts('pl-know-progress-v1').solved;
   if (bank === 'judge') return problemCounts('pl-judge-progress-v1').solved;
   if (bank === 'build') return problemCounts(BUILD_KEY).solved;

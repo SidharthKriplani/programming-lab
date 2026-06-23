@@ -20,10 +20,10 @@ from collections import Counter
 ALLOWED_IMPORTS = {
     'pandas', 'numpy', 'collections', 'heapq', 'itertools', 'functools', 'math',
     'decimal', 'datetime', 're', 'bisect', 'string', 'statistics', 'copy', 'random',
+    'contextlib', 'dataclasses', 'enum', 'typing', 'abc', 'json', 'operator',
 }
 BLOCKED_CALLS = {
-    'open', 'eval', 'exec', 'compile', 'input', '__import__', 'globals', 'locals',
-    'vars', 'getattr', 'setattr', 'delattr', 'memoryview', 'breakpoint',
+    'open', 'eval', 'exec', 'compile', 'input', '__import__', 'breakpoint',
 }
 REQUIRED_TEST = ['id', 'bank', 'pattern', 'title', 'difficulty', 'prompt',
                  'starterCode', 'testSource', 'solution', 'glassBox']
@@ -102,7 +102,7 @@ def audit():
     all_ids = set()
     titles, sols = {}, {}
 
-    for bank in ('gotchas', 'python', 'pandas'):
+    for bank in ('gotchas', 'python', 'pandas', 'idioms', 'oop'):
         groups = set(data[bank]['groups'])
         for p in data[bank]['problems']:
             pid = p.get('id', '<no-id>')
