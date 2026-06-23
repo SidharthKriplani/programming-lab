@@ -7,6 +7,7 @@ import { pyLabProblems, PYLAB_TOPICS, PYLAB_TOPIC_ORDER } from '../data/pyLabPro
 import { pyLabFixtures } from '../data/pyLabFixtures.js';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
+import { ScaleRace } from '../components/shared/ScaleRace.jsx';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
@@ -117,6 +118,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
           <pre style={{ margin: 0, padding: '0.7rem 0.85rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.solution}</pre>
           <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{problem.debrief}</div>
           <JudgmentLayer problem={problem} />
+          <ScaleRace problem={problem} />
           <ForwardPointerCard onNext={onBack} onNavigate={onBack} />
         </div>
       )}

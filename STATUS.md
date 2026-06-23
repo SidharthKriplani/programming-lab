@@ -1,6 +1,16 @@
 # PL — STATUS
 
-_Last updated: 2026-06-24 (session: KNOW re-scoped to the Foundations rooms — skeleton + spine; note: the body below still reflects the B0+B1 close and predates the PyLab consolidation in CHANGELOG 0.17-0.19 — read CHANGELOG for the current DO state)._
+_Last updated: 2026-06-24. Two live workstreams: **DO = PyLab** (current state below) and **KNOW = Foundations** (the section after, skeleton-only). Read CHANGELOG for the full arc._
+
+## DO frame — PyLab (current, 2026-06-24)
+**PyLab is the single DO bank for pandas/numpy AND Python — 136 problems, all gate-verified.** Built to the SQL-Lab bar (a judgment gym, not a grader): `solve(...)→output` graded by the typed comparator `pl_compare`; engineered fixtures; per-problem judgment layer (98 carry one — a verified runs-but-wrong trap + a method dial). Four committed gates run before commit: `audit_py.py` (Tier-1 0), `verify_py_methods.py` (non-trap≡solution, traps diverge), `py_content_scan.mjs` (de-jargon/hints/debrief), `run_py.py` (`--diverge` authoring). Runtime `runPyLab` (Pyodide). Standalone pandas/drills/idioms/oop rooms folded in (nav + `banks.js`); **Gotchas stays its own predict→reveal room**.
+- **Architecture (the authority): `docs/PYLAB-VISION.md`** (D-PL-22) — two-axis ROLE×SENIORITY, 9 formats, roadmap, from market research across all seven roles. Contract spec: `docs/PYLAB-BUILD-SPEC.md`; handoff: `docs/PYLAB-HANDOFF.md`.
+- **Phase 1 shipped (0.20.0):** `pyLabMeta.js` (roles[]+level, derived) + role/level filters + `PyLabReadiness` dashboard.
+- **Key files:** `src/data/pyLabProblems.js` + `pyLabFixtures.js` + `pyLabBatch_*.js` (the bank), `pyLabMeta.js`; `src/pages/PyLabBrowser.jsx`; `src/components/shared/{JudgmentLayer,PyLabReadiness}.jsx`; `scripts/{pl_compare,_pylab_harness,audit_py,verify_py_methods,run_py}.py` + `_extract_pylab.mjs` + `py_content_scan.mjs`.
+- **Next:** Phase 2 showcase formats — **Scale-it race** (in progress), then Ambiguity drill, Refactor. Then Phase 3 (follow-up/mock/spaced-rep) + Phase 4 (take-home/code-review/explain/skin). Cleanup: delete dead old bank data files + routes.
+
+---
+
 
 ## This session (2026-06-24) — KNOW becomes the Foundations rooms (skeleton)
 Triggered by `docs/FOUNDATIONS-HANDOFF.md` (PAL's mentor note) + a live read of PAL that proved its KNOW is ~10x PL's whole codebase and genuinely slider-driven, where PL's KNOW is a 20-card predict-run-read stub. **Decision D-PL-21:** re-scope KNOW into a **trunk + branches** room architecture — 5 trunk rooms (Python Foundations · The Machine · DS&A · NumPy & pandas · Shipping Python) + 2 branches (Competitive Programming · Tensors & Autograd). Two branches **amend the charter** (CP exceeds the easy->med ceiling; Tensors takes library mechanics only, modeling stays in MSL). **Shipped this session (planning + skeleton only, nothing wired into the app):**

@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.22.0] - 2026-06-24 — PyLab Phase 2: the Scale-it race (the glass box, made a game)
+
+> First showcase format from the vision (`PYLAB-VISION` §3). On any problem with ≥2 valid methods, predict which one survives at scale — then watch the cost curve actually diverge.
+
+### Added
+- **Scale-it race** (`src/components/shared/ScaleRace.jsx` + `runPyLabBench` in the runtime) — the fixture is replicated up (DataFrames/Series concat, lists/arrays tiled) and each **valid (non-trap)** method runs at a small and a large size, timed + memory-traced. Predict the winner → watch the bars diverge → get the cost lesson (pulled from the method dial). Self-hides unless a problem has ≥2 valid methods (**22 of 136 eligible** today).
+- Wired into the PyLab reveal, after the judgment layer.
+
+### Verified
+- esbuild clean. The bench harness (wrap-body + generic `_pl_scale` + `tracemalloc` timing) simulated in CPython: rep-share at 20k rows — **transform 2.1 ms / 1.3 MB vs merge-back 5.7 ms / 1.4 MB** (~2.7× divergence). The race shows a real, not staged, difference.
+
+### Next
+- Phase 2 cont.: **Ambiguity drill** (`beforeWriting`→format) + **Refactor** (diff + cost race). Then Phase 3 (follow-up/mock/spaced-rep).
+
 ## [PL 0.21.0] - 2026-06-24 — KNOW re-scoped: the Foundations rooms (architecture + skeleton, planning only)
 
 > PAL's handoff (`docs/FOUNDATIONS-HANDOFF.md`) + a live read of PAL's deployed Foundation rooms (a three-slider Mix-Shift simulator inside one Metrics module) proved PL's "shipped" KNOW frame is a 20-card predict-run-read stub against PAL's slider-driven, ~10x-larger system. KNOW is re-scoped into a **trunk + branches** Foundations architecture. **This release is planning + skeleton only — nothing is wired into the app.**
