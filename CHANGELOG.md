@@ -70,8 +70,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`src/components/foundations/AliasingModel.jsx`** — Room 1's "Names are bindings" module now carries a **live, driven model**, not just predict-run-read. The learner toggles `b = a` vs `b = a.copy()`, clicks `a.append(•)` / `a = [99]`, and watches a heap diagram (names → object nodes, the list contents, `a is b`) update — **every frame computed by real CPython in Pyodide** (`runPython`), so `id()`/`is`/values are measured, not drawn. Includes a "show the Python this ran" disclosure (honest: it's real code). This is PL's edge over PAL's hand-built SVG — the model is *executable*.
 - **`KnowRunner` gains an optional `interactive` slot** (between demo and reveal), driven by `src/components/foundations/interactiveModules.js` (module id → widget). Modules without an entry keep the predict-run-read flow; back-compatible. Verified: the exact frames checked in CPython (alias→same, copy→decoupled, rebind→decoupled); esbuild graph exit 0.
 
+### Driven — two more models + planned modules now openable
+- **`CopyVsViewModel.jsx`** (Room 1, live Pyodide) — the aliasing sequel: toggle `x.copy()` vs `deepcopy(x)`, mutate the inner/outer list, watch `x[0] is y[0]` flip (shallow shares inner lists, deep doesn't). CPython-verified.
+- **`CallStackModel.jsx`** (Room 2, stepper) — step/play a recursive `factorial(n)`; frames push on the way down, the base case stops it, frames pop with return values on the way up; names the `RecursionError` a missing base case causes. Deterministic JS (the animation is the lesson); factorial values verified.
+- **`FoundationsBrowser` now opens interactive-only planned modules** — a module is READY if it has authored content *or* a driven model; the latter open a lightweight widget runner (`WidgetRunner`). `READY_TOTAL` recomputed from a room scan (22 ready). esbuild exit 0.
+
 ### Still to do (F1 cont.)
-- Author the next driven models (copy-vs-view, the call stack, broadcasting…) one per module; the predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
+- Keep authoring driven models room-by-room (Big-O slider, broadcasting, dict-hashing); the predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

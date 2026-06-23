@@ -1,16 +1,16 @@
 // FoundationsBrowser — the KNOW-frame, unified. ONE KNOW surface (D-PL-21):
-// the trunk + branches room map (foundationsRooms.js) with the 20 authored
-// "Python & OOP Depth" modules (knowModules.js) folded in. A module backed by an
-// authored module is READY (opens the runnable predict->reveal flow via the shared
-// KnowRunner); the rest are 'planned'. The standalone Python & OOP Depth room is
-// retired into here. Named export (App lazy-imports it).
+// the trunk + branches room map (foundationsRooms.js) with the authored "Python &
+// OOP Depth" modules folded in. A module is READY if it has authored predict→reveal
+// content (opens KnowRunner) OR a driven model (opens a lightweight widget runner);
+// the rest are 'planned'. Named export (App lazy-imports it).
 import { useState } from 'react';
 import {
   FOUNDATION_TRACKS, TRUNK_ROOMS, BRANCH_ROOMS, FOUNDATION_TALLY,
-  KNOW_BACKING, KNOW_EXTRA, clusterModules, backingFor,
+  clusterModules, backingFor,
 } from '../data/foundationsRooms.js';
 import { knowModules } from '../data/knowModules.js';
 import { KnowRunner } from './KnowBrowser.jsx';
+import { INTERACTIVE_MODULES } from '../components/foundations/interactiveModules.js';
 import { getProgress } from '../utils/problemProgress.js';
 import { Icon } from '../components/shared/Icon.jsx';
 import { HowToStrip } from '../components/shared/HowToStrip.jsx';
@@ -19,16 +19,31 @@ const GRID_COLS = 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))';
 const KNOW_KEY = 'pl-know-progress-v1';
 const KNOW = Object.fromEntries(knowModules.map(m => [m.id, m]));
 
-// global count of ready (authored-backed) modules, for the banner
-const READY_TOTAL = Object.keys(KNOW_BACKING).length
-  + Object.values(KNOW_EXTRA).reduce((n, byCluster) => n + Object.values(byCluster).reduce((a, arr) => a + arr.length, 0), 0);
-
 const WIDGET = {
   live:    { label: 'live',    color: 'var(--green-text)', bg: 'var(--green-bg)',  border: 'var(--green-border)' },
   sim:     { label: 'sim',     color: 'var(--accent)',     bg: 'var(--accent-bg)', border: 'var(--accent-border)' },
   stepper: { label: 'stepper', color: 'var(--teal)',       bg: 'var(--surface-2)', border: 'var(--border)' },
   concept: { label: 'concept', color: 'var(--text-muted)', bg: 'var(--surface-2)', border: 'var(--border)' },
 };
+
+// every module of a room (planned skeleton + authored extras)
+function roomModules(room) {
+  return room.clusters.flatMap(c => clusterModules(room.id, c.id, c.modules));
+}
+// READY = authored predict→reveal content OR a driven model
+function isReady(mod) {
+  const b = backingFor(mod);
+  return !!(b && KNOW[b]) || !!INTERACTIVE_MODULES[mod.id];
+}
+function roomReady(room) { return roomModules(room).filter(isReady).length; }
+function substrateMix(room) {
+  const mix = {};
+  roomModules(room).forEach(m => { mix[m.widget] = (mix[m.widget] || 0) + 1; });
+  return ['live', 'stepper', 'sim', 'concept'].filter(k => mix[k]).map(k => k + ' ' + mix[k]).join(' · ');
+}
+
+const ALL_ROOMS = [...TRUNK_ROOMS, ...BRANCH_ROOMS];
+const READY_TOTAL = ALL_ROOMS.reduce((n, r) => n + roomReady(r), 0);
 
 function Chip({ label, color, bg, border }) {
   return (
@@ -39,7 +54,6 @@ function Chip({ label, color, bg, border }) {
     }}>{label}</span>
   );
 }
-
 function RoomBadge({ n, accent }) {
   return (
     <span style={{
@@ -48,19 +62,6 @@ function RoomBadge({ n, accent }) {
       fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>{n}</span>
   );
-}
-
-// every module of a room (planned skeleton + authored extras)
-function roomModules(room) {
-  return room.clusters.flatMap(c => clusterModules(room.id, c.id, c.modules));
-}
-function roomReady(room) {
-  return roomModules(room).filter(m => { const b = backingFor(m); return b && KNOW[b]; }).length;
-}
-function substrateMix(room) {
-  const mix = {};
-  roomModules(room).forEach(m => { mix[m.widget] = (mix[m.widget] || 0) + 1; });
-  return ['live', 'stepper', 'sim', 'concept'].filter(k => mix[k]).map(k => k + ' ' + mix[k]).join(' · ');
 }
 
 // ── Room card (list) ─────────────────────────────────────────────────────
@@ -98,8 +99,8 @@ function RoomCard({ room, onOpen }) {
   );
 }
 
-// ── Module card ──────────────────────────────────────────────────────────
-function ReadyCard({ mod, solved, seen, onOpen }) {
+// ── Module cards ─────────────────────────────────────────────────────────
+function ReadyCard({ mod, solved, seen, driven, onOpen }) {
   const w = WIDGET[mod.widget] || WIDGET.live;
   return (
     <button
@@ -119,11 +120,12 @@ function ReadyCard({ mod, solved, seen, onOpen }) {
         </span>
       </div>
       <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{mod.model}</p>
-      <span style={{ fontSize: '0.58rem', color: 'var(--green-text)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>ready · open</span>
+      <span style={{ fontSize: '0.58rem', color: 'var(--green-text)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+        {driven ? 'drive it →' : 'ready · open'}
+      </span>
     </button>
   );
 }
-
 function PlannedCard({ mod }) {
   const w = WIDGET[mod.widget] || WIDGET.concept;
   return (
@@ -141,17 +143,42 @@ function PlannedCard({ mod }) {
   );
 }
 
-// ── Room detail (clusters + the in-room runner) ──────────────────────────
+// ── lightweight runner for an interactive-only (not-yet-authored) module ──
+function WidgetRunner({ room, mod, onBack }) {
+  const Widget = INTERACTIVE_MODULES[mod.id];
+  return (
+    <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+        <button onClick={onBack} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.35rem 0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }} aria-label="Back to room">
+          <Icon name="arrow-left" size={16} color="var(--text-muted)" />
+        </button>
+        <RoomBadge n={room.order} accent={room.accent} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h1 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1.2 }}>{mod.title}</h1>
+          <p style={{ margin: '0.25rem 0 0', color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.5 }}>{mod.model}</p>
+        </div>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)' }}>Drive the model</div>
+        {Widget ? <Widget /> : null}
+      </div>
+      <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
+        A driven model is here; the full predict → read write-up for this module lands as Room {room.order} is authored.
+      </div>
+    </div>
+  );
+}
+
+// ── Room detail ──────────────────────────────────────────────────────────
 function RoomDetail({ room, onBack }) {
   const [activeReal, setActiveReal] = useState(null);
+  const [activeWidget, setActiveWidget] = useState(null);
   const progress = getProgress(KNOW_KEY);
-
-  // ordered list of ready knowModule ids in this room (for next-cycling)
   const readyIds = roomModules(room).map(backingFor).filter(b => b && KNOW[b]);
 
   if (activeReal && KNOW[activeReal]) {
-    const i = readyIds.indexOf(activeReal);
-    const next = readyIds[(i + 1) % readyIds.length];
+    const idx = readyIds.indexOf(activeReal);
+    const next = readyIds[(idx + 1) % readyIds.length];
     return (
       <KnowRunner
         key={activeReal}
@@ -161,15 +188,14 @@ function RoomDetail({ room, onBack }) {
       />
     );
   }
+  if (activeWidget) {
+    return <WidgetRunner room={room} mod={activeWidget} onBack={() => { setActiveWidget(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
+  }
 
   return (
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-        <button
-          onClick={onBack}
-          style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.35rem 0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }}
-          aria-label="Back to all rooms"
-        >
+        <button onClick={onBack} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.35rem 0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0 }} aria-label="Back to all rooms">
           <Icon name="arrow-left" size={16} color="var(--text-muted)" />
         </button>
         <RoomBadge n={room.order} accent={room.accent} />
@@ -210,9 +236,10 @@ function RoomDetail({ room, onBack }) {
               {mods.map(mod => {
                 const b = backingFor(mod);
                 const real = b && KNOW[b];
-                return real
-                  ? <ReadyCard key={mod.id} mod={mod} solved={!!progress.solved[b]} seen={!!progress.seen[b]} onOpen={() => { setActiveReal(b); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
-                  : <PlannedCard key={mod.id} mod={mod} />;
+                const Widget = INTERACTIVE_MODULES[mod.id];
+                if (real) return <ReadyCard key={mod.id} mod={mod} solved={!!progress.solved[b]} seen={!!progress.seen[b]} driven={!!Widget} onOpen={() => { setActiveReal(b); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
+                if (Widget) return <ReadyCard key={mod.id} mod={mod} solved={false} seen={false} driven onOpen={() => { setActiveWidget(mod); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
+                return <PlannedCard key={mod.id} mod={mod} />;
               })}
             </div>
           </section>
@@ -236,7 +263,7 @@ export function FoundationsBrowser() {
   const [activeId, setActiveId] = useState(null);
 
   if (activeId) {
-    const room = [...TRUNK_ROOMS, ...BRANCH_ROOMS].find(r => r.id === activeId);
+    const room = ALL_ROOMS.find(r => r.id === activeId);
     if (room) {
       return (
         <RoomDetail
@@ -272,7 +299,7 @@ export function FoundationsBrowser() {
       }}>
         <Icon name="info" size={14} color="var(--text-muted)" />
         <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-          {FOUNDATION_TALLY.rooms} rooms · {FOUNDATION_TALLY.clusters} clusters mapped · <strong style={{ color: 'var(--green-text)' }}>{READY_TOTAL} ready now</strong> (the folded-in Python &amp; OOP depth); the rest are planned, authored room-by-room.
+          {FOUNDATION_TALLY.rooms} rooms · {FOUNDATION_TALLY.clusters} clusters mapped · <strong style={{ color: 'var(--green-text)' }}>{READY_TOTAL} ready now</strong> (open them); the rest are planned, authored room-by-room.
         </span>
       </div>
 
