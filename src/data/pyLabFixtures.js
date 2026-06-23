@@ -5,7 +5,12 @@
 // HOUSE SYNTAX (build-breakers): single quotes only; Python stored with DOUBLE quotes
 // inside (so no inner escaping); \n for newlines; NO template literals / backticks.
 // `args` = the fixture object names passed positionally to solve(...).
-export const pyLabFixtures = {
+import { fixtures as _fGroupby } from './pyLabBatch_groupby.js';
+import { fixtures as _fMergeReshape } from './pyLabBatch_mergereshape.js';
+import { fixtures as _fWindowMissing } from './pyLabBatch_windowmissing.js';
+import { fixtures as _fMisc } from './pyLabBatch_misc.js';
+
+const _seedFixtures = {
   'fx_sales': {
     args: ['sales'],
     setup: 'import pandas as pd\nsales = pd.DataFrame({"region": ["West", "West", "East", "East"], "rep": ["ana", "bo", "cara", "dan"], "amount": [100, 300, 150, 50]})',
@@ -22,5 +27,8 @@ export const pyLabFixtures = {
     preview: 'a list of (team, name) pairs; team A appears twice (ann, then amy)',
   },
 };
+
+// Merge the seed fixtures + every migrated batch (pandas, then python/idioms/oop later).
+export const pyLabFixtures = { ..._seedFixtures, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc };
 
 export default pyLabFixtures;

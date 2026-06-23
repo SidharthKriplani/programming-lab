@@ -5,6 +5,21 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.18.0] - 2026-06-24 — pandas folds into PyLab: 41 problems migrated, gated, verified
+
+> Sidharth: "if pylab is there then pandas numpy oops python drills all should be inside it." Started the consolidation — migrated all 41 pandas problems onto the PyLab contract in four parallel gated subagent batches (PAL's method), then removed the standalone pandas/numpy room.
+
+### Changed
+- **41 pandas problems migrated** into PyLab — `solve(...)→output` + engineered fixtures + de-jargoned prompts + ≥2 hints + executed debriefs. Batches: groupby+vectorize (9), merge+reshape (10), window+missing (9), selection/metrics/dedup/datetime (13). **33 carry a real judgment layer** (multi-method + a verified runs-but-wrong trap: merge fan-out, dropna, chained-assignment no-op, global-vs-group denominator, unsorted-window, inclusive-vs-half-open boundary, …); genuinely single-method ones ship honest empty dials.
+- PyLab is now **45 problems** (4 seed + 41 pandas), wired via `pyLabBatch_*.js` merged into `pyLabProblems.js` / `pyLabFixtures.js`.
+- **Standalone "pandas / numpy" room removed** from the nav and the Progress registry (`banks.js`) — it lives inside PyLab now.
+
+### Verified
+- Full-set gates green: `audit_py` 45 / Tier-1 0, `verify_py_methods` 45 / 33 multi-method / **0 failures** (every non-trap == solution, every trap runs-and-diverges), `py_content_scan` 0. Every solution, method and trap executed in real pandas 2.3.3. esbuild + the import chain clean.
+
+### Next
+- Same migration for **Python Drills (56), Idioms (20), OOP (15)** → each folds into PyLab as it lands. Gotchas stays its own predict→reveal format.
+
 ## [PL 0.17.0] - 2026-06-24 — PyLab foundation: comparator + four gates + runtime + judgment layer (CPython-verified)
 
 > Implements the SQL-Lab → PyLab handoff (`docs/PYLAB-HANDOFF.md` + `PYLAB-BUILD-SPEC.md`, approved). The depth systems, not a runner lookalike. PyLab = the single entry for pandas/numpy AND Python. Built foundation-first ("no content ships ungated").
