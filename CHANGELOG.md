@@ -5,6 +5,17 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.5.0] - 2026-06-23 — Banks at interview scope: 56 Python + 41 pandas
+
+> Researched what senior SWE/DS/MLE/DA/BA/PA/AIE are expected to code, then expanded both banks to interview scope.
+
+### Added
+- **Python Drills → 56** across 11 patterns: hashing, two-pointers, sliding-window, prefix-sum, stack, binary-search, heap/top-K, intervals, greedy, **numpy-ml** (RMSE, min-max normalize, accuracy, cosine similarity, one-hot, softmax — for the DS/MLE audience), recursion.
+- **pandas → 41** across 10 patterns: groupby (+rank / top-N-per-group, transform, named-agg, share-of-total), merge (+anti-join, indicator, concat), reshape (melt / crosstab / stack-unstack), window (rolling / diff / cumsum / pct_change / resample), missing data, selection / query / nlargest, metrics / safe-rates, dedup / rank, datetime.
+
+### Notes
+- **120 problems total** (23 gotchas + 56 Python + 41 pandas). Every solution + test **independently re-verified** out of the built JS in CPython + pandas 2.3 — **337 checks, 100% pass**. Authored original; the interview canon used only as a pattern taxonomy (moat). esbuild green. Pyodide ships pandas ~2.0/2.1; the APIs used are stable across pandas 1.5–2.3 — confirm on the live deploy.
+
 ## [PL 0.4.0] - 2026-06-23 — Python Drills + pandas banks (test-based)
 
 > First coding content beyond Bank A: drills you implement and run against hidden tests, in real Python and pandas.
