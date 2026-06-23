@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.26.0] - 2026-06-24 — PyLab Phase 3: spaced repetition (SM-2 review queue)
+
+> Interview prep is a memory game and the reflexes fade. PyLab now resurfaces what you'll forget, on a growing schedule.
+
+### Added
+- **Spaced repetition** (`src/utils/pyLabSR.js` + a PyLab browser strip) — a light SM-2: solving a problem schedules it (1d → 3d → ×ease, ease clamped 1.3–2.8); failing it (submit wrong, then reveal) resets it to **due now**. Only problems you actually submitted are tracked — a pure reveal schedules nothing. A **"N due for review" strip** flips the PyLab grid into a review queue (Review now / Show all); solving a due problem pushes it further out. localStorage `pl-pylab-sr-v1`, independent of the solved-progress store.
+- Hooks in the runner: a passing submit → `reviewSR(id, true)`; a reveal after a failed submit → `reviewSR(id, false)` (lapse).
+
+### Verified
+- esbuild clean (PyLabBrowser), `node --check` (pyLabSR); the SM-2 logic unit-tested with a localStorage shim — intervals grow **1 → 3 → 8** (×2.6 ease) on repeated success, reset to due-now on a lapse, due-window math correct (A reappears at day 10), and a recovered card leaves the queue.
+
+### Next
+- Phase 3 cont.: **Mock-loop** (timed session, no reveal), **Follow-up chains** (the interviewer's next ask). Continuous: cleanup dead green CSS + retire old bank files.
+
 ## [PL 0.25.0] - 2026-06-24 — Dark mode is now Graphite (Platinum at night); green-screen retired
 
 > Sidharth: "get rid of the black-green thing as our dark mode" — mocked up three dark-Platinum directions, **Graphite** chosen. The dark mode is no longer a separate green CRT skin; it's Platinum itself, dressed for night.

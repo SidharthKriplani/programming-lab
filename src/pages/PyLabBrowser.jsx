@@ -15,6 +15,7 @@ import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx'
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
+import { dueIds, reviewSR } from '../utils/pyLabSR.js';
 import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
 import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
 
@@ -55,7 +56,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
     setProgress('');
     const res = await runPyLab(code, problem.solution, fx.setup, fx.args, problem.compare);
     setResult(res); setSubmitting(false);
-    if (res.pass) { markSolved(KEY, problem.id); onSolved && onSolved(problem.id); }
+    if (res.pass) { markSolved(KEY, problem.id); reviewSR(problem.id, true); onSolved && onSolved(problem.id); }
   }
 
   const editorH = Math.min(360, 120 + problem.starterCode.split('\n').length * 19);
@@ -115,7 +116,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
       )}
 
       {!revealed && (
-        <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
+        <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); if (result && !result.pass) reviewSR(problem.id, false); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
       )}
 
       {revealed && (
@@ -140,6 +141,7 @@ export function PyLabBrowser() {
   const [level, setLevel] = useState('all');
   const [topic, setTopic] = useState('all');
   const [q, setQ] = useState('');
+  const [reviewMode, setReviewMode] = useState(false);
   const progress = getProgress(KEY);
 
   if (activeId) {
@@ -147,12 +149,16 @@ export function PyLabBrowser() {
     return <PyLabRunner problem={problem} onBack={() => setActiveId(null)} />;
   }
 
+  const due = dueIds();
+  const dueSet = new Set(due);
   const topics = PYLAB_TOPIC_ORDER.filter(t => pyLabProblems.some(p => p.topic === t));
-  const shown = pyLabProblems.filter(p =>
-    matchesRoleLevel(p, role, level) &&
-    (topic === 'all' || p.topic === topic) &&
-    (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
-  );
+  const shown = reviewMode
+    ? pyLabProblems.filter(p => dueSet.has(p.id))
+    : pyLabProblems.filter(p =>
+        matchesRoleLevel(p, role, level) &&
+        (topic === 'all' || p.topic === topic) &&
+        (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
+      );
 
   return (
     <div className="pal-page-enter">
@@ -168,7 +174,20 @@ export function PyLabBrowser() {
 
       <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
 
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+      {(due.length > 0 || reviewMode) && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.9rem', padding: '0.55rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' }}>
+          <Icon name="clipboard-check" size={15} color="var(--accent)" />
+          <span style={{ fontSize: '0.88rem', color: 'var(--text)', fontWeight: 700 }}>
+            {reviewMode ? 'Reviewing ' + shown.length + ' due' : due.length + ' due for review'}
+          </span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>spaced repetition — solve it again to push it further out</span>
+          <button onClick={() => setReviewMode(m => !m)} style={{ marginLeft: 'auto', padding: '0.3rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--surface)', color: 'var(--accent)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}>
+            {reviewMode ? 'Show all' : 'Review now'}
+          </button>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem', opacity: reviewMode ? 0.45 : 1, pointerEvents: reviewMode ? 'none' : 'auto' }}>
         <select value={role} onChange={e => setRole(e.target.value)} style={{ padding: '0.35rem 0.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }}>
           <option value="all">All roles</option>
           {ROLE_ORDER.map(r => <option key={r} value={r}>{ROLES[r]}</option>)}
