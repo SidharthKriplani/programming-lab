@@ -581,4 +581,42 @@ export async function runPyLabBenchFull(code, fixtureSetup, args, factor) {
   }
 }
 
+/**
+ * runCheck — the Foundations "your turn" grader. Runs the learner's code, then a
+ * check snippet, in ONE fresh namespace (no global leakage); the check sets
+ * __pl_pass (bool) + __pl_msg (targeted, actionable feedback). Returns
+ * { pass, msg, stdout, error }.
+ */
+export async function runCheck(userCode, checkSource) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_user_code', userCode);
+  pyodideInstance.globals.set('__pl_check_code', checkSource);
+
+  const harness = [
+    'import io, json, traceback, contextlib',
+    '__out = io.StringIO()',
+    '__err = None; __pass = False; __msg = ""',
+    '__ns = {}',
+    'try:',
+    '    with contextlib.redirect_stdout(__out):',
+    '        exec(compile(__pl_user_code, "<your-turn>", "exec"), __ns)',
+    '        exec(compile(__pl_check_code, "<check>", "exec"), __ns)',
+    '    __pass = bool(__ns.get("__pl_pass", False))',
+    '    __msg = str(__ns.get("__pl_msg", ""))',
+    'except Exception:',
+    '    __err = traceback.format_exc()',
+    'json.dumps({"pass": __pass, "msg": __msg, "stdout": __out.getvalue(), "error": __err})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    const p = JSON.parse(raw);
+    return { pass: !!p.pass, msg: p.msg || '', stdout: (p.stdout || '').replace(/\n$/, ''), error: p.error || null };
+  } catch (err) {
+    return { pass: false, msg: '', stdout: '', error: String(err.message || err) };
+  } finally {
+    try { pyodideInstance.globals.delete('__pl_user_code'); pyodideInstance.globals.delete('__pl_check_code'); } catch { /* ignore */ }
+  }
+}
+
 export { PYODIDE_VERSION, PYODIDE_INDEX_URL };

@@ -5,6 +5,42 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.31.0] - 2026-06-24 — Foundations: the "your turn" active do-and-check step (SQL Lab's lesson for KNOW)
+
+> The deepest thing the learn frame can steal from PAL's SQL Lab isn't the chrome — it's the **active loop**: produce an answer and get *targeted* feedback, not just watch a demo. Piloted on one module, on the existing `KnowRunner`.
+
+### Added
+- **`YourTurn` step** in `KnowRunner` (`KnowBrowser.jsx`) — optional per module (`m.yourTurn`). Edit the starter to hit a goal → **Check** (or Cmd/Ctrl+Enter) → a pass/fail verdict with *actionable* feedback ("Still [2, 2, 2]: every lambda closes over the SAME i… freeze it per-iteration, e.g. `lambda i=i: i`"), plus an optional hint. Never just "wrong" — the SQL-Lab feedback voice.
+- **`runCheck(userCode, checkSource)`** in `pyodideRuntime.js` — runs the learner's code + a check snippet in ONE fresh namespace (no global leak); the check sets `__pl_pass`/`__pl_msg`. Returns `{pass, msg, stdout, error}`.
+- **Pilot:** `know-legb-and-closures` (late-binding closure) — a pure predict-run-read module, now with a fix-it challenge. CPython-verified: starter → fail + targeted msg; `lambda i=i:` → pass.
+
+### Notes
+- The editor half of "adapt CodeMirror" was already done by the PyLab work (D-PL-26): `PythonCell` gained names-only autocomplete (`completions` prop) + Cmd/Ctrl+Enter→`onSubmit` at `Prec.highest`. The your-turn step reuses both (`onSubmit`=Check). No duplicate editor work; no PyLab files touched.
+- Deliberately did **not** import the SQL-Lab *solve furniture* (schema browser, company tags, two-pane) into the learn frame — Foundations isn't a problem bank; the driven models already show data inline. Took the pedagogy (active recall), not the skin.
+- esbuild graph exit 0. Foundations-only files: `KnowBrowser.jsx`, `knowModules.js`, `pyodideRuntime.js` (additive `runCheck`).
+
+## [PL 0.30.0] - 2026-06-24 — PyLab two-pane solve view: schema panel + schema autocomplete (adapted from SQL Lab)
+
+> Sidharth: adopt PAL SQL-Lab's two-pane problem structure for PyLab and adapt the editor. Aligned divergence (D-PL-26): show the INPUT (with sample) but the OUTPUT SHAPE ONLY (no values) — showing the answer would defuse PyLab's runs-but-wrong traps. PL's editor was already CM6 + themed, so no swap — just autocomplete + keymap.
+
+### Added
+- **Two-pane solve view** (`PyLabBrowser` + `.pylab-solve-grid`, collapses to one column ≤900px) — left: prompt + Before-you-write + ambiguity drill + **schema panel**; right: editor + Submit + result. The reveal (solution + judgment layer + Scale-it + Refactor) stays full-width below.
+- **Schema panel** (`src/components/shared/PyLabSchema.jsx` ← precomputed `src/data/pyLabSchemas.js`) — each input as a mini table (columns + dtypes + 3-row sample) and a **"Returns · shape only"** target (output columns/dtypes/rowcount, **values hidden**). `scripts/build_py_schemas.py` introspects every fixture + canonical output in CPython at build time (136 problems, 0 errors) → static at runtime, **zero Pyodide-on-open cost**.
+- **Schema autocomplete** (`PythonCell` `completions` prop + `@codemirror/autocomplete`) — names-only: the fixture's arg + column names (bare + quoted), automatic as you type. No method/full-query completion (held the "cut typos, don't do the thinking" line).
+- **`Cmd/Ctrl+Enter` → Submit** (`PythonCell` `onSubmit`, wrapped in `Prec.highest` so it beats CM's default "insert blank line" — the exact bug PAL hit). Solve header now shows the level instead of the WARMUP/CORE badge.
+
+### Decisions
+- **D-PL-26** — adopt SQL-Lab's two-pane + schema structure for PyLab, but show **output shape only, never values** (preserves the trap pedagogy — there's no oracle to diff against, which is the whole point). Company tags + square cards per D-PL-25.
+
+### Notes
+- PL has no global single-key shortcuts, so PAL's contenteditable-shortcut bug doesn't apply (verified). Same iCloud/mmap deploy gremlin as PAL — if a push times out, use the rsync-to-/tmp `--exclude='public/'` workaround.
+
+### Verified
+- esbuild clean (PythonCell, PyLabSchema, PyLabBrowser); `autocompletion`/`Prec` exports resolve; `pyLabSchemas.js` node-check + import clean (136 schemas); **full import-graph bundle exit 0**.
+
+### Next
+- Deploy the 0.22–0.30 stack. Then Follow-up chains.
+
 ## [PL 0.29.0] - 2026-06-24 — PyLab Phase 3: Mock-loop (timed, no-reveal interview session)
 
 > The pressure test. Pick a length, solve under a running clock with no reveal / debrief / hints, get a scorecard — and the misses feed spaced repetition.

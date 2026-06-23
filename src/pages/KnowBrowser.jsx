@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { knowModules, KNOW_CLUSTERS, KNOW_CLUSTER_ORDER } from '../data/knowModules.js';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
+import { loadPython, runCheck } from '../components/ide/pyodideRuntime.js';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
 import { SeniorRead } from '../components/shared/SeniorRead.jsx';
 import { HowToStrip } from '../components/shared/HowToStrip.jsx';
@@ -50,6 +51,70 @@ function Chip({ label, color }) {
 // Header (cluster chip + title + subtitle + hook) -> optional predict MCQ ->
 // runnable PythonCell(demoCode) -> Reveal -> explain[] collapsibles ->
 // mentalModel callout -> ForwardPointerCard. markSeen on open, markSolved on reveal.
+// ── YourTurn — the active do-and-check step (the SQL-Lab lesson for KNOW). The
+// learner edits code to achieve a goal; runCheck grades it and returns targeted,
+// actionable feedback (never just "wrong"). Optional per module (m.yourTurn).
+function YourTurn({ data }) {
+  const [code, setCode] = useState(data.starter);
+  const [verdict, setVerdict] = useState(null); // { pass, msg }
+  const [busy, setBusy] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+
+  async function check() {
+    setBusy(true); setVerdict(null);
+    try {
+      await loadPython();
+      const r = await runCheck(code, data.check);
+      if (r.error) {
+        const lines = r.error.trim().split('\n');
+        setVerdict({ pass: false, msg: 'Your code raised an error — ' + (lines[lines.length - 1] || 'check the traceback') });
+      } else {
+        setVerdict({ pass: r.pass, msg: r.msg });
+      }
+    } catch (e) {
+      setVerdict({ pass: false, msg: String(e.message || e) });
+    }
+    setBusy(false);
+  }
+
+  return (
+    <div style={{ border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)', background: 'var(--accent-bg)', padding: '0.85rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.5rem' }}>
+        <Icon name="terminal" size={15} color="var(--accent)" />
+        <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)' }}>Your turn</span>
+      </div>
+      <p style={{ margin: '0 0 0.6rem', fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.55 }}>{data.prompt}</p>
+      <PythonCell
+        initialCode={data.starter}
+        label="your-turn.py"
+        glassBox={false}
+        onCodeChange={setCode}
+        onSubmit={check}
+        height={Math.min(220, 64 + data.starter.split('\n').length * 20)}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.6rem', flexWrap: 'wrap' }}>
+        <button onClick={check} disabled={busy} className="pal-btn-primary" style={{ fontSize: '0.85rem' }}>
+          {busy ? 'Checking…' : 'Check (⌘↵)'}
+        </button>
+        {data.hint && (
+          <button onClick={() => setShowHint(h => !h)} style={{ fontSize: '0.78rem', background: 'transparent', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.32rem 0.65rem', cursor: 'pointer', color: 'var(--text-muted)' }}>
+            {showHint ? 'hide hint' : 'hint'}
+          </button>
+        )}
+      </div>
+      {showHint && data.hint && (
+        <p style={{ margin: '0.55rem 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{data.hint}</p>
+      )}
+      {verdict && (
+        <div style={{ marginTop: '0.6rem', padding: '0.6rem 0.8rem', borderRadius: 'var(--radius-sm)', background: verdict.pass ? 'var(--green-bg)' : 'var(--red-bg)', border: '1px solid ' + (verdict.pass ? 'var(--green-border)' : 'var(--red-border)'), display: 'flex', alignItems: 'flex-start', gap: '0.45rem' }}>
+          <Icon name={verdict.pass ? 'check' : 'x'} size={14} color={verdict.pass ? 'var(--green-text)' : 'var(--red-text)'} />
+          <span style={{ fontSize: '0.85rem', color: verdict.pass ? 'var(--green-text)' : 'var(--red-text)', lineHeight: 1.5 }}>{verdict.msg}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function KnowRunner({ module: m, onBack, onNext }) {
   const [picked, setPicked] = useState(null);
   const [revealed, setRevealed] = useState(false);
@@ -206,6 +271,13 @@ export function KnowRunner({ module: m, onBack, onNext }) {
           {m.seniorRead && (
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.95rem' }}>
               <SeniorRead seniorRead={m.seniorRead} />
+            </div>
+          )}
+
+          {/* Your turn — the active do-and-check step (SQL-Lab lesson: produce + check, not just watch) */}
+          {m.yourTurn && (
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.95rem' }}>
+              <YourTurn data={m.yourTurn} />
             </div>
           )}
 

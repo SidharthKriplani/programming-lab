@@ -189,6 +189,12 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A closure remembers the variable, not the value - it reads it fresh on every call, so bind the value now if you need it frozen.',
+    yourTurn: {
+      prompt: 'Make result come out as [0, 1, 2] - each lambda should capture its OWN value, not the shared loop variable.',
+      starter: 'funcs = [lambda: i for i in range(3)]\nresult = [f() for f in funcs]\nprint(result)',
+      check: '__pl_pass = (result == [0, 1, 2])\n__pl_msg = ("Nailed it - each lambda froze its own value at definition time." if __pl_pass else "Still " + repr(result) + ": every lambda closes over the SAME variable i, which ends at 2. Freeze the value per iteration, e.g. lambda i=i: i.")',
+      hint: 'A default argument is evaluated once, at definition time. lambda i=i: i snapshots i NOW instead of reading the live variable later.',
+    },
     isFree: true,
     seniorRead: {
       shortAnswer: 'It prints [2, 2, 2]. The lambdas capture the variable i, not its value, and read it at call time - by then the loop has ended and i is 2.',
