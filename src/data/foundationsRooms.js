@@ -364,3 +364,59 @@ export const FOUNDATION_TALLY = {
   clusters: FOUNDATION_ROOMS.reduce((n, r) => n + r.clusters.length, 0),
   modules:  FOUNDATION_ROOMS.reduce((n, r) => n + r.clusters.reduce((m, c) => m + c.modules.length, 0), 0),
 };
+
+// ── KNOW merge (D-PL-21 / F1 structural) ──────────────────────────────────
+// The 20 authored \'Python & OOP Depth\' modules (knowModules.js) ARE Foundations
+// content — there should not be two KNOW rooms. KNOW_BACKING links a planned
+// module to its already-authored module (id in knowModules); that card is READY
+// now (opens the runnable predict->reveal flow), the rest stay \'planned\'.
+// KNOW_EXTRA adds the authored modules that have no planned counterpart, so no
+// real content is lost. Upgrade path (F1+): swap each predict-run-read module
+// for its driven live/sim model.
+export const KNOW_BACKING = {
+  'pf-binding': 'know-names-are-bindings',
+  'pf-mutable-default': 'know-mutable-default-args',
+  'pf-legb': 'know-legb-and-closures',
+  'pf-args': 'know-args-kwargs-binding',
+  'pf-generators': 'know-generators-are-lazy',
+  'pf-dunders': 'know-dunder-data-model',
+  'pf-truthiness': 'know-truthiness-or-default',
+  'pf-iteration': 'know-iterator-protocol',
+  'pf-is-vs-eq': 'know-is-vs-equals',
+  'pf-dataclasses': 'know-dataclass-generates',
+  'pf-decorators': 'know-decorators-from-scratch',
+  'pf-context': 'know-context-manager',
+  'sp-hints': 'know-hints-dont-enforce',
+  'sp-exceptions': 'know-eafp-vs-lbyl',
+};
+// Authored modules with no planned counterpart — appended into their cluster, READY now.
+export const KNOW_EXTRA = {
+  'python-foundations': {
+    'the-data-model': [
+      { id: 'pf-bool-len', title: 'How if obj: decides truth', model: '__bool__ then __len__ then default True — the truth-test protocol, run live.', widget: 'live', live: 'know-bool-len-fallback' },
+      { id: 'pf-operator-dispatch', title: 'Operators dispatch to dunders', model: 'a + b calls a.__add__(b); watch the operator resolve to the dunder.', widget: 'live', live: 'know-operator-dispatch' },
+    ],
+    'objects-and-classes': [
+      { id: 'pf-eq-hash', title: 'The __eq__ / __hash__ contract', model: 'Override __eq__ without __hash__; watch the object break as a dict key.', widget: 'live', live: 'know-eq-hash-contract' },
+      { id: 'pf-property', title: 'Properties turn access into a call', model: 'Wrap an attribute in @property; watch plain access run a method.', widget: 'live', live: 'know-property-descriptor' },
+    ],
+    'decorators-and-context': [
+      { id: 'pf-wraps', title: 'functools.wraps and the lost identity', model: 'Decorate without wraps; watch __name__/__doc__ vanish; add wraps to restore them.', widget: 'live', live: 'know-functools-wraps' },
+    ],
+  },
+  'the-machine': {
+    'execution': [
+      { id: 'mc-import-cache', title: 'A module runs once, then caches', model: 'Import twice; watch top-level code run once and sys.modules serve the cache.', widget: 'live', live: 'know-import-runs-once' },
+    ],
+  },
+};
+
+// Helper: every module in a cluster (planned skeleton + the authored extras).
+export function clusterModules(roomId, clusterId, baseModules) {
+  const extra = (KNOW_EXTRA[roomId] && KNOW_EXTRA[roomId][clusterId]) || [];
+  return baseModules.concat(extra);
+}
+// Helper: the authored knowModule id backing a module, if any (=> READY now).
+export function backingFor(mod) {
+  return mod.live || KNOW_BACKING[mod.id] || null;
+}

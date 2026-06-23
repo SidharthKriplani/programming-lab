@@ -5,6 +5,21 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.23.0] - 2026-06-24 — PyLab Phase 2 cont.: Ambiguity drill + Refactor (format content decoupled)
+
+> Two more showcase formats from the vision. Both run off a new **`src/data/pyLabFormats.js`** keyed by problem id — so a problem carries an ambiguity drill, a refactor target, both, or neither, and the 136-problem bank stays untouched (no re-gating).
+
+### Added
+- **Ambiguity drill** (`AmbiguityDrill.jsx`) — surfaces *above the editor*: the vague ask ("share of WHAT total?", "keep or drop the unknown-region row?", "dense or min ranking after a tie?") is pinned to one reading before you write a line. Pick the interpretation → see which the spec actually means and why the others merely run (the wrong options are usually the problem's own trap). **8 authored**, each correct option verified against what the canonical `solution` computes.
+- **Refactor** (`RefactorChallenge.jsx` + `runPyLabBenchFull` runtime) — an opt-in panel in the reveal: here is code that *works but is slow*; rewrite it. Graded twice — still correct (`runPyLab` vs the canonical) **and** actually faster (a scale-race of your code vs the baseline, factor auto-derived to ~5k rows). **5 authored** (`iterrows`/`.apply`/Python-loop baselines), each CPython-verified correct-but-slower.
+- `runPyLabBenchFull` — benches a full `def solve(...)` at scale (the Refactor needs to time two complete solutions; `runPyLabBench` times method bodies for the race).
+
+### Verified
+- esbuild clean on all four changed files; `pyLabFormats.js` `node --check` clean; **all 12 keys are real problem ids** (8 ambiguity + 5 refactor; rep-share carries both). The full-code bench path simulated in CPython: rep-share refactor at 5,000 rows — baseline `iterrows` **2,743 ms** vs vectorized **2.9 ms** = **959× faster** the learner earns by rewriting. Content authored + verified by a gated subagent (it rejected `nlargest`/`topn` — no honest fork, no tie support — rather than fake them).
+
+### Next
+- Phase 3 — Follow-up chains, Mock-loop, spaced repetition, the trap museum. Continuous: grow ambiguity/refactor coverage; retire the dead old bank data files + routes.
+
 ## [PL 0.22.0] - 2026-06-24 — PyLab Phase 2: the Scale-it race (the glass box, made a game)
 
 > First showcase format from the vision (`PYLAB-VISION` §3). On any problem with ≥2 valid methods, predict which one survives at scale — then watch the cost curve actually diverge.
@@ -30,12 +45,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Decisions
 - **D-PL-21** — KNOW becomes the Foundations rooms; the two branches **amend the charter** (Competitive Programming exceeds the easy→medium ceiling, partially superseding D-PL-07 which still governs the trunk; Tensors & Autograd takes **library mechanics only** — modeling stays in `ml-systems-lab`, same KNOW→DO seam). Re-scopes PL from "fluency floor" to "fluency floor + two depth verticals." Approved 2026-06-24.
 
-### Wired (F0 structural half — the rooms are now in the app)
-- **`src/pages/FoundationsBrowser.jsx`** — reads the registry and renders the trunk + branches → rooms → clusters → planned module cards (each tagged with its `live`/`sim`/`stepper`/`concept` substrate + an honest "planned" state + a skeleton banner). Uses the lab's tokens, so it themes under both skins.
-- Wired into **`App.jsx`** (lazy route `view==='foundations'`) and **`Sidebar.jsx`** (new KNOW nav item "Foundations" above "Python & OOP Depth"; `VIEW_FRAME` + `BANK_TOTAL`). esbuild bundle of the whole import graph → **exit 0** (Vite/Rolldown build is macOS-only; sandbox-verified via esbuild).
+### Wired (F0 — the rooms are now in the app)
+- **`src/pages/FoundationsBrowser.jsx`** — reads the registry and renders the trunk + branches → rooms → clusters → module cards. Wired into **`App.jsx`** (lazy route `view==='foundations'`) and **`Sidebar.jsx`** (KNOW nav). Uses the lab's tokens → themes under both skins. esbuild graph → **exit 0** (Vite/Rolldown is macOS-only; sandbox-verified via esbuild).
 
-### Still to do (F0 remainder → F1)
-- The `KnowRunner` `interactive` slot + **one `live` module end-to-end** (Room 1 aliasing) as the runnable-model proof; then author Room 1 to retire the 20-card `knowModules.js` stub (F1). macOS `npm run build` + approve-first push pending.
+### Merged — one KNOW room (consolidation, mirroring PyLab on the DO side)
+- The 20 authored "Python & OOP Depth" modules fold **into** Foundations. `KNOW_BACKING` + `KNOW_EXTRA` (in `foundationsRooms.js`) route each to its room/cluster — **17 → Python Foundations, 2 → Shipping Python, 1 → The Machine** — where it renders as a **ready** card opening the runnable predict→reveal flow via the now-exported `KnowRunner` (solved/seen state preserved). Planned modules stay dashed/"planned"; room + page show a live `ready` count (20 ready now).
+- **Standalone "Python & OOP Depth" nav item removed** — Foundations is the single KNOW surface (`know` route orphaned, harmless). Verified: all 20 authored modules reachable, no id typos, esbuild clean.
+
+### Still to do (F1)
+- Swap each ready predict-run-read module for its driven `live`/`sim` model; author the planned modules room-by-room. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

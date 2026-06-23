@@ -12,7 +12,6 @@ import { pandasProblems } from '../../data/pandasProblems.js';
 import { idiomsProblems } from '../../data/idiomsProblems.js';
 import { oopProblems } from '../../data/oopProblems.js';
 import { knowModules } from '../../data/knowModules.js';
-import { FOUNDATION_TALLY } from '../../data/foundationsRooms.js';
 import { judgeProblems } from '../../data/judgeProblems.js';
 import { buildProjects } from '../../data/buildProjects.js';
 import { pyLabProblems } from '../../data/pyLabProblems.js';
@@ -82,7 +81,6 @@ const TRACK = [
 const FRAMES = [
   { key: 'KNOW', icon: 'book-open', items: [
     { label: 'Foundations', view: 'foundations', icon: 'book-open', bank: 'foundations' },
-    { label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' },
   ] },
   { key: 'DO', icon: 'terminal', items: [
     { label: 'PyLab', view: 'pylab', icon: 'layers', bank: 'pylab' },
@@ -99,7 +97,7 @@ const BANK_TOTAL = {
   pylab: pyLabProblems.length,
   gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
   idioms: idiomsProblems.length, oop: oopProblems.length,
-  foundations: FOUNDATION_TALLY.modules,
+  foundations: knowModules.length,
   know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
 };
 function bankSolved(bank) {
@@ -109,6 +107,7 @@ function bankSolved(bank) {
   if (bank === 'gotchas') return gotchaCounts().solved;
   if (bank === 'idioms') return problemCounts(IDIOMS_KEY).solved;
   if (bank === 'oop') return problemCounts(OOP_KEY).solved;
+  if (bank === 'foundations') return problemCounts('pl-know-progress-v1').solved;
   if (bank === 'know') return problemCounts('pl-know-progress-v1').solved;
   if (bank === 'judge') return problemCounts('pl-judge-progress-v1').solved;
   if (bank === 'build') return problemCounts(BUILD_KEY).solved;

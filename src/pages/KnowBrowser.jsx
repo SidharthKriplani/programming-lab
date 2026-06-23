@@ -49,7 +49,7 @@ function Chip({ label, color }) {
 // Header (cluster chip + title + subtitle + hook) -> optional predict MCQ ->
 // runnable PythonCell(demoCode) -> Reveal -> explain[] collapsibles ->
 // mentalModel callout -> ForwardPointerCard. markSeen on open, markSolved on reveal.
-function KnowRunner({ module: m, onBack, onNext }) {
+export function KnowRunner({ module: m, onBack, onNext }) {
   const [picked, setPicked] = useState(null);
   const [revealed, setRevealed] = useState(false);
 
