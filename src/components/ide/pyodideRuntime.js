@@ -297,4 +297,141 @@ export async function previewExample(solution, setup, call, inputs) {
   }
 }
 
+// ── PyLab: the solve()->output + typed-comparator grading contract (PYLAB-BUILD-SPEC §3) ──
+// PL_COMPARE_SRC mirrors scripts/pl_compare.py — keep the two in sync.
+const PL_COMPARE_SRC = `
+import math as _math
+def pl_compare(expected, got, cfg=None):
+    cfg = cfg or {}
+    import pandas as pd
+    import numpy as np
+    kind = cfg.get('kind')
+    if kind is None:
+        if isinstance(expected, pd.DataFrame): kind='frame'
+        elif isinstance(expected, pd.Series): kind='series'
+        elif isinstance(expected, np.ndarray): kind='array'
+        elif isinstance(expected, float): kind='float'
+        elif isinstance(expected, (list, tuple)): kind='seq'
+        else: kind='value'
+    try:
+        if kind == 'frame':
+            if not isinstance(got, pd.DataFrame): return (False, 'expected a DataFrame, got ' + type(got).__name__)
+            e, g = expected, got
+            if cfg.get('ignoreIndex', True): e = e.reset_index(drop=True); g = g.reset_index(drop=True)
+            pd.testing.assert_frame_equal(g, e, check_dtype=cfg.get('checkDtype', True), check_like=cfg.get('checkLike', True))
+            return (True, 'ok')
+        if kind == 'series':
+            if not isinstance(got, pd.Series): return (False, 'expected a Series, got ' + type(got).__name__)
+            e, g = expected, got
+            if cfg.get('ignoreIndex', True): e = e.reset_index(drop=True); g = g.reset_index(drop=True)
+            pd.testing.assert_series_equal(g, e, check_dtype=cfg.get('checkDtype', True), check_names=cfg.get('checkNames', False))
+            return (True, 'ok')
+        if kind == 'array':
+            ge = np.asarray(expected); gg = np.asarray(got)
+            if gg.shape != ge.shape: return (False, 'array shape differs')
+            if cfg.get('float', True): np.testing.assert_allclose(gg, ge, rtol=cfg.get('rtol', 1e-7), atol=cfg.get('atol', 0.0))
+            elif not np.array_equal(gg, ge): return (False, 'arrays differ')
+            return (True, 'ok')
+        if kind == 'float':
+            if not _math.isclose(float(got), float(expected), rel_tol=cfg.get('rtol', 1e-9), abs_tol=cfg.get('atol', 0.0)): return (False, 'floats differ')
+            return (True, 'ok')
+        if kind == 'seq':
+            le, lg = list(expected), list(got)
+            if cfg.get('unordered', False):
+                try: le, lg = sorted(le), sorted(lg)
+                except TypeError: pass
+            if le != lg: return (False, 'sequences differ')
+            return (True, 'ok')
+        if expected != got: return (False, 'values differ')
+        return (True, 'ok')
+    except AssertionError as exc:
+        return (False, str(exc).strip().split(chr(10))[0][:200])
+    except Exception as exc:
+        return (False, type(exc).__name__ + ': ' + str(exc)[:160])
+`;
+
+/**
+ * runPyLab — grade a PyLab problem. Runs the fixture, runs the canonical solution and the
+ * user's code (both define solve(...)), and compares outputs via pl_compare(compareCfg).
+ * The user run is timed + memory-traced + stdout-captured (the glass box).
+ * Returns: { pass, message, error, stdout, timeMs, peakKb }.
+ */
+export async function runPyLab(userCode, solutionCode, fixtureSetup, args, compareCfg) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_user', userCode);
+  pyodideInstance.globals.set('__pl_sol', solutionCode);
+  pyodideInstance.globals.set('__pl_fixture', fixtureSetup);
+  pyodideInstance.globals.set('__pl_args_json', JSON.stringify(args || []));
+  pyodideInstance.globals.set('__pl_cfg_json', JSON.stringify(compareCfg || {}));
+
+  const harness = [
+    'import io, json, time, tracemalloc, traceback, contextlib',
+    PL_COMPARE_SRC,
+    '__cfg = json.loads(__pl_cfg_json)',
+    '__args = json.loads(__pl_args_json)',
+    '__out = io.StringIO()',
+    '__err = None',
+    '__pass = False',
+    '__msg = ""',
+    '__ms = 0.0',
+    '__peak = 0',
+    'try:',
+    '    __sol_ns = {}',
+    '    exec(__pl_fixture, __sol_ns)',
+    '    exec(__pl_sol, __sol_ns)',
+    '    __canon = __sol_ns["solve"](*[__sol_ns[a] for a in __args])',
+    'except Exception:',
+    '    __err = "Reference solution failed:\\n" + traceback.format_exc()',
+    'if __err is None:',
+    '    tracemalloc.start()',
+    '    __t0 = time.perf_counter()',
+    '    try:',
+    '        __u_ns = {}',
+    '        exec(__pl_fixture, __u_ns)',
+    '        with contextlib.redirect_stdout(__out):',
+    '            exec(__pl_user, __u_ns)',
+    '            if "solve" not in __u_ns:',
+    '                raise NameError("define a function called solve(...)")',
+    '            __got = __u_ns["solve"](*[__u_ns[a] for a in __args])',
+    '        __pass, __msg = pl_compare(__canon, __got, __cfg)',
+    '    except Exception:',
+    '        __err = traceback.format_exc()',
+    '    finally:',
+    '        __ms = (time.perf_counter() - __t0) * 1000.0',
+    '        __cur, __peak = tracemalloc.get_traced_memory()',
+    '        tracemalloc.stop()',
+    'json.dumps({',
+    '    "pass": bool(__pass),',
+    '    "message": __msg,',
+    '    "error": __err,',
+    '    "stdout": __out.getvalue(),',
+    '    "timeMs": round(__ms, 3),',
+    '    "peakKb": round(__peak / 1024.0, 1),',
+    '})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    const parsed = JSON.parse(raw);
+    return {
+      pass: !!parsed.pass,
+      message: parsed.message || '',
+      error: parsed.error || null,
+      stdout: (parsed.stdout || '').replace(/\n$/, ''),
+      timeMs: parsed.timeMs ?? 0,
+      peakKb: parsed.peakKb ?? 0,
+    };
+  } catch (err) {
+    return { pass: false, message: '', error: String(err.message || err), stdout: '', timeMs: 0, peakKb: 0 };
+  } finally {
+    try {
+      pyodideInstance.globals.delete('__pl_user');
+      pyodideInstance.globals.delete('__pl_sol');
+      pyodideInstance.globals.delete('__pl_fixture');
+      pyodideInstance.globals.delete('__pl_args_json');
+      pyodideInstance.globals.delete('__pl_cfg_json');
+    } catch { /* ignore */ }
+  }
+}
+
 export { PYODIDE_VERSION, PYODIDE_INDEX_URL };

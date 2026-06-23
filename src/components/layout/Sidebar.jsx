@@ -14,6 +14,7 @@ import { oopProblems } from '../../data/oopProblems.js';
 import { knowModules } from '../../data/knowModules.js';
 import { judgeProblems } from '../../data/judgeProblems.js';
 import { buildProjects } from '../../data/buildProjects.js';
+import { pyLabProblems } from '../../data/pyLabProblems.js';
 import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY, BUILD_KEY, IDIOMS_KEY, OOP_KEY } from '../../utils/problemProgress.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
@@ -80,6 +81,7 @@ const TRACK = [
 const FRAMES = [
   { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' }] },
   { key: 'DO', icon: 'terminal', items: [
+    { label: 'PyLab', view: 'pylab', icon: 'layers', bank: 'pylab' },
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
     { label: 'Python Drills', view: 'python', icon: 'code-2', bank: 'python' },
     { label: 'Python Idioms', view: 'idioms', icon: 'pen-line', bank: 'idioms' },
@@ -91,14 +93,16 @@ const FRAMES = [
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
+const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
 
 const BANK_TOTAL = {
+  pylab: pyLabProblems.length,
   gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
   idioms: idiomsProblems.length, oop: oopProblems.length,
   know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
 };
 function bankSolved(bank) {
+  if (bank === 'pylab') return problemCounts('pl-pylab-progress-v1').solved;
   if (bank === 'python') return problemCounts(PYTHON_KEY).solved;
   if (bank === 'pandas') return problemCounts(PANDAS_KEY).solved;
   if (bank === 'gotchas') return gotchaCounts().solved;

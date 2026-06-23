@@ -5,6 +5,21 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.17.0] - 2026-06-24 — PyLab foundation: comparator + four gates + runtime + judgment layer (CPython-verified)
+
+> Implements the SQL-Lab → PyLab handoff (`docs/PYLAB-HANDOFF.md` + `PYLAB-BUILD-SPEC.md`, approved). The depth systems, not a runner lookalike. PyLab = the single entry for pandas/numpy AND Python. Built foundation-first ("no content ships ungated").
+
+### Added
+- **Comparison contract** — `scripts/pl_compare.py` (mirrored as `PL_COMPARE_SRC` in the runtime): `solve(...)→output` graded by a typed comparator (`assert_frame_equal` / `assert_series_equal` / `allclose` / `isclose` / value), explicit dtype/index/column-order/NaN. Unifies pandas + Python.
+- **Four committed gates** + extractor: `audit_py.py` (Tier-1 blocks — every solution runs + AST sandbox), `verify_py_methods.py` (non-trap methods == solution, traps **run-and-diverge**, canonicalMethodId + MCQ-id integrity), `py_content_scan.mjs` (jargon-in-prompt, hints, debrief), `run_py.py` (`--diverge` authoring tool), `_extract_pylab.mjs`.
+- **Engineered fixtures** (`pyLabFixtures.js`) + a **4-problem proving seed** (`pyLabProblems.js`): warmup single-method (empty dial), a core multi-method judgment problem (transform vs merge-back + a global-total trap), a `dropna` footgun, a python-core value-compare. **Every solution, method and trap executed in real pandas — all gates green (Tier-1 0, method-verify 0, content-scan 0).**
+- **Runtime** `runPyLab` (Pyodide) — runs the fixture, runs canonical + user `solve`, grades via `pl_compare`; glass-box timed.
+- **JUDGE surface** `JudgmentLayer.jsx` — method cards (Reference / red Trap·runs-wrong badges), the which-method-when dial, interactive MCQs; renders only when ≥2 methods (honesty rule).
+- **PyLab room** `PyLabBrowser.jsx` (filter by topic/difficulty/search → solve → Submit graded → Reveal → debrief → JudgmentLayer), wired into DO nav as the pandas/numpy + Python entry.
+
+### Notes
+- Foundation + proving seed; the fluency / footgun / judgment **banks** are authored on top in gated subagent batches (`PYLAB-BUILD-SPEC` §10). UI is esbuild-clean but not runtime-tested in-sandbox (no Pyodide/Vite there) — the content + gates + comparator are CPython-verified, which is the part that earns trust.
+
 ## [PL 0.16.1] - 2026-06-23 — Platinum legibility + cleanup
 
 > The cdnfonts "Chicago" loaded as an illegible display face (and I'd wrongly put it on body text). Fixed, plus two cleanups Sidharth called.
@@ -14,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Menu bar trimmed** — dropped File / Edit / View / Run / Special; the bar is now just the rainbow Apple, "Programming Lab", and the clock.
 - **Nav symbols removed in Platinum only** — the left-nav is text-only under Platinum (`noIcons` gate); other skins keep their icons. Chevrons stay (they're the accordion control).
 - **Menu-bar corner glyph → BreakLabs seam** (not Apple's apple — trademark). The classic top-left "system" corner is now the red `⌇` mark.
+- **Darkened the greys** — window + sidebar from a faint `#c6c6c6` to a real medium gray `#a6a6a6`, desktop deepened to `#566e6c`. White cards now pop against actual gray instead of washing out.
 
 ## [PL 0.16.0] - 2026-06-23 — Real Platinum: white panes, Chicago, no rails + one light/dark toggle
 

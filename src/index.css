@@ -852,10 +852,10 @@ body {
    tokens above. Light, beveled, Apple. Governing spec: docs/SKIN-SYSTEM.md.
    ═══════════════════════════════════════════════════════════════════════════ */
 :root[data-skin='platinum'] {
-  --bg: #6f8a8a;                 /* desktop teal-gray */
+  --bg: #566e6c;                 /* desktop — deeper teal-gray so windows pop */
   --surface: #ffffff;            /* content panes / cards — WHITE (real Platinum contrast) */
-  --surface-2: #e8e8e8;          /* light-gray secondary panels / headers */
-  --surface-raised: #f4f4f4;
+  --surface-2: #dcdcdc;          /* secondary panels / headers — mid gray */
+  --surface-raised: #ececec;
   --border: #000000;             /* classic 1px black window border */
   --border-subtle: #9a9a9a;
   --border-strong: #000000;
@@ -905,14 +905,14 @@ body {
 /* the main content sits in a Platinum GRAY window on the teal desktop;
    content cards inside it are WHITE — that's the contrast that was missing */
 :root[data-skin='platinum'] .app-main {
-  background: #c6c6c6;
+  background: #a6a6a6;
   border: 1px solid #000;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.45);
   border-radius: 3px;
   margin: 14px auto 28px;
   padding: 1.4rem 1.6rem 2.4rem;
 }
-:root[data-skin='platinum'] .app-sidebar { background: #c6c6c6; }
+:root[data-skin='platinum'] .app-sidebar { background: #a6a6a6; }
 
 /* Platinum content cards — WHITE pane, crisp black 1px frame, hard mini-drop */
 :root[data-skin='platinum'] .pal-card-hover {
