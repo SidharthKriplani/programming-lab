@@ -151,8 +151,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`AsyncTimelineModel.jsx`** (sim, Room 5) — toggle serial vs concurrent; `await` hands control to the loop so the three I/O tasks overlap, and the total drops from the **sum** (7) to the **longest wait** (3). Same one thread.
 - **Fourteen driven models now** (4 on the StateTrace template + 10 bespoke), across Rooms 1/2/4/5. esbuild exit 0.
 
+### Driven — Room 3 DSA pattern traces (its first models)
+- **`TwoPointerModel.jsx`** — sorted array, two pointers converge; the sum vs target decides which to move (O(n), not the O(n²) nested loop). Target slider; default tuned so the pointer visibly walks inward before the match.
+- **`SlidingWindowModel.jsx`** — a size-k window slides; add the entering element, subtract the leaving one (running sum + best-so-far), never re-summing → O(n) not O(n·k).
+- **`BinarySearchModel.jsx`** — lo/mid/hi on a sorted array; half the space discarded each step (O(log n)); out-of-range cells dim, target selectable (try 10 — absent).
+- All three are deterministic JS steppers (the trace is the lesson); results CPython-verified (pair found, max=9, index 5 / not-found). **Seventeen driven models now**, across Rooms 1/2/3/4/5. esbuild exit 0.
+- *These three share a clear shape (array + indices + step narration) — a candidate "algorithm-trace" template later, the way StateTrace emerged from aliasing/copy-view.*
+
 ### Still to do (F1 cont.)
-- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel` — sandbox couldn't delete). Keep migrating the repeating shapes onto StateTrace; bespoke only where needed. macOS `npm run build` + approve-first push pending.
+- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel`). Consider an algorithm-trace template for the DSA steppers. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

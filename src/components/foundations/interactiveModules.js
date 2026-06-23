@@ -18,6 +18,9 @@ import { TruthinessModel } from './TruthinessModel.jsx';
 import { DecoratorModel } from './DecoratorModel.jsx';
 import { GeneratorModel } from './GeneratorModel.jsx';
 import { AsyncTimelineModel } from './AsyncTimelineModel.jsx';
+import { TwoPointerModel } from './TwoPointerModel.jsx';
+import { SlidingWindowModel } from './SlidingWindowModel.jsx';
+import { BinarySearchModel } from './BinarySearchModel.jsx';
 
 const trace = (cfg) => () => createElement(StateTrace, { config: cfg });
 
@@ -39,4 +42,7 @@ export const INTERACTIVE_MODULES = {
   'mc-vectorized': VectorizedRaceModel,              // Room 2 · cost-felt (live numpy race)
   'np-broadcast': BroadcastModel,                    // Room 4 · numpy (broadcasting)
   'pd-align': IndexAlignModel,                       // Room 4 · pandas (index alignment, live)
+  'dsa-two-pointer': TwoPointerModel,                // Room 3 · patterns
+  'dsa-window': SlidingWindowModel,                  // Room 3 · patterns
+  'dsa-binary-search': BinarySearchModel,            // Room 3 · patterns
 };
