@@ -33,6 +33,7 @@ export function PythonCell({
   label = 'Python',
   glassBox = true,
   onResult,
+  onCodeChange,
 }) {
   const [status, setStatus]   = useState('idle'); // idle | loading | running | done | error
   const [progress, setProgress] = useState('');
@@ -81,7 +82,7 @@ export function PythonCell({
           '.cm-content': { padding: '10px 4px' },
         }),
         EditorView.updateListener.of(v => {
-          if (v.docChanged) codeRef.current = v.state.doc.toString();
+          if (v.docChanged) { codeRef.current = v.state.doc.toString(); onCodeChange?.(codeRef.current); }
         }),
       ],
     });

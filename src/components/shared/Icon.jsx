@@ -247,6 +247,12 @@ const PATHS = {
   moon: (
     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
   ),
+  x: (
+    <>
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </>
+  ),
 };
 
 export function Icon({ name, size = 16, color = 'currentColor', strokeWidth = 1.75, style, className }) {

@@ -5,8 +5,11 @@
 // them inside Sidebar gives them new identities each render and breaks the animation).
 import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../shared/Icon.jsx';
-import { getCounts } from '../../utils/gotchaProgress.js';
+import { getCounts as gotchaCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
+import { pythonProblems } from '../../data/pythonProblems.js';
+import { pandasProblems } from '../../data/pandasProblems.js';
+import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY } from '../../utils/problemProgress.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
 
@@ -68,16 +71,27 @@ const TRACK = [{ label: 'Home', view: 'home', icon: 'layout' }];
 
 const FRAMES = [
   { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', soon: true }] },
-  { key: 'DO', icon: 'terminal', items: [{ label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle' }] },
+  { key: 'DO', icon: 'terminal', items: [
+    { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
+    { label: 'Python Drills', view: 'python', icon: 'code-2', bank: 'python' },
+    { label: 'pandas / numpy', view: 'pandas', icon: 'layers', bank: 'pandas' },
+  ] },
   { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', soon: true }] },
   { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', soon: true }] },
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { gotchas: 'DO' };
+const VIEW_FRAME = { gotchas: 'DO', python: 'DO', pandas: 'DO' };
+
+const BANK_TOTAL = { gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length };
+function bankSolved(bank) {
+  if (bank === 'python') return problemCounts(PYTHON_KEY).solved;
+  if (bank === 'pandas') return problemCounts(PANDAS_KEY).solved;
+  if (bank === 'gotchas') return gotchaCounts().solved;
+  return 0;
+}
 
 export function Sidebar({ view, onNavigate, open = false, onClose }) {
-  const counts = getCounts();
   const [theme, setThemeState] = useState(getTheme());
   const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'DO');
 
@@ -130,7 +144,6 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
                 <div style={{ marginLeft: '0.7rem', paddingLeft: '0.5rem', borderLeft: '1px solid var(--border)', margin: '0.15rem 0 0.5rem 0.7rem' }}>
                   {frame.items.map(item => {
                     const live = !!item.view;
-                    const isGotchas = item.view === 'gotchas';
                     return (
                       <NavItem
                         key={item.label}
@@ -139,8 +152,8 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
                         icon={item.icon}
                         active={live && view === item.view}
                         soon={!live}
-                        count={isGotchas ? counts.solved : 0}
-                        total={isGotchas ? gotchaProblems.length : 0}
+                        count={live ? bankSolved(item.bank) : 0}
+                        total={live ? (BANK_TOTAL[item.bank] || 0) : 0}
                         onClick={() => live && go(item.view)}
                       />
                     );

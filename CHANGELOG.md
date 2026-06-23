@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.4.0] - 2026-06-23 — Python Drills + pandas banks (test-based)
+
+> First coding content beyond Bank A: drills you implement and run against hidden tests, in real Python and pandas.
+
+### Added
+- **Test-based problem runner** — `runProblem()` in the Pyodide runtime runs your solution + a hidden `__pl_checks` harness, returning per-check pass/fail + glass-box time/memory. `loadPackages()` lazy-loads the pandas/numpy wheels on the first pandas problem. New `ProblemRunner` + generic `ProblemBrowser` (read prompt → write function → Run tests → reveal model solution).
+- **Bank C (first slice) — Python Drills** (`src/data/pythonProblems.js`): 6 famous problems by pattern (hashing, sliding window, stack, prefix sum) — first-unique, two-sum, anagram, longest-unique-run, balanced-brackets, first-day-over-target. Original, analyst-framed.
+- **Bank D (first slice) — pandas / numpy** (`src/data/pandasProblems.js`): 5 analyst ops — revenue-by-category (groupby), new-user AOV (filter-before-aggregate), no-fanout merge, month×category pivot, vectorized tiering (np.where).
+- DO nav gains two live banks (in the accordion); `problemProgress.js` (per-bank localStorage); `PythonCell` gains `onCodeChange`; `Icon` gains `x`.
+
+### Notes
+- 11 problems, **38/38 checks verified** in CPython + pandas 2.3 before shipping. esbuild bundle green (main ~139kb). pandas wheel loads on demand in-browser. Sourcing: original problems, the interview canon used as taxonomy only (moat).
+
 ## [PL 0.3.0] - 2026-06-23 — BreakLabs logo (D-19)
 
 > The unified BreakLabs lockup lands. `break⌇labs · Programming` — one brand, distinct rooms.

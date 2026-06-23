@@ -6,9 +6,15 @@ import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
+import { pythonProblems, PY_PATTERNS, PY_PATTERN_ORDER } from './data/pythonProblems.js';
+import { pandasProblems, PD_PATTERNS, PD_PATTERN_ORDER } from './data/pandasProblems.js';
+import { PYTHON_KEY, PANDAS_KEY } from './utils/problemProgress.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
+);
+const ProblemBrowser = lazy(() =>
+  import('./pages/ProblemBrowser.jsx').then(m => ({ default: m.ProblemBrowser }))
 );
 
 function Home({ onNavigate }) {
@@ -63,7 +69,22 @@ export default function App() {
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>loading…</span>
             </div>
           }>
-            {view === 'gotchas' ? <GotchaBrowser /> : <Home onNavigate={navigate} />}
+            {view === 'gotchas' ? <GotchaBrowser />
+              : view === 'python' ? (
+                <ProblemBrowser
+                  title="Python Drills" iconName="code-2" iconColor="var(--accent)"
+                  subtitle="Famous Python problems by pattern — hashing, sliding window, stack, prefix sum. Write the function, run the hidden tests."
+                  problems={pythonProblems} patterns={PY_PATTERNS} patternOrder={PY_PATTERN_ORDER}
+                  progressKey={PYTHON_KEY} packages={[]} />
+              )
+              : view === 'pandas' ? (
+                <ProblemBrowser
+                  title="pandas / numpy" iconName="layers" iconColor="var(--teal)"
+                  subtitle="The analyst-native operations — groupby, merge, pivot, vectorize. Real pandas, running in your browser."
+                  problems={pandasProblems} patterns={PD_PATTERNS} patternOrder={PD_PATTERN_ORDER}
+                  progressKey={PANDAS_KEY} packages={['pandas']} />
+              )
+              : <Home onNavigate={navigate} />}
           </Suspense>
         </main>
       </div>

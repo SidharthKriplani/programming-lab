@@ -135,4 +135,83 @@ function loadScript(src) {
   });
 }
 
+// ── Package loading (pandas / numpy, on demand) ────────────────────────────
+const loadedPackages = new Set();
+
+export async function loadPackages(pkgs, onProgress) {
+  await loadPython(onProgress);
+  const missing = (pkgs || []).filter(p => !loadedPackages.has(p));
+  if (missing.length) {
+    onProgress?.('Loading ' + missing.join(', ') + '...');
+    await pyodideInstance.loadPackage(missing);
+    missing.forEach(p => loadedPackages.add(p));
+  }
+  return pyodideInstance;
+}
+
+/**
+ * runProblem — execute the user's solution, then its test harness.
+ * The test source defines `__pl_checks = [(name, fn), ...]`; each fn returns a bool.
+ * Returns: { results:[{name,ok}], passed, total, stdout, error, timeMs, peakKb }.
+ */
+export async function runProblem(userCode, testSource) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_user_code', userCode);
+  pyodideInstance.globals.set('__pl_test_code', testSource);
+
+  const harness = [
+    'import io, json, time, tracemalloc, traceback, contextlib',
+    '__pl_out = io.StringIO()',
+    '__pl_err = None',
+    '__pl_results = []',
+    '__pl_ms = 0.0',
+    '__pl_peak = 0',
+    '__pl_ns = {}',
+    'tracemalloc.start()',
+    '__pl_t0 = time.perf_counter()',
+    'try:',
+    '    with contextlib.redirect_stdout(__pl_out):',
+    '        exec(compile(__pl_user_code, "<solution>", "exec"), __pl_ns)',
+    '        exec(compile(__pl_test_code, "<tests>", "exec"), __pl_ns)',
+    '        for __pl_nm, __pl_fn in __pl_ns.get("__pl_checks", []):',
+    '            try:',
+    '                __pl_ok = bool(__pl_fn())',
+    '            except Exception:',
+    '                __pl_ok = False',
+    '            __pl_results.append({"name": __pl_nm, "ok": __pl_ok})',
+    'except Exception:',
+    '    __pl_err = traceback.format_exc()',
+    'finally:',
+    '    __pl_ms = (time.perf_counter() - __pl_t0) * 1000.0',
+    '    __pl_cur, __pl_peak = tracemalloc.get_traced_memory()',
+    '    tracemalloc.stop()',
+    'json.dumps({',
+    '    "results": __pl_results,',
+    '    "stdout": __pl_out.getvalue(),',
+    '    "error": __pl_err,',
+    '    "timeMs": round(__pl_ms, 3),',
+    '    "peakKb": round(__pl_peak / 1024.0, 1),',
+    '})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    const parsed = JSON.parse(raw);
+    const results = parsed.results || [];
+    return {
+      results,
+      passed: results.filter(r => r.ok).length,
+      total: results.length,
+      stdout: (parsed.stdout || '').replace(/\n$/, ''),
+      error: parsed.error || null,
+      timeMs: parsed.timeMs ?? 0,
+      peakKb: parsed.peakKb ?? 0,
+    };
+  } catch (err) {
+    return { results: [], passed: 0, total: 0, stdout: '', error: String(err.message || err), timeMs: 0, peakKb: 0 };
+  } finally {
+    try { pyodideInstance.globals.delete('__pl_user_code'); pyodideInstance.globals.delete('__pl_test_code'); } catch { /* ignore */ }
+  }
+}
+
 export { PYODIDE_VERSION, PYODIDE_INDEX_URL };

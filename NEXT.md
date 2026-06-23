@@ -20,7 +20,7 @@ Built and verified (esbuild bundle exit 0; data + Python snippets verified). See
 - **Not done in-sandbox:** `npm install` + `vite build` (macOS-only). Run on Mac before deploy. Git prepared approve-first, not pushed.
 - **Deviation:** Pyodide on main thread (per MSL), not a worker — flagged for hardening.
 
-**Next pass = B2 (pandas/numpy), still gated + conditioned on the daily post.** Then B3 (DSA by pattern), B4 (idioms + judgment dial/MCQ). The parallel four-frame spec expansion (KNOW/BUILD/JUDGE) remains paper-only and unblocked.
+**B2 (pandas) + B3 (Python drills) first slices SHIPPED 2026-06-23** (5 pandas + 6 Python, test-based, all verified). Next: grow each bank toward the spec counts (~30–40 pandas, ~40–60 DSA across the remaining patterns: two-pointers, binary search, heap/top-K, intervals), then B4 (idioms + judgment dial/MCQ). **Worker-hardening (A-PL-01) before the banks get big** — long pandas runs on the main thread will jank. Four-frame KNOW/BUILD/JUDGE spec expansion still paper-only.
 
 ---
 
