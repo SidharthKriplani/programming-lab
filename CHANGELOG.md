@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Font → Geneva** (fallback Helvetica Neue) across Platinum — the actual classic-Mac UI sans, legible, native on Mac. The bad Chicago import is removed.
 - **Menu bar trimmed** — dropped File / Edit / View / Run / Special; the bar is now just the rainbow Apple, "Programming Lab", and the clock.
 - **Nav symbols removed in Platinum only** — the left-nav is text-only under Platinum (`noIcons` gate); other skins keep their icons. Chevrons stay (they're the accordion control).
+- **Menu-bar corner glyph → BreakLabs seam** (not Apple's apple — trademark). The classic top-left "system" corner is now the red `⌇` mark.
 
 ## [PL 0.16.0] - 2026-06-23 — Real Platinum: white panes, Chicago, no rails + one light/dark toggle
 
