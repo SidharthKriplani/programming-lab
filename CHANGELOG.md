@@ -5,6 +5,18 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.6.0] - 2026-06-23 — Committed audit gate + content standard (SQL-Lab alignment)
+
+> Studied how PAL's SQL Lab is built and adopted its rigor: a committed quality gate + a frozen content standard.
+
+### Added
+- **`scripts/audit_problems.py`** — the committed quality gate (Python analog of PAL's `audit_sql_lab.py`). **Tier-1 blocks commit:** runs every test-based solution + `__pl_checks`, re-runs every gotcha `code`/`fix` and diffs the declared output, checks required-fields / unique-id / pattern-membership, and runs an **AST safety sandbox** (allow-list imports + blocked builtins — the Python analog of the SQL `DROP/DELETE` keyword ban). **Tier-2 warns** (missing hints, thin lesson, dup title/solution). `scripts/_extract_problems.mjs` dumps the banks to JSON.
+- **`docs/CONTENT-STANDARD.md`** — the pedagogical + mechanical bar the audit enforces (mirrors PAL's SQL-CONTENT-STANDARD), plus the schema roadmap (shared fixtures, forensic/`beforeWriting`, hints/debrief) and what deliberately does NOT carry from sql.js.
+- `CLAUDE.md` pre-commit discipline: run the audit, 0 Tier-1 before commit.
+
+### Result
+- **Audit on the full bank: 120 problems, 0 Tier-1 failures.** 97 Tier-2 hint warnings = the next content pass.
+
 ## [PL 0.5.0] - 2026-06-23 — Banks at interview scope: 56 Python + 41 pandas
 
 > Researched what senior SWE/DS/MLE/DA/BA/PA/AIE are expected to code, then expanded both banks to interview scope.

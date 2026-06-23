@@ -74,6 +74,13 @@ npm run dev      # local
 npm run build    # macOS only — sandbox can't (Rollup ARM64). MUST pass before push.
 ```
 
+### Pre-commit audit (run before every commit that touches problem data)
+The committed quality gate — the Python analog of PAL's `audit_sql_lab.py`. **0 Tier-1 failures required before commit.**
+```bash
+python3 scripts/audit_problems.py   # runs every solution+test, verifies gotcha outputs, AST-safety, required fields. Exit 1 on any T1.
+```
+Tier-2 warnings (e.g. missing `hints[]`) don't block but are the content-depth roadmap. Standard the audit enforces: `docs/CONTENT-STANDARD.md`. **Never hand-maintain expected outputs** — the solution is the source of truth, verified against its own `__pl_checks`.
+
 ### Git (approve-first — never auto-push)
 Push **auto-deploys to Vercel** (`programming-lab.vercel.app`). Prepare commands; Sidharth reviews + runs them on his Mac.
 ```bash
@@ -95,6 +102,7 @@ git push origin main
 3. `src/pages/[Bank]Browser.jsx` + `[Bank]Runner.jsx` — named exports; reuse PythonCell + glass-box.
 4. `src/App.jsx` — lazy import + route. `src/components/layout/Sidebar.jsx` — nav item under the right frame.
 5. For pandas (B2): lazy-load the Pyodide pandas/numpy wheels on first pandas problem only (spec §5).
+6. **Run `python3 scripts/audit_problems.py` — 0 Tier-1 failures before commit** (`docs/CONTENT-STANDARD.md`). Verify every solution+test in CPython/pandas; the audit is the gate.
 
 ---
 
@@ -112,6 +120,8 @@ git push origin main
 | `AUDITS.md` | Health + known debt. |
 | `IDEAS.md` | Tiered backlog. |
 | `docs/PL-BUILD-SPEC.md` | The full build spec — banks, variety bar, schema, IDE, tiers, build order. |
+| `docs/CONTENT-STANDARD.md` | The pedagogical + mechanical bar every problem clears (mirrors PAL's SQL-CONTENT-STANDARD). Enforced by the audit. |
+| `scripts/audit_problems.py` · `scripts/_extract_problems.mjs` | The committed quality gate (Tier-1 blocks / Tier-2 warns) + its JS-data extractor. |
 | `CONTENT_QUEUE.md` · `DISTRIBUTION_PLAYBOOK.md` | LinkedIn distribution (Bank-A gotchas double as posts). |
 
 **Note on location (D-PL-08):** PL's operational spine (STATUS/NEXT/LINEAGE/DECISIONS/AUDITS/IDEAS) lives at the **lab root**, matching the siblings (Sidharth's call). Only governing specs live in `docs/` (currently `PL-BUILD-SPEC.md`). HQ `PROTOCOL.md`/D-13 still say dispatch to `docs/NEXT.md` — for PL that target is **root `NEXT.md`** (flagged for HQ in `HQ/LEDGER.md`).
