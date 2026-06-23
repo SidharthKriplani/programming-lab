@@ -3,6 +3,8 @@
 // pages with the named-export pattern, <Suspense> over <main>.
 import { lazy, Suspense, useState } from 'react';
 import { Sidebar } from './components/layout/Sidebar.jsx';
+import { PlatinumMenuBar } from './components/layout/PlatinumMenuBar.jsx';
+import { getSkin, cycleSkin } from './utils/skin.js';
 import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
@@ -54,12 +56,15 @@ function Home({ onNavigate }) {
 export default function App() {
   const [view, setView] = useState('home');
   const [navOpen, setNavOpen] = useState(false);
+  const [skin, setSkinState] = useState(getSkin());
 
   const navigate = (v) => { setView(v); setNavOpen(false); };
+  const onCycleSkin = () => setSkinState(cycleSkin());
 
   return (
     <div className="app-layout">
-      <Sidebar view={view} onNavigate={navigate} open={navOpen} onClose={() => setNavOpen(false)} />
+      {skin === 'platinum' && <PlatinumMenuBar />}
+      <Sidebar view={view} onNavigate={navigate} open={navOpen} onClose={() => setNavOpen(false)} skin={skin} onCycleSkin={onCycleSkin} />
 
       <div className="app-main-wrapper">
         {/* Mobile top bar */}

@@ -844,3 +844,102 @@ body {
 /* ── CodeMirror surface tweaks (editor in PythonCell) ─────────────────────── */
 .cm-editor { background: transparent; }
 .cm-editor.cm-focused { outline: none; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SKIN: PLATINUM — classic Mac OS 8/9 workstation (D-PL-19). The ACTIVE look.
+   A "skin" is the whole visual world, applied via [data-skin]. This block is
+   appended last, so when data-skin='platinum' it OVERRIDES the green-screen
+   tokens above. Light, beveled, Apple. Governing spec: docs/SKIN-SYSTEM.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root[data-skin='platinum'] {
+  --bg: #6f8a8a;                 /* desktop teal-gray */
+  --surface: #dcdcdc;            /* platinum window */
+  --surface-2: #cfcfcf;
+  --surface-raised: #e6e6e6;
+  --border: #000000;             /* classic 1px black window border */
+  --border-subtle: #9a9a9a;
+  --border-strong: #000000;
+  --text: #000000;
+  --text-secondary: #2b2b2b;
+  --text-muted: #4d4d4d;
+  --text-dim: #6e6e6e;
+  --ink-hi: #000000;             /* BrandMark wordmark — dark on platinum */
+  --ink-low: #555555;
+  --accent: #3f6196;             /* classic Mac selection blue */
+  --accent-hover: #2f4d7a;
+  --accent-light: #b8c8e8;
+  --accent-bg: #b8c8e8;          /* selection highlight */
+  --accent-border: #3f6196;
+  --on-accent: #ffffff;
+  --green: #2f7d32; --green-bg: #e3efdd; --green-border: #9cc79c; --green-text: #1c4d1c;
+  --red: #c23b2c; --red-bg: #f5ded9; --red-border: #db9a90; --red-text: #7c1f15;
+  --yellow: #9a6b00; --yellow-bg: #f1e6cf; --yellow-border: #cdb27a; --yellow-text: #5e3f00;
+  --purple: #6d4d9c; --purple-bg: #e7e0f0; --purple-border: #b3a0d2; --purple-text: #3d2060;
+  --teal: #2a7d8c; --teal-bg: #dceef0; --teal-border: #9cccd2;
+  --blue-text: #1a4e8a; --blue-bg: #e0ecf8; --blue-border: #a8c8e8;
+  --header-bg: #f0f0f0;
+  --shadow-sm: 1px 1px 0 rgba(0,0,0,0.3);
+  --shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  --shadow-md: 2px 2px 0 rgba(0,0,0,0.35);
+  --shadow-lg: 2px 2px 0 rgba(0,0,0,0.4);
+  --shadow-xl: 3px 3px 0 rgba(0,0,0,0.45);
+  --shadow-glow: 0 0 0 2px #3f6196;
+  --input-bg: #ffffff;
+  --radius: 3px; --radius-sm: 2px; --radius-lg: 4px; --radius-xl: 6px;
+  --font-ui: 'Helvetica Neue', Geneva, Helvetica, Arial, sans-serif;
+  --font-mono: 'Courier New', 'Courier Prime', monospace;
+  --bevel-light: #ffffff;
+  --bevel-dark: #8f8f8f;
+}
+
+/* suppress the green-screen CRT treatment under Platinum */
+:root[data-skin='platinum'] .pl-crt-overlay { display: none !important; }
+:root[data-skin='platinum'] h1,
+:root[data-skin='platinum'] h2,
+:root[data-skin='platinum'] h3 { text-shadow: none !important; color: var(--text) !important; }
+
+/* leave room for the fixed Apple menu bar (22px) */
+:root[data-skin='platinum'] .app-main-wrapper { padding-top: 22px; }
+:root[data-skin='platinum'] .app-sidebar { top: 22px; height: calc(100vh - 22px); }
+
+/* the main content sits in a Platinum window on the teal desktop */
+:root[data-skin='platinum'] .app-main {
+  background: var(--surface);
+  border: 1px solid #000;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+  border-radius: 3px;
+  margin: 14px auto 28px;
+  padding: 1.4rem 1.6rem 2.4rem;
+}
+
+/* Platinum beveled cards (flat raised bevel, square-ish, no green glow) */
+:root[data-skin='platinum'] .pal-card-hover {
+  box-shadow: inset 1px 1px 0 var(--bevel-light), inset -1px -1px 0 var(--bevel-dark) !important;
+  border-radius: var(--radius-sm) !important;
+}
+:root[data-skin='platinum'] .pal-card-hover:hover {
+  border-color: #000 !important;
+  transform: none !important;
+}
+
+/* Platinum beveled buttons */
+:root[data-skin='platinum'] .pal-btn-primary,
+:root[data-skin='platinum'] .btn-run {
+  background: var(--surface) !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #8f8f8f !important;
+  border-radius: 6px !important;
+}
+:root[data-skin='platinum'] .pal-badge-accent {
+  background: var(--accent-bg) !important;
+  color: #1a2a44 !important;
+  border: 1px solid #3f6196;
+}
+
+/* Platinum nav selection — classic Mac highlight (light blue, black ink) */
+:root[data-skin='platinum'] .sidebar-nav-active {
+  background: var(--accent-bg) !important;
+  color: #000 !important;
+  box-shadow: inset 2px 0 0 #3f6196 !important;
+}

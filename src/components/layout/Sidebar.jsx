@@ -110,7 +110,7 @@ function bankSolved(bank) {
   return 0;
 }
 
-export function Sidebar({ view, onNavigate, open = false, onClose }) {
+export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'platinum', onCycleSkin }) {
   const [theme, setThemeState] = useState(getTheme());
   const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'DO');
 
@@ -188,14 +188,28 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
       <div style={{ padding: '0.7rem 1.05rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <BrandMark variant="wordmark" size={13} />
-          <button
-            onClick={() => setThemeState(toggleTheme())}
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)' }}
-          >
-            <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} color="var(--text-muted)" />
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            {onCycleSkin && (
+              <button
+                onClick={onCycleSkin}
+                title="Switch skin"
+                aria-label="Switch skin"
+                style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 0.55rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.62rem', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'capitalize' }}
+              >
+                {skin === 'platinum' ? 'Platinum' : 'Green'}
+              </button>
+            )}
+            {skin !== 'platinum' && (
+              <button
+                onClick={() => setThemeState(toggleTheme())}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={15} color="var(--text-muted)" />
+              </button>
+            )}
+          </div>
         </div>
         <div style={{ fontSize: '0.6rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>part of BreakLabs · Beta</div>
       </div>

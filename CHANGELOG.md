@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.15.0] - 2026-06-23 — Pluggable SKIN system + Platinum (classic Mac) skin
+
+> Sidharth (and a friend) on the mockups: make the whole app a classic-Mac **Platinum** workstation — Apple menu bar, rainbow apple, beveled gray — and *"make it switchable so changing it won't take a heavy build again."* Built the skin system first, then Platinum as the first skin. Platinum is now the active look; green-screen becomes a skin (it'll live inside terminal windows next).
+
+### Added
+- **Pluggable skin system** (`src/utils/skin.js`, `[data-skin]` on `<html>`, anti-flash in `index.html`) — a skin is the whole visual world, swapped in one line (`setSkin`). Skins: `platinum` (default), `greenscreen` (the CRT terminal), `aqua` + `hybrid` (reserved). Token blocks scoped to `:root[data-skin='…']`; the active skin's block (appended last) overrides. A skin never touches content/logic. Governing spec: `docs/SKIN-SYSTEM.md` (D-PL-19).
+- **Platinum skin** — classic Mac OS 8/9: teal-gray desktop, Platinum gray beveled windows, 1px black borders, Helvetica/Geneva, classic light-blue selection, sharp radii. **Apple menu bar** (`PlatinumMenuBar`) fixed at top with the rainbow Apple logo, app menus, and a live clock. CRT scanlines/glow suppressed under Platinum.
+- **Skin-cycle button** in the sidebar footer (platinum ⇄ greenscreen) — proves the plug works.
+
+### Notes
+- Platinum **supersedes the green-screen as the active look** (D-PL-18 green-screen is now a skin, not the default).
+- Built without a live preview (sandbox can't run Vite) — esbuild-clean on all six changed files; expect to tune the Platinum look once it's live (cheap — it's one token block). The literal Finder-window-with-`.py`-files + terminal-on-open is the **next unit**.
+
 ## [PL 0.14.0] - 2026-06-23 — Green-screen, finalized: Courier Prime, all-green on black, no decoration
 
 > Aligned with Sidharth on the specifics *before* this build (after two builds drifted from the approved render): the live VT323 was ugly, white lettering had crept back, cards still carried highlight decoration. Locked: Courier Prime · all text phosphor green · pure-black background · no card highlights.

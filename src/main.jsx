@@ -2,9 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { initTheme } from './utils/theme.js'
+import { initSkin } from './utils/skin.js'
 import './index.css'
 
 initTheme()
+initSkin()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
