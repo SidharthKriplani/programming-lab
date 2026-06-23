@@ -508,4 +508,77 @@ export async function runPyLabBench(methodBody, fixtureSetup, args, factor) {
   }
 }
 
+/**
+ * runPyLabBenchFull — like runPyLabBench, but `code` is a FULL `def solve(...)` (not a body).
+ * Used by the Refactor format to race the learner's rewrite against the slow baseline at scale.
+ * Returns: { timeMs, peakKb, n, error }.
+ */
+export async function runPyLabBenchFull(code, fixtureSetup, args, factor) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_fixture', fixtureSetup || '');
+  pyodideInstance.globals.set('__pl_args_json', JSON.stringify(args || []));
+  pyodideInstance.globals.set('__factor', factor || 1);
+  pyodideInstance.globals.set('__pl_code', code || '');
+
+  const harness = [
+    'import time, tracemalloc, traceback, json',
+    'def _pl_scale(x, n):',
+    '    if n <= 1:',
+    '        return x',
+    '    try:',
+    '        import pandas as pd',
+    '        if isinstance(x, (pd.DataFrame, pd.Series)):',
+    '            return pd.concat([x] * n, ignore_index=True)',
+    '    except Exception:',
+    '        pass',
+    '    if isinstance(x, (list, tuple)):',
+    '        return x * n',
+    '    try:',
+    '        import numpy as np',
+    '        if isinstance(x, np.ndarray):',
+    '            return np.tile(x, n)',
+    '    except Exception:',
+    '        pass',
+    '    return x',
+    '__ns = {}',
+    '__err = None; __ms = 0.0; __peak = 0; __n = 0',
+    'try:',
+    '    exec(__pl_fixture, __ns)',
+    '    __args = json.loads(__pl_args_json)',
+    '    __objs = [_pl_scale(__ns[a], __factor) for a in __args]',
+    '    try:',
+    '        __n = int(len(__objs[0]))',
+    '    except Exception:',
+    '        __n = 0',
+    '    exec(__pl_code, __ns)',
+    '    if "solve" not in __ns:',
+    '        raise NameError("no solve() defined")',
+    '    tracemalloc.start()',
+    '    __t0 = time.perf_counter()',
+    '    __ns["solve"](*__objs)',
+    '    __ms = (time.perf_counter() - __t0) * 1000.0',
+    '    __cur, __peak = tracemalloc.get_traced_memory()',
+    '    tracemalloc.stop()',
+    'except Exception:',
+    '    __err = traceback.format_exc()',
+    '    try:',
+    '        tracemalloc.stop()',
+    '    except Exception:',
+    '        pass',
+    'json.dumps({"timeMs": round(__ms, 2), "peakKb": round(__peak / 1024.0, 1), "n": __n, "error": __err})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    const p = JSON.parse(raw);
+    return { timeMs: p.timeMs ?? 0, peakKb: p.peakKb ?? 0, n: p.n ?? 0, error: p.error || null };
+  } catch (err) {
+    return { timeMs: 0, peakKb: 0, n: 0, error: String(err.message || err) };
+  } finally {
+    try {
+      ['__pl_fixture', '__pl_args_json', '__factor', '__pl_code'].forEach(k => pyodideInstance.globals.delete(k));
+    } catch { /* ignore */ }
+  }
+}
+
 export { PYODIDE_VERSION, PYODIDE_INDEX_URL };

@@ -8,6 +8,9 @@ import { pyLabFixtures } from '../data/pyLabFixtures.js';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
 import { ScaleRace } from '../components/shared/ScaleRace.jsx';
+import { AmbiguityDrill } from '../components/shared/AmbiguityDrill.jsx';
+import { RefactorChallenge } from '../components/shared/RefactorChallenge.jsx';
+import { pyLabFormats } from '../data/pyLabFormats.js';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
@@ -33,6 +36,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
   const [revealed, setRevealed] = useState(false);
 
   const fx = pyLabFixtures[problem.fixtureId];
+  const fmt = pyLabFormats[problem.id] || {};
 
   useEffect(() => {
     markSeen(KEY, problem.id);
@@ -84,6 +88,8 @@ function PyLabRunner({ problem, onBack, onSolved }) {
         </div>
       )}
 
+      {fmt.ambiguity && <AmbiguityDrill ambiguity={fmt.ambiguity} />}
+
       <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox onCodeChange={setCode} height={editorH} />
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
@@ -119,6 +125,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
           <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{problem.debrief}</div>
           <JudgmentLayer problem={problem} />
           <ScaleRace problem={problem} />
+          {fmt.refactor && <RefactorChallenge problem={problem} refactor={fmt.refactor} />}
           <ForwardPointerCard onNext={onBack} onNavigate={onBack} />
         </div>
       )}
