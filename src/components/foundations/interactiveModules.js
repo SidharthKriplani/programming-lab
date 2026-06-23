@@ -16,6 +16,8 @@ import { BroadcastModel } from './BroadcastModel.jsx';
 import { IndexAlignModel } from './IndexAlignModel.jsx';
 import { TruthinessModel } from './TruthinessModel.jsx';
 import { DecoratorModel } from './DecoratorModel.jsx';
+import { GeneratorModel } from './GeneratorModel.jsx';
+import { AsyncTimelineModel } from './AsyncTimelineModel.jsx';
 
 const trace = (cfg) => () => createElement(StateTrace, { config: cfg });
 
@@ -28,6 +30,8 @@ export const INTERACTIVE_MODULES = {
   // ── Room 1 bespoke (backed → KnowRunner slot) ──
   'know-bool-len-fallback': TruthinessModel,         // the-data-model
   'know-decorators-from-scratch': DecoratorModel,    // decorators-and-context
+  'know-generators-are-lazy': GeneratorModel,        // evaluation (lazy + one-shot)
+  'sp-async': AsyncTimelineModel,                    // Room 5 · concurrency (planned → widget runner)
   // ── bespoke (the picture/dynamics need custom viz) ──
   'mc-call-stack': CallStackModel,                   // Room 2 · execution
   'mc-big-o': BigOModel,                             // Room 2 · cost-felt

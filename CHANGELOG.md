@@ -146,8 +146,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Templated cont. — slider variant + is-vs-==
 - `StateTrace` gained a **slider** control and an **equality** probe (`a == b` shown alongside `a is b`). **is-vs-== migrated onto the template, config-only** (`IS_VS_EQ`): drag the value across the small-int cache and watch `is` flip (False→True at -5, True→False past 256) while `==` stays True. Verified at -6/-5/256/257. Four models on the template now (aliasing, copy-view, mutable-default, is-vs-==); ~12 driven total.
 
+### Driven — generators + async (bespoke, the dynamics are the lesson)
+- **`GeneratorModel.jsx`** (stepper, Room 1) — step `next(g)` and watch the body run to the next `yield`, pause, resume; later values stay uncomputed (lazy, faded on the tape); exhaustion raises StopIteration and can't rewind (one-shot); contrasted with the eager `[0,1,4,9]` list (the memory lesson). Sequence CPython-verified.
+- **`AsyncTimelineModel.jsx`** (sim, Room 5) — toggle serial vs concurrent; `await` hands control to the loop so the three I/O tasks overlap, and the total drops from the **sum** (7) to the **longest wait** (3). Same one thread.
+- **Fourteen driven models now** (4 on the StateTrace template + 10 bespoke), across Rooms 1/2/4/5. esbuild exit 0.
+
 ### Still to do (F1 cont.)
-- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel` — sandbox couldn't delete). Keep authoring bespoke where the picture is the lesson (generators, async timeline, dict insertion-order). macOS `npm run build` + approve-first push pending.
+- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel` — sandbox couldn't delete). Keep migrating the repeating shapes onto StateTrace; bespoke only where needed. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
