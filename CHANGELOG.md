@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`BrandMark` component** (`src/components/shared/BrandMark.jsx`) per `HQ/BRANDMARK-ROLLOUT.md` (D-19). Three variants (full / wordmark / monogram). Constant across all labs: the red fault-glyph seam + the `break⌇labs` wordmark. Per-lab: descriptor `Programming` + violet `#8B5CF6` accent.
 - Wired into **7 slots**: sidebar header (full), favicon (shared red monogram), OG share card, hero (wordmark), gate header (wordmark), footer (wordmark + "part of BreakLabs"), loading (monogram).
 - **OG share card** — `public/og-image.png` (1200×630, the instrument card + lockup) + `og:`/`twitter:` meta in `index.html`.
+- **Sidebar Standard nav** — rebuilt the left nav to the HQ four-frame accordion spec (`DESIGN-STANDARD.md`): KNOW/DO/BUILD/JUDGE as collapsible accordions, one-open-per-level, measured-height animation (`scrollHeight`, 0.30s ease-out), chevrons, a flat TRACK row (Home), follows-navigation auto-expand, `aria-expanded`/`aria-current`. Module-scoped `Collapsible`/`Chevron`/`NavItem`. Kept PL's SOON badges + violet active pill.
 
 ### Changed
 - Favicon is now the shared BreakLabs red glyph (was the violet PL stopgap — archived to `_legacy/`, D-18).

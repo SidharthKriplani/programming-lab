@@ -1,48 +1,100 @@
-// Sidebar — primary nav for Programming Lab (PL).
-// Adapted from PAL Sidebar.jsx: same shell, same active-pill pattern
-// (.sidebar-nav-active), same getIsActive mapping. Nav groups are the four
-// Competence-Model frames (D-15): KNOW / DO / BUILD / JUDGE. PL's first live
-// surface is the DO rung -> "Python Gotchas". The other zones are stubbed "Soon".
-import { useState } from 'react';
+// Sidebar — PL left nav, built to the HQ Sidebar Standard (DESIGN-STANDARD.md):
+// four-frame accordion (KNOW/DO/BUILD/JUDGE), ONE OPEN PER LEVEL, measured-height
+// animation, frame icons, active pill, SOON badges. Violet accent (PL). The
+// Collapsible/Chevron/NavItem are hoisted to module scope (required — defining
+// them inside Sidebar gives them new identities each render and breaks the animation).
+import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../shared/Icon.jsx';
 import { getCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
 
-const ZONES = [
-  {
-    key: 'KNOW', icon: 'book-open', blurb: 'Understand the why',
-    items: [{ label: 'Python & OOP Depth', soon: true }],
-  },
-  {
-    key: 'DO', icon: 'terminal', blurb: 'Code it, fast and correct',
-    items: [{ label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle' }],
-  },
-  {
-    key: 'BUILD', icon: 'hammer', blurb: 'Own something real',
-    items: [{ label: 'Mini-Projects', soon: true }],
-  },
-  {
-    key: 'JUDGE', icon: 'scale', blurb: 'Choose & defend',
-    items: [{ label: 'Spot the Flaw', soon: true }],
-  },
+// ── measured-height collapse (the bulletproof pattern; NOT grid-template-rows) ──
+function Collapsible({ open, children }) {
+  const ref = useRef(null);
+  const [height, setHeight] = useState(open ? 'auto' : '0px');
+  const mounted = useRef(false);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    if (!mounted.current) { mounted.current = true; return; }
+    let r1, r2;
+    const onEnd = e => { if (e.target === el && e.propertyName === 'height') { if (open) setHeight('auto'); el.removeEventListener('transitionend', onEnd); } };
+    if (open) { setHeight(el.scrollHeight + 'px'); el.addEventListener('transitionend', onEnd); }
+    else { setHeight(el.scrollHeight + 'px'); r1 = requestAnimationFrame(() => { r2 = requestAnimationFrame(() => setHeight('0px')); }); }
+    return () => { el.removeEventListener('transitionend', onEnd); if (r1) cancelAnimationFrame(r1); if (r2) cancelAnimationFrame(r2); };
+  }, [open]);
+  return <div ref={ref} style={{ height, overflow: 'hidden', transition: 'height 0.30s cubic-bezier(0.33,1,0.68,1)', willChange: 'height' }}>{children}</div>;
+}
+
+function Chevron({ open }) {
+  return (
+    <span style={{ display: 'inline-flex', transition: 'transform 0.30s cubic-bezier(0.33,1,0.68,1)', transform: open ? 'rotate(0deg)' : 'rotate(-90deg)' }}>
+      <Icon name="chevron-down" size={13} color={open ? 'var(--accent)' : 'var(--text-dim)'} />
+    </span>
+  );
+}
+
+function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={soon}
+      aria-current={active ? 'page' : undefined}
+      className={active ? 'sidebar-nav-active' : ''}
+      style={{
+        width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem',
+        padding: sub ? '0.4rem 0.6rem' : '0.46rem 0.6rem',
+        marginBottom: '0.1rem', background: 'none', border: 'none', borderRadius: 'var(--radius-sm)',
+        fontSize: sub ? '0.8rem' : '0.84rem', textAlign: 'left',
+        color: soon ? 'var(--text-dim)' : 'var(--text)',
+        cursor: soon ? 'default' : 'pointer', opacity: soon ? 0.7 : 1,
+      }}
+    >
+      {icon && <Icon name={icon} size={14} color={active ? 'var(--accent)' : 'var(--text-muted)'} />}
+      <span style={{ flex: 1 }}>{label}</span>
+      {!soon && total > 0 && (
+        <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{count}/{total}</span>
+      )}
+      {soon && (
+        <span style={{ fontSize: '0.5rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--text-dim)', border: '1px solid var(--border)', borderRadius: 999, padding: '1px 6px', fontFamily: 'var(--font-mono)' }}>SOON</span>
+      )}
+    </button>
+  );
+}
+
+// ── nav model ──
+const TRACK = [{ label: 'Home', view: 'home', icon: 'layout' }];
+
+const FRAMES = [
+  { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', soon: true }] },
+  { key: 'DO', icon: 'terminal', items: [{ label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle' }] },
+  { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', soon: true }] },
+  { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', soon: true }] },
 ];
+
+// which frame owns a given view (follows-navigation auto-expand)
+const VIEW_FRAME = { gotchas: 'DO' };
 
 export function Sidebar({ view, onNavigate, open = false, onClose }) {
   const counts = getCounts();
   const [theme, setThemeState] = useState(getTheme());
+  const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'DO');
+
+  // follows-navigation: opening a tab auto-expands its frame (one-open-per-level)
+  useEffect(() => {
+    const f = VIEW_FRAME[view];
+    if (f) setOpenFrame(f);
+  }, [view]);
+
+  const go = (v) => { onNavigate(v); onClose?.(); };
 
   return (
     <aside className={`app-sidebar${open ? ' open' : ''}`}>
-      {/* Brand */}
+      {/* Logo lockup — stacked: break⌇labs / Programming / tagline */}
       <button
-        onClick={() => { onNavigate('home'); onClose?.(); }}
-        style={{
-          display: 'flex', alignItems: 'center', gap: '0.6rem',
-          padding: '1.1rem 1.15rem', background: 'none', border: 'none',
-          borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left',
-        }}
+        onClick={() => go('home')}
+        style={{ display: 'flex', padding: '1.1rem 1.15rem', background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left' }}
       >
         <span style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
           <BrandMark variant="wordmark" size={16} />
@@ -51,54 +103,53 @@ export function Sidebar({ view, onNavigate, open = false, onClose }) {
         </span>
       </button>
 
-      {/* Zones */}
-      <nav style={{ flex: 1, overflowY: 'auto', padding: '0.85rem 0.7rem' }}>
-        {ZONES.map(zone => (
-          <div key={zone.key} style={{ marginBottom: '1.15rem' }}>
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '0.45rem',
-              padding: '0 0.45rem', marginBottom: '0.4rem',
-            }}>
-              <Icon name={zone.icon} size={13} color="var(--text-muted)" />
-              <span style={{ fontSize: '0.66rem', fontWeight: 700, letterSpacing: '0.12em', color: 'var(--text-muted)' }}>{zone.key}</span>
-            </div>
+      <nav style={{ flex: 1, overflowY: 'auto', padding: '0.75rem 0.7rem' }}>
+        {/* TRACK cluster — flat, always visible */}
+        <div style={{ marginBottom: '0.85rem' }}>
+          {TRACK.map(t => (
+            <NavItem key={t.label} label={t.label} icon={t.icon} active={view === t.view} onClick={() => go(t.view)} />
+          ))}
+        </div>
 
-            {zone.items.map(item => {
-              const active = item.view && view === item.view;
-              const isLive = !!item.view;
-              const solvedHere = item.view === 'gotchas' ? counts.solved : 0;
-              const totalHere = item.view === 'gotchas' ? gotchaProblems.length : 0;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => { if (isLive) { onNavigate(item.view); onClose?.(); } }}
-                  disabled={!isLive}
-                  className={active ? 'sidebar-nav-active' : ''}
-                  style={{
-                    width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.46rem 0.6rem', marginBottom: '0.15rem',
-                    background: 'none', border: 'none', borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.84rem', textAlign: 'left',
-                    color: isLive ? 'var(--text)' : 'var(--text-dim)',
-                    cursor: isLive ? 'pointer' : 'default',
-                    opacity: isLive ? 1 : 0.65,
-                  }}
-                >
-                  {item.icon && <Icon name={item.icon} size={14} color={active ? 'var(--accent)' : 'var(--text-muted)'} />}
-                  <span style={{ flex: 1 }}>{item.label}</span>
-                  {isLive && totalHere > 0 && (
-                    <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                      {solvedHere}/{totalHere}
-                    </span>
-                  )}
-                  {!isLive && (
-                    <span style={{ fontSize: '0.56rem', fontWeight: 700, letterSpacing: '0.06em', color: 'var(--text-dim)', border: '1px solid var(--border)', borderRadius: 99, padding: '0.05rem 0.35rem' }}>SOON</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        ))}
+        {/* The four frames — accordion, one open per level */}
+        {FRAMES.map(frame => {
+          const isOpen = openFrame === frame.key;
+          return (
+            <div key={frame.key} style={{ marginBottom: '0.15rem' }}>
+              <button
+                onClick={() => setOpenFrame(prev => (prev === frame.key ? null : frame.key))}
+                aria-expanded={isOpen}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.42rem 0.55rem', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}
+              >
+                <Icon name={frame.icon} size={13} color={isOpen ? 'var(--accent)' : 'var(--text-muted)'} style={{ opacity: isOpen ? 1 : 0.62 }} />
+                <span style={{ flex: 1, textAlign: 'left', fontSize: '9.5px', fontWeight: 700, letterSpacing: '0.11em', textTransform: 'uppercase', color: isOpen ? 'var(--accent)' : 'var(--text-muted)' }}>{frame.key}</span>
+                <Chevron open={isOpen} />
+              </button>
+
+              <Collapsible open={isOpen}>
+                <div style={{ marginLeft: '0.7rem', paddingLeft: '0.5rem', borderLeft: '1px solid var(--border)', margin: '0.15rem 0 0.5rem 0.7rem' }}>
+                  {frame.items.map(item => {
+                    const live = !!item.view;
+                    const isGotchas = item.view === 'gotchas';
+                    return (
+                      <NavItem
+                        key={item.label}
+                        sub
+                        label={item.label}
+                        icon={item.icon}
+                        active={live && view === item.view}
+                        soon={!live}
+                        count={isGotchas ? counts.solved : 0}
+                        total={isGotchas ? gotchaProblems.length : 0}
+                        onClick={() => live && go(item.view)}
+                      />
+                    );
+                  })}
+                </div>
+              </Collapsible>
+            </div>
+          );
+        })}
       </nav>
 
       {/* Footer — break⌇labs wordmark + theme toggle */}
