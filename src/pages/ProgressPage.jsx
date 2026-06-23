@@ -33,7 +33,7 @@ export function ProgressPage({ onNavigate }) {
             <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text)' }}>{cont.label}</div>
           </div>
           <button onClick={() => onNavigate(cont.view)} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
-            Continue <Icon name="arrow-right" size={15} color="#fff" />
+            Continue <Icon name="arrow-right" size={15} color="currentColor" />
           </button>
         </div>
       )}

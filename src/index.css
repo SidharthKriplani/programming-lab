@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap');
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -230,25 +230,30 @@
   --accent-bg: rgba(70,224,138,0.12);
   --accent-border: rgba(70,224,138,0.30);
   --on-accent: #04130B;
-  --teal: #3FD9C0;
-  --teal-bg: rgba(63,217,192,0.12);
-  --teal-border: rgba(63,217,192,0.30);
+  /* MONOCHROME RULE (D-PL-18): dark mode is green + black ONLY. Every semantic
+     family below resolves to a green; meaning is carried by brightness + glyphs
+     (✓ ✗ ! →) + inverse video, never by hue — exactly like a P1 green tube.
+     Tiers: bright #7FF5B0 (good/active) · base #46E08A · mid #5FD699 ·
+     dim/off #9FC9AE · muted #6E9E80. */
+  --teal: #46E08A;
+  --teal-bg: rgba(70,224,138,0.10);
+  --teal-border: rgba(70,224,138,0.28);
   --green: #46E08A;
   --green-bg: rgba(70,224,138,0.12);
   --green-border: rgba(70,224,138,0.30);
   --green-text: #7FF5B0;
-  --red: #FB5247;
-  --red-bg: rgba(251,82,71,0.12);
-  --red-border: rgba(251,82,71,0.34);
-  --red-text: #FF8A82;
-  --yellow: #F2B233;
-  --yellow-bg: rgba(242,178,51,0.13);
-  --yellow-border: rgba(242,178,51,0.34);
-  --yellow-text: #F2B233;
-  --purple: #9CE0B0;
-  --purple-bg: rgba(156,224,176,0.12);
-  --purple-border: rgba(156,224,176,0.30);
-  --purple-text: #BFF0CE;
+  --red: #46E08A;
+  --red-bg: rgba(70,224,138,0.07);
+  --red-border: rgba(110,160,130,0.30);
+  --red-text: #9FC9AE;
+  --yellow: #46E08A;
+  --yellow-bg: rgba(70,224,138,0.10);
+  --yellow-border: rgba(70,224,138,0.26);
+  --yellow-text: #5FD699;
+  --purple: #46E08A;
+  --purple-bg: rgba(70,224,138,0.10);
+  --purple-border: rgba(70,224,138,0.26);
+  --purple-text: #7FF5B0;
   --blue-text: #7FF5B0;
   --blue-bg: rgba(70,224,138,0.10);
   --blue-border: rgba(70,224,138,0.28);
@@ -261,13 +266,16 @@
   --shadow-glow: 0 0 0 3px rgba(70,224,138,0.30);
   --input-bg: #0B120D;
   --gradient-accent: linear-gradient(135deg, #46E08A 0%, #7FF5B0 100%);
-  --gradient-warm: linear-gradient(135deg, #F2B233 0%, #E8900A 100%);
-  --gradient-teal: linear-gradient(135deg, #3FD9C0 0%, #2BA89A 100%);
+  --gradient-warm: linear-gradient(135deg, #46E08A 0%, #2E8C5A 100%);
+  --gradient-teal: linear-gradient(135deg, #7FF5B0 0%, #46E08A 100%);
   --gradient-hero: linear-gradient(135deg, rgba(70,224,138,0.10) 0%, rgba(70,224,138,0.04) 55%, transparent 100%);
   --overlay: rgba(0,0,0,0.66);
   --discovery: #46E08A;
-  --font-ui: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  /* TERMINAL FONT (D-PL-18): the period CRT typeface — bitmap, no curved
+     lettering — governs the whole dark identity (headings, body, chrome, code).
+     Light "Field Notes" mode restores the shared Inter family below. */
+  --font-ui: 'VT323', 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'VT323', 'JetBrains Mono', ui-monospace, monospace;
 }
 :root[data-theme='light'] {
   --bg: #F4F1EA;
@@ -652,6 +660,24 @@ button:not(:disabled):active {
 .pl-hud-key { font-size: 0.62rem; letter-spacing: 0.1em; color: var(--text-dim); text-transform: uppercase; }
 .pl-hud-val { font-size: 0.8rem; color: var(--accent); }
 :root[data-theme='dark'] .pl-hud-val { text-shadow: 0 0 6px rgba(70,224,138,0.4); }
+
+/* CONTRAST RULE (D-PL-18): never white lettering on a bright-green fill —
+   green fills always carry dark phosphor-ink text/icons. (Icons in these
+   buttons use color="currentColor" so they follow this automatically.) */
+:root[data-theme='dark'] .pal-btn-primary,
+:root[data-theme='dark'] .pal-btn-primary:hover,
+:root[data-theme='dark'] .pal-btn-primary:active,
+:root[data-theme='dark'] .pal-badge-accent,
+:root[data-theme='dark'] .btn-run {
+  color: var(--on-accent) !important;
+}
+
+/* Light "Field Notes" mode is the SHARED family look — restore the sans family
+   (the terminal font is the dark identity only). */
+:root[data-theme='light'] {
+  --font-ui: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    PL BASE + LAYOUT  (minimal — supports the reused Sidebar + IDE components)

@@ -39,7 +39,7 @@ function Home({ onNavigate }) {
         fail in production: predict the output, watch it break, and keep the reflex.
       </p>
       <button onClick={() => onNavigate('gotchas')} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-        <Icon name="terminal" size={16} color="#fff" />
+        <Icon name="terminal" size={16} color="currentColor" />
         Start: Python Gotchas ({gotchaProblems.length})
       </button>
       <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.8rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>

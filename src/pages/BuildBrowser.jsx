@@ -99,7 +99,7 @@ function StepCard({ project, step, index, status, locked, solved, onSolved }) {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
             <button onClick={submit} disabled={submitting} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Icon name="check" size={14} color="#fff" /> {submitting ? (progress || 'Submitting…') : 'Submit step'}
+              <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Submitting…') : 'Submit step'}
             </button>
             {result && !result.error && (
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', fontWeight: 600, color: allPass ? 'var(--green-text)' : 'var(--red-text)' }}>{result.passed}/{result.total} checks pass</span>

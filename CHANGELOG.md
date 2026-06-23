@@ -5,6 +5,21 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.13.0] - 2026-06-23 — Green-screen, governed: pure green+black, terminal font, contrast fix
+
+> Sidharth, on the 0.12.0 deploy: the color's right but it's not actually old-school yet — a bright green can't carry white lettering, a curved sans font kills the nostalgia, and a monochrome tube has only green + black. "Write the entire design idea down so everything is governed by it." Done.
+
+### Added
+- **`docs/GREEN-SCREEN-IDENTITY.md`** — the governing visual spec for PL (the authority; cited by D-PL-18). Laws, the green-only palette + tiers, the terminal-font rule, the CRT treatment, component patterns, do/don'ts, code map, open items. Any PL visual change is checked against this file.
+
+### Changed — dark mode only (shared light "Field Notes" mode untouched)
+- **Pure green + black** — every remaining non-green hue (red/amber/teal/purple/blue + the warm/teal gradients) collapsed to green brightness tiers. Meaning is now carried by brightness, glyphs (`✓ ✗ ! →`) and inverse video, never by hue — a real P1 monochrome tube. (break/wrong = dim/off green, not red.)
+- **Terminal font** — loaded **VT323** (DEC VT320-style bitmap, no curved lettering) and set it as `--font-ui` + `--font-mono` for the whole dark UI — headings, body, nav, code. Light mode restores the shared Inter/JetBrains family.
+- **Contrast fix** — no more white lettering on green: `.pal-btn-primary` / `.pal-badge-accent` / `.btn-run` carry dark phosphor ink (`--on-accent`) in dark mode, and all four white CTA icons (Home, Continue, both Submits) now use `currentColor`.
+
+### Notes
+- Verified: esbuild transform of all six changed files, VT323 wired (import + both tokens), zero non-green values left in the dark block, white-on-green eliminated, light-mode font restored.
+
 ## [PL 0.12.0] - 2026-06-23 — Green-screen identity (the old-school CRT dark mode)
 
 > Sidharth: PL needs its own single defining color like PAL's blue — old-school, the base layer everything boots from — and that color *is* its dark mode (light mode is shared across the family). Researched the old-school monochrome phosphors (P1 green / P3 amber / P4 white); amber is already MSL, so PL's authentic slot is the **green screen**. The earlier violet "Instrument" pick is retired (supersedes D-PL-04).

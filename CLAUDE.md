@@ -122,6 +122,7 @@ git push origin main
 | `docs/PL-BUILD-SPEC.md` | The full build spec — banks, variety bar, schema, IDE, tiers, build order. |
 | `docs/CONTENT-STANDARD.md` | The pedagogical + mechanical bar every problem clears (mirrors PAL's SQL-CONTENT-STANDARD). Enforced by the audit. |
 | `docs/CURRICULUM-RESEARCH.md` | GitHub/PyPI/roadmap + book research → the content roadmap (SWE→AIE bridge, new banks/clusters, prioritized backlog). |
+| `docs/GREEN-SCREEN-IDENTITY.md` | **The governing visual spec** (D-PL-18). PL = old-school green CRT: green+black only, VT323 terminal font, scanlines/glow, dark mode only. Read before ANY visual change. |
 | `scripts/audit_problems.py` · `scripts/_extract_problems.mjs` | The committed quality gate (Tier-1 blocks / Tier-2 warns) + its JS-data extractor. |
 | `CONTENT_QUEUE.md` · `DISTRIBUTION_PLAYBOOK.md` | LinkedIn distribution (Bank-A gotchas double as posts). |
 
