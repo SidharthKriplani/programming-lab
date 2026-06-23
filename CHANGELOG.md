@@ -5,6 +5,23 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
+
+> Architected PyLab from market research — `docs/PYLAB-VISION.md`. The gap every interview tests, every role, every level, is "runs vs right." Phase 1 makes the bank legible on that axis.
+
+### Added
+- **Two-axis tagging** (`src/data/pyLabMeta.js`) — every problem gets `roles[]` (SWE/DS/MLE/AIE/DA/BA/PA) + a seniority `level` (fluency → correctness → judgment → systems), derived from topic + difficulty + the judgment layer (override-able per problem).
+- **Role + level filters** in PyLab — pick a track and a depth; the bank re-weights.
+- **Readiness dashboard** (`PyLabReadiness`) — per chosen role: progress across the four levels, the weakest topic, and a recommended "work next" level (the lightweight diagnostic — reads your solved distribution and tells you where you stand).
+- Cards show the level; the seniority axis replaces the raw difficulty chips.
+- **`docs/PYLAB-VISION.md`** — the full architecture: the two-axis map, the 9 formats (Predict/Solve/Forensic + Refactor/Code-review/Ambiguity-drill/Scale-it/Follow-up/Mock-loop/Take-home/Explain-it), the differentiators, positioning, and the phased roadmap.
+
+### Notes
+- Derived spread (136): roles MLE/AIE 131 · DS 121 · SWE 86 · DA 63 · PA 43 · BA 29; levels judgment 98 · fluency 20 · correctness 18 (systems content arrives with Scale-it/Take-home, Phase 2-4). esbuild clean.
+
+### Next (vision roadmap)
+- Phase 2 — the showcase formats: **Scale-it race**, **Ambiguity drill**, **Refactor**.
+
 ## [PL 0.19.0] - 2026-06-24 — PyLab consolidated: drills + idioms + OOP folded in (136 problems)
 
 > "if pylab is there then pandas numpy oops python drills all should be inside it." Done — migrated the remaining 91 (56 drills + 20 idioms + 15 OOP) onto the PyLab contract in five parallel gated batches. PyLab is now the single DO bank for pandas/numpy + Python.

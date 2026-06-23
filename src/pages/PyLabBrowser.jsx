@@ -11,10 +11,13 @@ import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx'
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
+import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
+import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
 
 const KEY = 'pl-pylab-progress-v1';
 const DIFFS = ['all', 'warmup', 'core', 'stretch'];
 const DIFF_LABEL = { warmup: 'Warmup', core: 'Core', stretch: 'Stretch' };
+const chipStyle = (active) => ({ padding: '0.3rem 0.7rem', borderRadius: 999, border: '1px solid ' + (active ? 'var(--accent)' : 'var(--border)'), background: active ? 'var(--accent-bg)' : 'var(--surface)', color: active ? 'var(--accent)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600 });
 
 function Chip({ label, color }) {
   return <span className="pl-chip" style={{ color, borderColor: color, background: 'transparent' }}>{label}</span>;
@@ -124,7 +127,8 @@ function PyLabRunner({ problem, onBack, onSolved }) {
 // ── Browse ──────────────────────────────────────────────────────────────────
 export function PyLabBrowser() {
   const [activeId, setActiveId] = useState(null);
-  const [diff, setDiff] = useState('all');
+  const [role, setRole] = useState('all');
+  const [level, setLevel] = useState('all');
   const [topic, setTopic] = useState('all');
   const [q, setQ] = useState('');
   const progress = getProgress(KEY);
@@ -136,7 +140,7 @@ export function PyLabBrowser() {
 
   const topics = PYLAB_TOPIC_ORDER.filter(t => pyLabProblems.some(p => p.topic === t));
   const shown = pyLabProblems.filter(p =>
-    (diff === 'all' || p.difficulty === diff) &&
+    matchesRoleLevel(p, role, level) &&
     (topic === 'all' || p.topic === topic) &&
     (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
   );
@@ -153,14 +157,21 @@ export function PyLabBrowser() {
         </p>
       </div>
 
+      <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
+
       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center', marginBottom: '1rem' }}>
+        <select value={role} onChange={e => setRole(e.target.value)} style={{ padding: '0.35rem 0.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }}>
+          <option value="all">All roles</option>
+          {ROLE_ORDER.map(r => <option key={r} value={r}>{ROLES[r]}</option>)}
+        </select>
         <select value={topic} onChange={e => setTopic(e.target.value)} style={{ padding: '0.35rem 0.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }}>
           <option value="all">All topics</option>
           {topics.map(t => <option key={t} value={t}>{PYLAB_TOPICS[t]}</option>)}
         </select>
-        <div style={{ display: 'flex', gap: '0.3rem' }}>
-          {DIFFS.map(d => (
-            <button key={d} onClick={() => setDiff(d)} style={{ padding: '0.3rem 0.7rem', borderRadius: 999, border: '1px solid ' + (diff === d ? 'var(--accent)' : 'var(--border)'), background: diff === d ? 'var(--accent-bg)' : 'var(--surface)', color: diff === d ? 'var(--accent)' : 'var(--text-muted)', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 600, textTransform: 'capitalize' }}>{d}</button>
+        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+          <button onClick={() => setLevel('all')} style={chipStyle(level === 'all')}>All levels</button>
+          {LEVEL_ORDER.map(lv => (
+            <button key={lv} onClick={() => setLevel(lv)} style={chipStyle(level === lv)}>{LEVELS[lv].label}</button>
           ))}
         </div>
         <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" style={{ flex: 1, minWidth: 140, padding: '0.35rem 0.6rem', background: 'var(--input-bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }} />
@@ -174,7 +185,7 @@ export function PyLabBrowser() {
               {solved ? <Icon name="clipboard-check" size={15} color="var(--green-text)" /> : <span style={{ width: 15, display: 'inline-block' }} />}
               <span style={{ flex: 1, minWidth: 0 }}>
                 <span style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text)' }}>{p.title}</span>
-                <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{PYLAB_TOPICS[p.topic]}{(p.methods || []).some(m => m.isTrap) ? ' · has a trap' : ''}</span>
+                <span style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{PYLAB_TOPICS[p.topic]} · {LEVELS[levelOf(p)].label}{(p.methods || []).some(m => m.isTrap) ? ' · trap' : ''}</span>
               </span>
               <Chip label={DIFF_LABEL[p.difficulty] || p.difficulty} color="var(--text-muted)" />
             </button>

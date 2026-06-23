@@ -1,6 +1,13 @@
 # PL — STATUS
 
-_Last updated: 2026-06-23 (build session: B0 + B1)._
+_Last updated: 2026-06-24 (session: KNOW re-scoped to the Foundations rooms — skeleton + spine; note: the body below still reflects the B0+B1 close and predates the PyLab consolidation in CHANGELOG 0.17-0.19 — read CHANGELOG for the current DO state)._
+
+## This session (2026-06-24) — KNOW becomes the Foundations rooms (skeleton)
+Triggered by `docs/FOUNDATIONS-HANDOFF.md` (PAL's mentor note) + a live read of PAL that proved its KNOW is ~10x PL's whole codebase and genuinely slider-driven, where PL's KNOW is a 20-card predict-run-read stub. **Decision D-PL-21:** re-scope KNOW into a **trunk + branches** room architecture — 5 trunk rooms (Python Foundations · The Machine · DS&A · NumPy & pandas · Shipping Python) + 2 branches (Competitive Programming · Tensors & Autograd). Two branches **amend the charter** (CP exceeds the easy->med ceiling; Tensors takes library mechanics only, modeling stays in MSL). **Shipped this session (planning + skeleton only, nothing wired into the app):**
+- `docs/FOUNDATIONS-SPEC.md` — the authority (room scope, manipulable-model bar, the `interactive`-slot build approach, the 3 through-lines, build order F0-F7, the scope amendment).
+- `src/data/foundationsRooms.js` — the machine-readable skeleton: **7 rooms / 24 clusters / 73 seed modules**, all status `planned`, each module tagged with its widget substrate (`live`/`sim`/`stepper`/`concept`). **Unimported — zero build impact.** `node --check` + import-tally verified.
+- Spine logged: D-PL-21, NEXT (the Foundations build track), LINEAGE, IDEAS, CHANGELOG.
+**Not done:** no `src/` wiring (no `FoundationsBrowser`, no `KnowRunner` slot yet) — that is F0, the first build phase. **Next:** F0 = add the `interactive` slot + build ONE `live` module (Room 1 aliasing) as the architecture proof, then author Room 1 to retire the stub.
 
 ## What PL is
 Programming Lab — the SWE-for-data fluency lab (D-07). React + Vite + Pyodide SPA, sibling-consistent with PAL/MSL/GAL. Repo slug still `production-systems-lab` (rename deferred — NEXT.md).
