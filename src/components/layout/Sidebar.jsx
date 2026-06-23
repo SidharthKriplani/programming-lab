@@ -87,11 +87,14 @@ const FRAMES = [
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
   ] },
   { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', view: 'build', icon: 'hammer', bank: 'build' }] },
-  { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', view: 'judge', icon: 'alert-triangle', bank: 'judge' }] },
+  { key: 'JUDGE', icon: 'scale', items: [
+    { label: 'Spot the Flaw', view: 'judge', icon: 'alert-triangle', bank: 'judge' },
+    { label: 'Trap Museum', view: 'trapmuseum', icon: 'file-text', bank: 'trapmuseum' },
+  ] },
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', foundations: 'KNOW', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
+const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', foundations: 'KNOW', know: 'KNOW', judge: 'JUDGE', trapmuseum: 'JUDGE', build: 'BUILD' };
 
 const BANK_TOTAL = {
   pylab: pyLabProblems.length,

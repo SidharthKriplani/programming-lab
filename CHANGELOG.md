@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.24.0] - 2026-06-24 — PyLab Phase 3 opens: the Trap Museum
+
+> First of the Phase-3 surfaces. A browsable gallery of every runs-but-wrong trap in the bank — the catalogue of code that passes review and fails in production. Pure lens over gated data: **zero new content, zero new gates.**
+
+### Added
+- **Trap Museum** (`src/pages/TrapMuseum.jsx` + `src/data/pyLabTraps.js`) — flattens every `methods[].isTrap` across the 136-problem bank into one gallery: **100 traps** across 8 topics, each already proven by `verify_py_methods` to run *and* diverge from the canonical. Filter by topic, search, expand a card to see the tempting code + why it looks right + when it breaks + the tell. **Copy-as-post on every trap** — feeds the daily-LinkedIn keystone (the distribution gate PL runs behind).
+- Wired into the **JUDGE frame** (`Trap Museum` beside `Spot the Flaw`) + App route `trapmuseum`. No progress bank (it's a reference surface), so no count badge.
+
+### Verified
+- esbuild clean (TrapMuseum, App, Sidebar); `pyLabTraps.js` `node --check` + import clean — **100 traps, 0 missing both tradeoff+breaksWhen**, byTopic {python-core 30, idioms 18, oop 15, groupby 14, window 8, vectorize 6, merge 5, reshape 4}. (Caught two missing icon names — `frame`, `git-branch` — and swapped for registered ones.)
+
+### Next
+- Phase 3 cont.: **Spaced repetition** (SM-2 review queue over solved problems), **Mock-loop** (timed session, no reveal), **Follow-up chains** (the interviewer's next ask).
+
 ## [PL 0.23.0] - 2026-06-24 — PyLab Phase 2 cont.: Ambiguity drill + Refactor (format content decoupled)
 
 > Two more showcase formats from the vision. Both run off a new **`src/data/pyLabFormats.js`** keyed by problem id — so a problem carries an ambiguity drill, a refactor target, both, or neither, and the 136-problem bank stays untouched (no re-gating).
@@ -52,8 +66,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 20 authored "Python & OOP Depth" modules fold **into** Foundations. `KNOW_BACKING` + `KNOW_EXTRA` (in `foundationsRooms.js`) route each to its room/cluster — **17 → Python Foundations, 2 → Shipping Python, 1 → The Machine** — where it renders as a **ready** card opening the runnable predict→reveal flow via the now-exported `KnowRunner` (solved/seen state preserved). Planned modules stay dashed/"planned"; room + page show a live `ready` count (20 ready now).
 - **Standalone "Python & OOP Depth" nav item removed** — Foundations is the single KNOW surface (`know` route orphaned, harmless). Verified: all 20 authored modules reachable, no id typos, esbuild clean.
 
-### Still to do (F1)
-- Swap each ready predict-run-read module for its driven `live`/`sim` model; author the planned modules room-by-room. macOS `npm run build` + approve-first push pending.
+### Driven (F1 — the first manipulable model, the whole point)
+- **`src/components/foundations/AliasingModel.jsx`** — Room 1's "Names are bindings" module now carries a **live, driven model**, not just predict-run-read. The learner toggles `b = a` vs `b = a.copy()`, clicks `a.append(•)` / `a = [99]`, and watches a heap diagram (names → object nodes, the list contents, `a is b`) update — **every frame computed by real CPython in Pyodide** (`runPython`), so `id()`/`is`/values are measured, not drawn. Includes a "show the Python this ran" disclosure (honest: it's real code). This is PL's edge over PAL's hand-built SVG — the model is *executable*.
+- **`KnowRunner` gains an optional `interactive` slot** (between demo and reveal), driven by `src/components/foundations/interactiveModules.js` (module id → widget). Modules without an entry keep the predict-run-read flow; back-compatible. Verified: the exact frames checked in CPython (alias→same, copy→decoupled, rebind→decoupled); esbuild graph exit 0.
+
+### Still to do (F1 cont.)
+- Author the next driven models (copy-vs-view, the call stack, broadcasting…) one per module; the predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

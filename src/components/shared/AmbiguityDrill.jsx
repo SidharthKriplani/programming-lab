@@ -14,7 +14,7 @@ export function AmbiguityDrill({ ambiguity }) {
   return (
     <div style={{ border: '1px solid var(--purple-border, var(--border))', borderRadius: 'var(--radius-sm)', background: 'var(--purple-bg, var(--surface-2))', padding: '0.8rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-        <Icon name="git-branch" size={15} color="var(--purple-text, var(--accent))" />
+        <Icon name="pen-line" size={15} color="var(--purple-text, var(--accent))" />
         <span style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)' }}>Decide before you code — this ask has more than one reading</span>
       </div>
       <div style={{ fontSize: '0.92rem', color: 'var(--text)', lineHeight: 1.55 }}>{ambiguity.question}</div>

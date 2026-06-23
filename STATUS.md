@@ -7,8 +7,9 @@ _Last updated: 2026-06-24. Two live workstreams: **DO = PyLab** (current state b
 - **Architecture (the authority): `docs/PYLAB-VISION.md`** (D-PL-22) — two-axis ROLE×SENIORITY, 9 formats, roadmap, from market research across all seven roles. Contract spec: `docs/PYLAB-BUILD-SPEC.md`; handoff: `docs/PYLAB-HANDOFF.md`.
 - **Phase 1 shipped (0.20.0):** `pyLabMeta.js` (roles[]+level, derived) + role/level filters + `PyLabReadiness` dashboard.
 - **Phase 2 shipped (0.22.0–0.23.0):** **Scale-it race** (`ScaleRace.jsx`+`runPyLabBench`), **Ambiguity drill** (`AmbiguityDrill.jsx`), **Refactor** (`RefactorChallenge.jsx`+`runPyLabBenchFull`). Last two read a decoupled `src/data/pyLabFormats.js` (id→{ambiguity?,refactor?}; 8+5 authored, bank untouched). esbuild + CPython verified.
-- **Key files:** `src/data/pyLabProblems.js` + `pyLabFixtures.js` + `pyLabBatch_*.js` (the bank), `pyLabMeta.js`, `pyLabFormats.js`; `src/pages/PyLabBrowser.jsx`; `src/components/shared/{JudgmentLayer,PyLabReadiness,ScaleRace,AmbiguityDrill,RefactorChallenge}.jsx`; `scripts/{pl_compare,_pylab_harness,audit_py,verify_py_methods,run_py}.py` + `_extract_pylab.mjs` + `py_content_scan.mjs`.
-- **Next:** Phase 3 (follow-up chains / mock-loop / spaced-rep / trap museum) + Phase 4 (take-home/code-review/explain/skin). Continuous: grow ambiguity/refactor coverage; delete dead old bank data files + routes.
+- **Phase 3 opened (0.24.0):** **Trap Museum** (`src/pages/TrapMuseum.jsx`+`src/data/pyLabTraps.js`) — gallery of all **100 runs-but-wrong traps**, topic-filter/search/copy-as-post; JUDGE-frame nav; pure lens over gated data (no new content/gates).
+- **Key files:** `src/data/pyLabProblems.js` + `pyLabFixtures.js` + `pyLabBatch_*.js` (the bank), `pyLabMeta.js`, `pyLabFormats.js`, `pyLabTraps.js`; `src/pages/{PyLabBrowser,TrapMuseum}.jsx`; `src/components/shared/{JudgmentLayer,PyLabReadiness,ScaleRace,AmbiguityDrill,RefactorChallenge}.jsx`; `scripts/{pl_compare,_pylab_harness,audit_py,verify_py_methods,run_py}.py` + `_extract_pylab.mjs` + `py_content_scan.mjs`.
+- **Next:** Phase 3 cont. — **Spaced repetition** (SM-2 review queue over solved), **Mock-loop** (timed, no reveal), **Follow-up chains**. Then Phase 4 (take-home/code-review/explain/skin). Continuous: grow ambiguity/refactor coverage; delete dead old bank data files + routes.
 
 ---
 

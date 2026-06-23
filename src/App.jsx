@@ -26,6 +26,7 @@ const BuildBrowser = lazy(() => import('./pages/BuildBrowser.jsx').then(m => ({ 
 const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx').then(m => ({ default: m.ProgressPage })));
 const PyLabBrowser = lazy(() => import('./pages/PyLabBrowser.jsx').then(m => ({ default: m.PyLabBrowser })));
 const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').then(m => ({ default: m.FoundationsBrowser })));
+const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
 
 function Home({ onNavigate }) {
   return (
@@ -116,6 +117,7 @@ export default function App() {
               : view === 'foundations' ? <FoundationsBrowser />
               : view === 'know' ? <KnowBrowser />
               : view === 'judge' ? <JudgeBrowser />
+              : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
               : <Home onNavigate={navigate} />}
           </Suspense>
