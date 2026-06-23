@@ -83,9 +83,6 @@ const FRAMES = [
   { key: 'DO', icon: 'terminal', items: [
     { label: 'PyLab', view: 'pylab', icon: 'layers', bank: 'pylab' },
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
-    { label: 'Python Drills', view: 'python', icon: 'code-2', bank: 'python' },
-    { label: 'Python Idioms', view: 'idioms', icon: 'pen-line', bank: 'idioms' },
-    { label: 'OOP', view: 'oop', icon: 'building-2', bank: 'oop' },
   ] },
   { key: 'BUILD', icon: 'hammer', items: [{ label: 'Mini-Projects', view: 'build', icon: 'hammer', bank: 'build' }] },
   { key: 'JUDGE', icon: 'scale', items: [{ label: 'Spot the Flaw', view: 'judge', icon: 'alert-triangle', bank: 'judge' }] },

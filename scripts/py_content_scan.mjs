@@ -5,9 +5,13 @@ import { pyLabProblems } from '../src/data/pyLabProblems.js';
 
 // technique names that must NOT appear in a prompt — the choice of technique is the test
 const JARGON = [
+  // pandas/numpy techniques
   'groupby', 'pivot_table', 'pivot', 'transform', 'merge', 'apply', 'vectorize',
   'defaultdict', 'setdefault', 'reset_index', 'dropna', 'itertools', 'comprehension',
   'np.where', 'concat', 'unstack',
+  // algo / python techniques (drills + idioms) — the technique choice is the test
+  'sliding window', 'two pointer', 'two-pointer', 'prefix sum', 'binary search',
+  'dynamic programming', 'memoiz', 'hash map', 'hashmap', 'decorator', 'generator expression',
 ];
 
 const fails = [];

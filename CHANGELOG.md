@@ -5,6 +5,21 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.19.0] - 2026-06-24 — PyLab consolidated: drills + idioms + OOP folded in (136 problems)
+
+> "if pylab is there then pandas numpy oops python drills all should be inside it." Done — migrated the remaining 91 (56 drills + 20 idioms + 15 OOP) onto the PyLab contract in five parallel gated batches. PyLab is now the single DO bank for pandas/numpy + Python.
+
+### Changed
+- **91 more problems migrated** into PyLab: **Python Drills (56)** → `python-core` / `numpy-vectorize`; **Idioms (20)**; **OOP (15)** via a self-contained-`solve()` reframe (user writes the class, a fixed driver returns observable output, value-compared). With pandas (41) + seed (4), **PyLab = 136 problems**, **98 carry a judgment layer** (a verified runs-but-wrong trap each — off-by-one bounds, `<=` vs `<`, softmax overflow, shared mutable default, `__eq__` without `__hash__`, …); the rest honest empty dials.
+- **Standalone Python Drills / Idioms / OOP rooms removed** from the nav and the Progress registry (`banks.js`). One DO bank now; **Gotchas stays its own predict→reveal room** (different format).
+- Topics: python-core 51 · idioms 20 · oop 15 · pandas (groupby 19, window 14, merge 5, reshape 5) · numpy-vectorize 7.
+
+### Verified
+- Full-set gates green: `audit_py` 136 / Tier-1 0, `verify_py_methods` 136 / 98 multi-method / **0 failures**, `py_content_scan` 0. Every solution, method and trap executed in real pandas/numpy 2.x. The gates caught a cross-batch `fx_tags` fixture-key collision (renamed) and two leftover jargon prompts — exactly their job.
+
+### Next
+- New problems beyond the migrated set (deeper footgun/judgment); `beforeWriting`/study-plan/`alsoAskedAt` surfaces; cleanup pass to retire the now-dead old bank data files + routes.
+
 ## [PL 0.18.0] - 2026-06-24 — pandas folds into PyLab: 41 problems migrated, gated, verified
 
 > Sidharth: "if pylab is there then pandas numpy oops python drills all should be inside it." Started the consolidation — migrated all 41 pandas problems onto the PyLab contract in four parallel gated subagent batches (PAL's method), then removed the standalone pandas/numpy room.

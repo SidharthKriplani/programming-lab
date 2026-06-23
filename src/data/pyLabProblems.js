@@ -15,6 +15,11 @@ import { problems as _bGroupby } from './pyLabBatch_groupby.js';
 import { problems as _bMergeReshape } from './pyLabBatch_mergereshape.js';
 import { problems as _bWindowMissing } from './pyLabBatch_windowmissing.js';
 import { problems as _bMisc } from './pyLabBatch_misc.js';
+import { problems as _bOop } from './pyLabBatch_oop.js';
+import { problems as _bDrills1 } from './pyLabBatch_drills1.js';
+import { problems as _bIdioms } from './pyLabBatch_idioms.js';
+import { problems as _bDrills3 } from './pyLabBatch_drills3.js';
+import { problems as _bDrills2 } from './pyLabBatch_drills2.js';
 
 export const PYLAB_TOPICS = {
   'pandas-groupby': 'pandas · groupby',
@@ -166,6 +171,6 @@ const _seedProblems = [
 
 // Seed + every migrated batch. PyLab is the single bank for pandas/numpy AND Python;
 // the standalone pandas/idioms/oop/drills rooms fold in here as they migrate (D-PL-20).
-export const pyLabProblems = [..._seedProblems, ..._bGroupby, ..._bMergeReshape, ..._bWindowMissing, ..._bMisc];
+export const pyLabProblems = [..._seedProblems, ..._bGroupby, ..._bMergeReshape, ..._bWindowMissing, ..._bMisc, ..._bOop, ..._bDrills1, ..._bIdioms, ..._bDrills3, ..._bDrills2];
 
 export default pyLabProblems;

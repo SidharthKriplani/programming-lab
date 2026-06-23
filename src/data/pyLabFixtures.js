@@ -9,6 +9,11 @@ import { fixtures as _fGroupby } from './pyLabBatch_groupby.js';
 import { fixtures as _fMergeReshape } from './pyLabBatch_mergereshape.js';
 import { fixtures as _fWindowMissing } from './pyLabBatch_windowmissing.js';
 import { fixtures as _fMisc } from './pyLabBatch_misc.js';
+import { fixtures as _fOop } from './pyLabBatch_oop.js';
+import { fixtures as _fDrills1 } from './pyLabBatch_drills1.js';
+import { fixtures as _fIdioms } from './pyLabBatch_idioms.js';
+import { fixtures as _fDrills3 } from './pyLabBatch_drills3.js';
+import { fixtures as _fDrills2 } from './pyLabBatch_drills2.js';
 
 const _seedFixtures = {
   'fx_sales': {
@@ -29,6 +34,6 @@ const _seedFixtures = {
 };
 
 // Merge the seed fixtures + every migrated batch (pandas, then python/idioms/oop later).
-export const pyLabFixtures = { ..._seedFixtures, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc };
+export const pyLabFixtures = { ..._seedFixtures, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms };
 
 export default pyLabFixtures;
