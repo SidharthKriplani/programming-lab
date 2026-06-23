@@ -75,8 +75,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`CallStackModel.jsx`** (Room 2, stepper) — step/play a recursive `factorial(n)`; frames push on the way down, the base case stops it, frames pop with return values on the way up; names the `RecursionError` a missing base case causes. Deterministic JS (the animation is the lesson); factorial values verified.
 - **`FoundationsBrowser` now opens interactive-only planned modules** — a module is READY if it has authored content *or* a driven model; the latter open a lightweight widget runner (`WidgetRunner`). `READY_TOTAL` recomputed from a room scan (22 ready). esbuild exit 0.
 
+### Driven — Room 2 (The Machine) cost models
+- **`BigOModel.jsx`** (sim) — drag n; five cost classes (O(1)→O(n^2)) render as log-scaled bars with live op counts and the n^2-vs-n multiplier. The "felt" Big-O; ties straight to the glass-box thesis.
+- **`HashBucketsModel.jsx`** (sim) — drop keys into 8 buckets (teaching hash = char-code sum mod 8), watch a real collision chain, then look a key up and see it jump straight to its bucket (O(1)) instead of scanning all N.
+- **Five driven models now** across Rooms 1–2 (aliasing, copy-vs-view, call-stack, Big-O, hashing). esbuild exit 0; Big-O math + hash placement sanity-checked.
+
 ### Still to do (F1 cont.)
-- Keep authoring driven models room-by-room (Big-O slider, broadcasting, dict-hashing); the predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
+- Keep authoring driven models room-by-room (loop-vs-vectorized race, broadcasting, index alignment…); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

@@ -13,6 +13,7 @@ import { SeniorRead } from '../components/shared/SeniorRead.jsx';
 import { HowToStrip } from '../components/shared/HowToStrip.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
+import { INTERACTIVE_MODULES } from '../components/foundations/interactiveModules.js';
 
 const KNOW_KEY = 'pl-know-progress-v1';
 const GRID_COLS = 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))';
@@ -54,6 +55,7 @@ export function KnowRunner({ module: m, onBack, onNext }) {
   const [revealed, setRevealed] = useState(false);
 
   const cluster = KNOW_CLUSTERS[m.cluster] || { label: m.cluster, accent: 'var(--accent)' };
+  const Interactive = INTERACTIVE_MODULES[m.id];
   const predict = normalizePredict(m.predict);
   const hasPredict = !!predict;
   const answered = picked !== null;
@@ -157,6 +159,14 @@ export function KnowRunner({ module: m, onBack, onNext }) {
           height={Math.min(340, 70 + m.demoCode.split('\n').length * 19)}
         />
       </div>
+
+      {/* Driven model (F1 interactive slot) — present only for modules that carry one */}
+      {Interactive && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)' }}>Drive the model</div>
+          <Interactive />
+        </div>
+      )}
 
       {/* Reveal control */}
       {!revealed && (

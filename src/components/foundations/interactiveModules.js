@@ -6,9 +6,13 @@
 import { AliasingModel } from './AliasingModel.jsx';
 import { CopyVsViewModel } from './CopyVsViewModel.jsx';
 import { CallStackModel } from './CallStackModel.jsx';
+import { BigOModel } from './BigOModel.jsx';
+import { HashBucketsModel } from './HashBucketsModel.jsx';
 
 export const INTERACTIVE_MODULES = {
   'know-names-are-bindings': AliasingModel, // Room 1 · values-and-names (backed → KnowRunner slot)
   'pf-copy-deepcopy': CopyVsViewModel,      // Room 1 · values-and-names (planned → widget runner)
-  'mc-call-stack': CallStackModel,          // Room 2 · execution      (planned → widget runner)
+  'mc-call-stack': CallStackModel,          // Room 2 · execution        (planned → widget runner)
+  'mc-big-o': BigOModel,                    // Room 2 · cost-felt         (planned → widget runner)
+  'mc-hash-buckets': HashBucketsModel,      // Room 2 · hashing-and-lookup (planned → widget runner)
 };
