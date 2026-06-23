@@ -6,6 +6,8 @@ _Tiered. Most things don't belong here — only what's specific enough to build.
 - **PL 0.2.0** — Instrument theme + dark/light + break-glyph. Built; awaiting Mac build + push (auto-deploys Vercel), then on-device contrast verify (A-PL-02).
 
 ## Tier 1 — next
+- **KNOW Foundations rooms (D-PL-21) — the big one, now specced.** KNOW re-scoped from the 20-card stub into a trunk (5 rooms) + branches (2). Skeleton shipped: `docs/FOUNDATIONS-SPEC.md` + `src/data/foundationsRooms.js` (7 rooms / 24 clusters / 73 seed modules). Build phases F0→F7 in NEXT/spec §7. **F0 first** (the `interactive` `KnowRunner` slot + `FoundationsBrowser` + one `live` aliasing module as proof) — that unblocks authoring at volume. Supersedes the old "Four-frame spec expansion (paper-only)" line below for the KNOW half.
+
 - **B2 — pandas / numpy bank.** Highest-value bank for PL's audience. Lazy-load the Pyodide pandas/numpy wheels on first pandas problem. Spec §2-D / §3c. Pairs with the SQL bank in PAL.
 - **Worker hardening (A-PL-01).** Move Pyodide execution to a Web Worker before pandas/DSA land at scale, so long runs don't block the UI.
 - **Four-frame spec expansion (paper-only, parallel).** Map PL's KNOW / BUILD / JUDGE layers to D-15 (KNOW = Python/OOP depth explainers; BUILD = scaffolded mini-projects; JUDGE = the dial/MCQ + a Forensic tier). Doesn't block code.

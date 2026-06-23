@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.21.0] - 2026-06-24 — KNOW re-scoped: the Foundations rooms (architecture + skeleton, planning only)
+
+> PAL's handoff (`docs/FOUNDATIONS-HANDOFF.md`) + a live read of PAL's deployed Foundation rooms (a three-slider Mix-Shift simulator inside one Metrics module) proved PL's "shipped" KNOW frame is a 20-card predict-run-read stub against PAL's slider-driven, ~10x-larger system. KNOW is re-scoped into a **trunk + branches** Foundations architecture. **This release is planning + skeleton only — nothing is wired into the app.**
+
+### Added
+- **`docs/FOUNDATIONS-SPEC.md`** — the KNOW-frame authority: the trunk (5 rooms: Python Foundations · The Machine · DS&A · NumPy & pandas · Shipping Python) + branches (2: Competitive Programming · Tensors & Autograd), per-room scope/grounding/manipulable-hook, the 3 product through-lines (binding/aliasing · broadcasting · cost/race), the build architecture (reuse `KnowRunner` + an optional `interactive` slot; 4 widget substrates `live`/`sim`/`stepper`/`concept`; prefer Pyodide-`live` as PL's edge over PAL's hand-built SVG), the scope amendment, and build order F0→F7.
+- **`src/data/foundationsRooms.js`** — the machine-readable skeleton: **7 rooms / 24 clusters / 73 seed modules**, all status `planned`, each module tagged with its widget substrate. **Unimported (no build impact);** `node --check` + import-tally verified.
+
+### Decisions
+- **D-PL-21** — KNOW becomes the Foundations rooms; the two branches **amend the charter** (Competitive Programming exceeds the easy→medium ceiling, partially superseding D-PL-07 which still governs the trunk; Tensors & Autograd takes **library mechanics only** — modeling stays in `ml-systems-lab`, same KNOW→DO seam). Re-scopes PL from "fluency floor" to "fluency floor + two depth verticals." Approved 2026-06-24.
+
+### Not done (next: F0)
+- No `src/` wiring yet — no `FoundationsBrowser`, no `KnowRunner` `interactive` slot. F0 = build that slot + one `live` module (Room 1 aliasing) as the architecture proof, then author Room 1 to retire the 20-card `knowModules.js` stub. macOS build + approve-first push pending (skeleton is docs + one unimported data file; no build needed until F0 wires it).
+
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
 > Architected PyLab from market research — `docs/PYLAB-VISION.md`. The gap every interview tests, every role, every level, is "runs vs right." Phase 1 makes the bank legible on that axis.
