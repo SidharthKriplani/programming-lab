@@ -8,17 +8,9 @@ import { getSkin, cycleSkin } from './utils/skin.js';
 import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
-import { pythonProblems, PY_PATTERNS, PY_PATTERN_ORDER } from './data/pythonProblems.js';
-import { pandasProblems, PD_PATTERNS, PD_PATTERN_ORDER } from './data/pandasProblems.js';
-import { idiomsProblems, IDIOM_PATTERNS, IDIOM_PATTERN_ORDER } from './data/idiomsProblems.js';
-import { oopProblems, OOP_PATTERNS, OOP_PATTERN_ORDER } from './data/oopProblems.js';
-import { PYTHON_KEY, PANDAS_KEY, IDIOMS_KEY, OOP_KEY } from './utils/problemProgress.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
-);
-const ProblemBrowser = lazy(() =>
-  import('./pages/ProblemBrowser.jsx').then(m => ({ default: m.ProblemBrowser }))
 );
 const KnowBrowser = lazy(() => import('./pages/KnowBrowser.jsx').then(m => ({ default: m.KnowBrowser })));
 const JudgeBrowser = lazy(() => import('./pages/JudgeBrowser.jsx').then(m => ({ default: m.JudgeBrowser })));
@@ -84,34 +76,6 @@ export default function App() {
             </div>
           }>
             {view === 'gotchas' ? <GotchaBrowser />
-              : view === 'python' ? (
-                <ProblemBrowser
-                  title="Python Drills" iconName="code-2" iconColor="var(--accent)"
-                  subtitle="Famous Python problems by pattern — hashing, sliding window, stack, prefix sum. Write the function, run the hidden tests."
-                  problems={pythonProblems} patterns={PY_PATTERNS} patternOrder={PY_PATTERN_ORDER}
-                  progressKey={PYTHON_KEY} packages={['numpy']} />
-              )
-              : view === 'pandas' ? (
-                <ProblemBrowser
-                  title="pandas / numpy" iconName="layers" iconColor="var(--teal)"
-                  subtitle="The analyst-native operations — groupby, merge, pivot, vectorize. Real pandas, running in your browser."
-                  problems={pandasProblems} patterns={PD_PATTERNS} patternOrder={PD_PATTERN_ORDER}
-                  progressKey={PANDAS_KEY} packages={['pandas']} />
-              )
-              : view === 'idioms' ? (
-                <ProblemBrowser
-                  title="Python Idioms" iconName="pen-line" iconColor="var(--accent)"
-                  subtitle="The fluent way to write Python — comprehensions, Counter/defaultdict, itertools/functools, context managers, decorators, dunder."
-                  problems={idiomsProblems} patterns={IDIOM_PATTERNS} patternOrder={IDIOM_PATTERN_ORDER}
-                  progressKey={IDIOMS_KEY} packages={[]} />
-              )
-              : view === 'oop' ? (
-                <ProblemBrowser
-                  title="Python OOP" iconName="layers" iconColor="var(--purple)"
-                  subtitle="Classes, dataclasses, properties, inheritance vs composition, and the dunder methods that make objects behave Pythonically."
-                  problems={oopProblems} patterns={OOP_PATTERNS} patternOrder={OOP_PATTERN_ORDER}
-                  progressKey={OOP_KEY} packages={[]} />
-              )
               : view === 'progress' ? <ProgressPage onNavigate={navigate} />
               : view === 'pylab' ? <PyLabBrowser />
               : view === 'foundations' ? <FoundationsBrowser />
@@ -123,9 +87,6 @@ export default function App() {
           </Suspense>
         </main>
       </div>
-
-      {/* CRT green-screen scanline + vignette overlay (dark identity only; CSS-gated) */}
-      <div className="pl-crt-overlay" aria-hidden="true" />
     </div>
   );
 }

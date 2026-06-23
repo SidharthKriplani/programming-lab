@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.28.0] - 2026-06-24 — Cleanup: retire the orphaned old bank rooms + dead green-screen CSS
+
+> Paying down debt from the PyLab consolidation and the Graphite switch. No user-facing change beyond a lighter, less confusing codebase.
+
+### Removed
+- **The 4 superseded DO bank files** — `src/data/{pythonProblems,pandasProblems,idiomsProblems,oopProblems}.js` (content migrated into PyLab long ago; only stale comments referenced them) + `src/pages/ProblemBrowser.jsx` (the generic runner that served their now-unreachable routes). Cleared the dead imports + routes from `App.jsx`, the dead nav counts from `Sidebar.jsx` (`VIEW_FRAME`/`BANK_TOTAL`/`bankSolved`), and the unused imports from `banks.js`.
+- **Dead green-screen CSS** (`index.css`) — the `.pl-crt-overlay` scanline overlay (+ its div in `App.jsx`) and the phosphor decorations (glow `text-shadow`, the `#7FF5B0` headings, the inverse-video green nav/buttons/badges) that Graphite made unreachable. Kept the foundation tokens components still inherit.
+
+### Verified
+- Full import-graph bundle (`esbuild --bundle src/App.jsx`) **exit 0** — no dangling imports after the 5 deletions; CSS brace-balanced; token coverage clean (nothing left undefined). A subagent ran the coordinated surgery and caught one mis-scoped token in my brief (`--gradient-accent` is used by the Home badge, not only the deleted file) and conservatively kept it.
+
+### Next
+- Deploy the whole 0.22–0.28 stack and click through. Then Phase 3 Mock-loop.
+
 ## [PL 0.27.0] - 2026-06-24 — PyLab grid → square company cards
 
 > UI change (Sidharth): the PyLab list becomes a grid of square cards, each mapped to a representative company, with a one-line gist. The WARMUP/CORE difficulty badge drops from display (it's a filtering signal, not a label).

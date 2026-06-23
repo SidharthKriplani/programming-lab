@@ -1,14 +1,11 @@
 // banks — the single registry of every content bank in PL (frame, view, total,
 // progress key, accent). Used by the Progress dashboard. Mirrors the nav.
 import { gotchaProblems } from './gotchaProblems.js';
-import { pythonProblems } from './pythonProblems.js';
-import { idiomsProblems } from './idiomsProblems.js';
-import { oopProblems } from './oopProblems.js';
 import { pyLabProblems } from './pyLabProblems.js';
 import { knowModules } from './knowModules.js';
 import { judgeProblems } from './judgeProblems.js';
 import { buildProjects } from './buildProjects.js';
-import { PYTHON_KEY, PANDAS_KEY, IDIOMS_KEY, OOP_KEY, BUILD_KEY } from '../utils/problemProgress.js';
+import { BUILD_KEY } from '../utils/problemProgress.js';
 
 export const FRAMES = {
   KNOW:  { label: 'Know',  sub: 'Understand the why', icon: 'book-open' },

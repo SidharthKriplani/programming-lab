@@ -7,15 +7,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Icon } from '../shared/Icon.jsx';
 import { getCounts as gotchaCounts } from '../../utils/gotchaProgress.js';
 import { gotchaProblems } from '../../data/gotchaProblems.js';
-import { pythonProblems } from '../../data/pythonProblems.js';
-import { pandasProblems } from '../../data/pandasProblems.js';
-import { idiomsProblems } from '../../data/idiomsProblems.js';
-import { oopProblems } from '../../data/oopProblems.js';
 import { knowModules } from '../../data/knowModules.js';
 import { judgeProblems } from '../../data/judgeProblems.js';
 import { buildProjects } from '../../data/buildProjects.js';
 import { pyLabProblems } from '../../data/pyLabProblems.js';
-import { getCounts as problemCounts, PYTHON_KEY, PANDAS_KEY, BUILD_KEY, IDIOMS_KEY, OOP_KEY } from '../../utils/problemProgress.js';
+import { getCounts as problemCounts, BUILD_KEY } from '../../utils/problemProgress.js';
 import { getTheme, toggleTheme } from '../../utils/theme.js';
 import { BrandMark } from '../shared/BrandMark.jsx';
 
@@ -94,22 +90,17 @@ const FRAMES = [
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', foundations: 'KNOW', know: 'KNOW', judge: 'JUDGE', trapmuseum: 'JUDGE', build: 'BUILD' };
+const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', foundations: 'KNOW', know: 'KNOW', judge: 'JUDGE', trapmuseum: 'JUDGE', build: 'BUILD' };
 
 const BANK_TOTAL = {
   pylab: pyLabProblems.length,
-  gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
-  idioms: idiomsProblems.length, oop: oopProblems.length,
+  gotchas: gotchaProblems.length,
   foundations: knowModules.length,
   know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
 };
 function bankSolved(bank) {
   if (bank === 'pylab') return problemCounts('pl-pylab-progress-v1').solved;
-  if (bank === 'python') return problemCounts(PYTHON_KEY).solved;
-  if (bank === 'pandas') return problemCounts(PANDAS_KEY).solved;
   if (bank === 'gotchas') return gotchaCounts().solved;
-  if (bank === 'idioms') return problemCounts(IDIOMS_KEY).solved;
-  if (bank === 'oop') return problemCounts(OOP_KEY).solved;
   if (bank === 'foundations') return problemCounts('pl-know-progress-v1').solved;
   if (bank === 'know') return problemCounts('pl-know-progress-v1').solved;
   if (bank === 'judge') return problemCounts('pl-judge-progress-v1').solved;
