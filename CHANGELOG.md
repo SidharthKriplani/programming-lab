@@ -103,8 +103,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`BroadcastModel.jsx`** (sim, Room 4) — drag two array shapes; size-1 axes stretch to match (ghost cells, "never copied"), non-1 mismatches error. Rule verified against `np.broadcast_shapes` ((3,1)+(1,4)→(3,4); (2,3)+(3,2)→error).
 - **Seven driven models now** across Rooms 1, 2, 4. esbuild exit 0.
 
+### Driven — pandas alignment, truthiness, decorators
+- **`IndexAlignModel.jsx`** (live pandas, Room 4) — toggle s2&apos;s labels, watch `s1 + s2` align by label and drop NaN where a label is in only one Series. Verified: a,d→NaN, b=22, c=33.
+- **`TruthinessModel.jsx`** (live, Room 1) — define `__bool__` / `__len__`, watch `bool(obj)` fall through the protocol (\_\_bool\_\_ → \_\_len\_\_ → default True). All four dispatch cases CPython-verified.
+- **`DecoratorModel.jsx`** (stepper, Room 1) — step a decorated call: the name resolves to the wrapper, which runs before/after around the original and passes the value back out.
+- **Ten driven models now** across Rooms 1/2/4 (the last two render inside their backed modules&apos; `KnowRunner` slot). esbuild exit 0. Widgets use `var()` tokens → theme correctly under the new Graphite dark mode (D-PL-23).
+
 ### Still to do (F1 cont.)
-- Keep authoring driven models room-by-room (index alignment, the dict iteration order, decorators); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
+- Keep authoring driven models (generators stepper, the GIL/async timeline, dict insertion-order); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
