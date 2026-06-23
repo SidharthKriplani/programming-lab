@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { knowModules, KNOW_CLUSTERS, KNOW_CLUSTER_ORDER } from '../data/knowModules.js';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
+import { SeniorRead } from '../components/shared/SeniorRead.jsx';
 import { HowToStrip } from '../components/shared/HowToStrip.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
@@ -17,6 +18,26 @@ const KNOW_KEY = 'pl-know-progress-v1';
 const GRID_COLS = 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))';
 
 const DIFF_LABEL = { warmup: 'Warmup', core: 'Core', stretch: 'Stretch' };
+
+// leveled-option theming (mirrors PAL Stats Room: strong=teal/green, partial=yellow, wrong=red).
+// Returns the visual treatment for a predict option, supporting BOTH the new leveled
+// shape ({label, level, feedback}) and the legacy shape (string + answerIndex).
+const LEVEL_STYLE = {
+  strong:  { bg: 'var(--green-bg)',  border: 'var(--green-border)',  text: 'var(--green-text)',  icon: 'check' },
+  partial: { bg: 'var(--yellow-bg)', border: 'var(--yellow-border)', text: 'var(--yellow-text)', icon: 'alert-triangle' },
+  wrong:   { bg: 'var(--red-bg)',    border: 'var(--red-border)',    text: 'var(--red-text)',    icon: 'x' },
+};
+// Normalise a predict block into { question, opts:[{label, level, feedback}] }.
+// Legacy: options:[string] + answerIndex -> the answerIndex entry is 'strong', rest 'wrong'.
+function normalizePredict(predict) {
+  if (!predict) return null;
+  const opts = predict.options.map((o, i) =>
+    typeof o === 'string'
+      ? { label: o, level: i === predict.answerIndex ? 'strong' : 'wrong', feedback: null }
+      : { label: o.label, level: o.level || 'wrong', feedback: o.feedback || null }
+  );
+  return { question: predict.question, opts };
+}
 
 function Chip({ label, color }) {
   return (
@@ -33,9 +54,11 @@ function KnowRunner({ module: m, onBack, onNext }) {
   const [revealed, setRevealed] = useState(false);
 
   const cluster = KNOW_CLUSTERS[m.cluster] || { label: m.cluster, accent: 'var(--accent)' };
-  const hasPredict = !!m.predict;
+  const predict = normalizePredict(m.predict);
+  const hasPredict = !!predict;
   const answered = picked !== null;
-  const correct = answered && picked === m.predict.answerIndex;
+  const pickedLevel = answered ? predict.opts[picked].level : null;
+  const correct = pickedLevel === 'strong';
 
   useEffect(() => {
     markSeen(KNOW_KEY, m.id);
@@ -75,19 +98,20 @@ function KnowRunner({ module: m, onBack, onNext }) {
         <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem', lineHeight: 1.6 }}>{m.hook}</p>
       </div>
 
-      {/* Predict (optional, predict-before-run gate) */}
+      {/* Predict (optional, predict-before-run gate) — leveled options + per-option feedback */}
       {hasPredict && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
           <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Predict first</div>
-          <div style={{ fontSize: '0.95rem', color: 'var(--text)', fontWeight: 600 }}>{m.predict.question}</div>
+          <div style={{ fontSize: '0.95rem', color: 'var(--text)', fontWeight: 600 }}>{predict.question}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-            {m.predict.options.map((opt, i) => {
-              const isAnswer = i === m.predict.answerIndex;
+            {predict.opts.map((opt, i) => {
               const isPicked = picked === i;
+              const lvl = LEVEL_STYLE[opt.level] || LEVEL_STYLE.wrong;
+              const reveal = answered && (opt.level === 'strong' || isPicked);
               let bg = 'var(--surface)', border = 'var(--border)', cls = '';
-              if (answered) {
-                if (isAnswer) { bg = 'var(--green-bg)'; border = 'var(--green-border)'; if (isPicked) cls = 'pal-success-ring'; }
-                else if (isPicked) { bg = 'var(--red-bg)'; border = 'var(--red-border)'; cls = 'pal-shake'; }
+              if (reveal) {
+                bg = lvl.bg; border = lvl.border;
+                if (isPicked) cls = opt.level === 'strong' ? 'pal-success-ring' : 'pal-shake';
               }
               return (
                 <button
@@ -102,16 +126,24 @@ function KnowRunner({ module: m, onBack, onNext }) {
                     display: 'flex', alignItems: 'center', gap: '0.5rem',
                   }}
                 >
-                  {answered && isAnswer && <Icon name="check" size={14} color="var(--green-text)" />}
-                  <span>{opt}</span>
+                  {reveal && <Icon name={lvl.icon} size={14} color={lvl.text} />}
+                  <span>{opt.label}</span>
                 </button>
               );
             })}
           </div>
+          {/* Per-option feedback (the Stats-Room payoff): show the picked option's feedback,
+              colour-coded by its level. Falls back to a generic line for legacy options. */}
           {answered && (
-            <div style={{ fontSize: '0.85rem', color: correct ? 'var(--green-text)' : 'var(--text-muted)' }}>
-              {correct ? 'Right. Now run it and watch the mechanism.' : 'Not quite - run it and watch what really happens.'}
-            </div>
+            predict.opts[picked].feedback ? (
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55, background: 'var(--surface-2)', border: '1px solid var(--border)', borderLeft: '3px solid ' + (LEVEL_STYLE[pickedLevel] || LEVEL_STYLE.wrong).text, borderRadius: 'var(--radius-sm)', padding: '0.55rem 0.75rem' }}>
+                {predict.opts[picked].feedback}
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.85rem', color: correct ? 'var(--green-text)' : 'var(--text-muted)' }}>
+                {correct ? 'Right. Now run it and watch the mechanism.' : 'Not quite - run it and watch what really happens.'}
+              </div>
+            )
           )}
         </div>
       )}
@@ -159,6 +191,13 @@ function KnowRunner({ module: m, onBack, onNext }) {
             <div style={{ fontSize: '0.64rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: '0.25rem' }}>Mental model</div>
             <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.92rem', lineHeight: 1.55, fontWeight: 600 }}>{m.mentalModel}</p>
           </div>
+
+          {/* The senior read — Foundations-grade depth (short answer / why / common mistake / interview phrasing) */}
+          {m.seniorRead && (
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.95rem' }}>
+              <SeniorRead seniorRead={m.seniorRead} />
+            </div>
+          )}
 
           <ForwardPointerCard room="gotchas" onNext={onNext} onNavigate={onBack} />
         </div>

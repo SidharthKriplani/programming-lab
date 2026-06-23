@@ -18,7 +18,11 @@
 //   demoOutput  — verified stdout (trailing newline trimmed, matching the glass-box run)
 //   explain     — [ { heading, body } ]  2-3 collapsible sections
 //   mentalModel — the one-sentence model to keep
-//   predict     — { question, options:[...], answerIndex }  (optional predict-before-run gate)
+//   predict     — { question, options:[ {label, level:'wrong'|'partial'|'strong', feedback} ] }
+//                 (leveled options with per-option teaching feedback; no answerIndex)
+//   isFree      — true (this depth layer is free)
+//   seniorRead  — { shortAnswer, why, commonMistake, interviewPhrase, connectsTo:[...] }
+//                 the senior-engineer read: verdict, mechanism, the trap, the quotable line
 //   connectsTo  — ['gotchas','python','pandas']
 
 export const KNOW_CLUSTERS = {
@@ -54,8 +58,17 @@ export const knowModules = [
     demoOutput: 'a: [1]\nb: [1]\nsame object: True\nc: [1]\nd: []\nsame object: False',
     predict: {
       question: 'After a = b = [] and a.append(1), what is b?',
-      options: ['[]', '[1]', 'raises an error'],
-      answerIndex: 1,
+      options: [
+        { label: '[]',
+          level: 'wrong',
+          feedback: 'This assumes = made b its own list. It did not. a = b = [] evaluates [] once and binds both names to that single object, so a.append(1) is visible through b.' },
+        { label: '[1]',
+          level: 'strong',
+          feedback: 'Right. One list, two labels. append mutates the shared object in place, so both names see [1]. To get independent lists you build them separately or call .copy().' },
+        { label: 'raises an error',
+          level: 'wrong',
+          feedback: 'No error - append on a list is always valid. The surprise is not a crash, it is the silent aliasing: both names point at the same list.' },
+      ],
     },
     explain: [
       {
@@ -72,6 +85,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Assignment binds a name to an object - it never copies. To get a separate object, ask for one (.copy()).',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'b is [1]. a = b = [] makes ONE list with two names on it; append mutates the shared object, so both names see the change.',
+      why: 'A Python variable is a name in a namespace pointing at an object - not a box holding bytes. a = b = [] evaluates the right-hand side once, builds a single list, and binds both a and b to it.\n\nThe distinction that matters under pressure is mutation vs rebinding. a.append(1) mutates the one shared list in place, so it is visible through every name bound to it. a = [9] does NOT touch the old list - it rebinds a to a new object and leaves b on the original. This is exactly why df2 = df1 then df2.dropna(inplace=True) silently edits df1: no copy ever happened.',
+      commonMistake: 'Assuming = deep-copies, or using `is` to compare values. **Weak pattern:** the candidate says "they are separate because I wrote two names" and cannot explain why both changed. **Interviewer follow-up:** "will a is b be True, and how do you make b independent?" - the answer is True, and .copy() gives independence.',
+      interviewPhrase: '"Names are bindings, not boxes - = rebinds a label, it never copies the object. a and b are two names on one list, so appending through a shows up in b. For an independent list I would call .copy()."',
+      connectsTo: ['gotchas', 'pandas'],
+    },
     connectsTo: ['gotchas', 'python', 'pandas'],
   },
 
@@ -89,8 +110,17 @@ export const knowModules = [
     demoOutput: 'first pass: [0, 1, 4, 9]\nsecond pass: []\ngen is iterator of itself: True\ntype: generator',
     predict: {
       question: 'g = squares(4). After list(g), what does the second list(g) return?',
-      options: ['[0, 1, 4, 9] again', '[]', 'raises StopIteration'],
-      answerIndex: 1,
+      options: [
+        { label: '[0, 1, 4, 9] again',
+          level: 'wrong',
+          feedback: 'A generator does not restart. It remembers its position, not its contents - and after the first list() it has already yielded everything and returned, so there is nothing left to walk.' },
+        { label: '[]',
+          level: 'strong',
+          feedback: 'Right. The first list() exhausted it. A generator is a one-shot stream: once it has run to the end it is spent, so the second pass sees an empty stream. Rebuild it (call squares(4) again) to walk it twice.' },
+        { label: 'raises StopIteration',
+          level: 'wrong',
+          feedback: 'list() consumes StopIteration internally - that signal is how it knows to stop, not an error it raises. An exhausted generator simply yields nothing, so list() hands back [].' },
+      ],
     },
     explain: [
       {
@@ -107,6 +137,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A generator is a paused function you resume one yield at a time - lazy on the way in, exhausted on the way out.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'The second list(g) returns []. A generator is a one-shot stream: the first pass exhausts it, and it does not rewind.',
+      why: 'Calling squares(4) does not run the loop - it returns a generator object with the function frozen at the top. Each next() (which list, for, and sum all call under the hood) resumes the frame, runs to the next yield, hands back one value, and freezes again. Values are produced on demand, one at a time.\n\nA generator remembers its POSITION in the code, not the sequence it produced. Once it has yielded the last value and the function returns, it is exhausted - every later iteration sees an empty stream. The payoff is flat memory: only one value exists at a time, so a generator over a million items costs about the same as one over ten. You trade re-iterability for a footprint that does not grow with the data.',
+      commonMistake: 'Reusing a generator after it has been consumed - looping it once to find a max, then again to filter, and getting nothing the second time. **Weak pattern:** the candidate stores a generator in a variable and treats it like a list. **Interviewer follow-up:** "you need to iterate this twice - what do you do?" - rebuild it by calling the function again, or materialise it once with list().',
+      interviewPhrase: '"A generator is lazy and one-shot - it yields values on demand and remembers its position, not its contents. Once I have walked it, it is exhausted. If I need it twice I rebuild it or pull it into a list; if I am streaming big data I keep it lazy for the flat memory."',
+      connectsTo: ['gotchas', 'pandas'],
+    },
     connectsTo: ['gotchas', 'python', 'pandas'],
   },
 
@@ -124,8 +162,17 @@ export const knowModules = [
     demoOutput: '1 2 3\n[2, 2, 2]\n[0, 1, 2]',
     predict: {
       question: 'funcs = [lambda: i for i in range(3)]. What does [f() for f in funcs] print?',
-      options: ['[0, 1, 2]', '[2, 2, 2]', '[3, 3, 3]'],
-      answerIndex: 1,
+      options: [
+        { label: '[0, 1, 2]',
+          level: 'partial',
+          feedback: 'This is the result you WANTED and what the default-argument fix produces - but not what this code does. These lambdas capture the variable i, not its value, so they all read i at call time, after the loop ended.' },
+        { label: '[2, 2, 2]',
+          level: 'strong',
+          feedback: 'Right. All three lambdas close over the same variable i and read it when called, not when created. By call time the loop has finished and i is 2, so every lambda returns 2. Bind the value now with lambda i=i: i to freeze each one.' },
+        { label: '[3, 3, 3]',
+          level: 'wrong',
+          feedback: 'Close on the late-binding idea but off by one. The loop variable stops at its last assigned value, 2 - range(3) never binds i to 3. So every lambda reads 2.' },
+      ],
     },
     explain: [
       {
@@ -142,6 +189,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A closure remembers the variable, not the value - it reads it fresh on every call, so bind the value now if you need it frozen.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'It prints [2, 2, 2]. The lambdas capture the variable i, not its value, and read it at call time - by then the loop has ended and i is 2.',
+      why: 'Name resolution walks LEGB - Local, Enclosing, Global, Built-in - and the first match wins. A closure is a function that reaches into an enclosing scope; the key fact is that it captures the VARIABLE, not a snapshot of its value. The three lambdas all close over the one loop variable i and look it up when called, not when defined.\n\nThat is late binding: by the time you invoke them the loop has finished and i holds 2, so every lambda returns 2. The fix is a default argument - lambda i=i: i - because defaults are evaluated once at definition time, so each lambda freezes its own copy of i right then. The same mechanism is why nonlocal is needed for a closure to rebind (not just read) an enclosing name.',
+      commonMistake: 'Building handlers or callbacks in a loop and expecting each to remember its iteration value. **Weak pattern:** the candidate "fixes" it by renaming the variable, which changes nothing. **Interviewer follow-up:** "why does i=i in the parameter list fix it?" - because default arguments bind at def-time, capturing the current value instead of the live variable.',
+      interviewPhrase: '"A closure captures the variable, not the value - it reads it fresh at call time. All three lambdas share one i, so after the loop they all see 2. To freeze each value I bind it as a default argument, lambda i=i, which evaluates once at definition."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -159,8 +214,17 @@ export const knowModules = [
     demoOutput: 'Hello, Ada\nHello, stranger\nHello, stranger\ncount or 10: 10\nexplicit None check: 0',
     predict: {
       question: 'count = 0. What does (count or 10) evaluate to?',
-      options: ['0', '10', 'True'],
-      answerIndex: 1,
+      options: [
+        { label: '0',
+          level: 'wrong',
+          feedback: 'This assumes or only swaps in the fallback when the left side is None. It does not - 0 is falsy, so or skips it and returns 10. That is exactly the bug: a real 0 gets discarded.' },
+        { label: '10',
+          level: 'strong',
+          feedback: 'Right. or returns the first truthy operand, and 0 is falsy, so it falls through to 10 even though 0 was a legitimate value. If you only meant "replace None", test x if x is not None else 10.' },
+        { label: 'True',
+          level: 'wrong',
+          feedback: 'or does not return a boolean - it returns one of its operands. count or 10 yields 10 (an int), never True. The boolean-ness only decides WHICH operand comes back.' },
+      ],
     },
     explain: [
       {
@@ -177,6 +241,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'or returns the first truthy operand - so use it as a default only when every falsy value really should be replaced.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'count or 10 evaluates to 10. or returns the first truthy operand, and 0 is falsy, so the real 0 gets thrown away and the fallback fires.',
+      why: 'Python treats a whole family of values as falsy: None, False, 0, 0.0, "", [], {}, set(), and any object whose __len__ is 0. The or operator does not return a boolean - it returns its first truthy operand, else the last one. That is what makes name or "stranger" read so naturally as a default.\n\nThe trap is that it fires on ANY falsy input, not just missing ones. A valid empty string, a count of 0, or an empty list all get silently replaced by the fallback. If "missing" really means None, test for None explicitly: x if x is not None else default. Reserve the or-default for cases where every falsy value genuinely should be swapped out.',
+      commonMistake: 'Using or as a None-check when 0, "", or [] are legitimate inputs. **Weak pattern:** the candidate writes limit = limit or 100 and cannot explain why limit=0 turns into 100. **Interviewer follow-up:** "a user passes 0 on purpose - what happens, and how do you keep it?" - or discards it; guard with is not None instead.',
+      interviewPhrase: '"x or default returns the first truthy operand, so it replaces every falsy value - 0, empty string, empty list - not just None. If 0 or an empty string is a valid input I check x is not None explicitly instead, so I do not silently eat real data."',
+      connectsTo: ['gotchas', 'python', 'pandas'],
+    },
     connectsTo: ['gotchas', 'python', 'pandas'],
   },
 
@@ -194,8 +266,17 @@ export const knowModules = [
     demoOutput: 'len: 3\ntruthy: True\nfirst: a\niterates: [\'a\', \'b\', \'c\']\nempty is falsy: False',
     predict: {
       question: 'Playlist defines __len__ and __getitem__ but no __iter__. Does [t for t in p] work?',
-      options: ['Yes - __getitem__ drives iteration', 'No - needs __iter__', 'No - raises TypeError'],
-      answerIndex: 0,
+      options: [
+        { label: 'Yes - __getitem__ drives iteration',
+          level: 'strong',
+          feedback: 'Right. When there is no __iter__, Python falls back to the legacy protocol: it calls p[0], p[1], p[2]... until IndexError. So __getitem__ alone makes the object iterable.' },
+        { label: 'No - needs __iter__',
+          level: 'partial',
+          feedback: 'For new code you SHOULD prefer __iter__ - but it is not required. Python keeps a legacy fallback that drives iteration off __getitem__ with integer indices, so this loop works as written.' },
+        { label: 'No - raises TypeError',
+          level: 'wrong',
+          feedback: 'No TypeError here. The object is iterable via the __getitem__ fallback. You would get TypeError only if it had neither __iter__ nor __getitem__.' },
+      ],
     },
     explain: [
       {
@@ -212,6 +293,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Python operators and built-ins are syntax over dunder methods - implement the hook and your object joins the protocol.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'Yes - [t for t in p] works. With no __iter__, Python falls back to calling p[0], p[1]... until IndexError, so __getitem__ alone makes the object iterable.',
+      why: 'Built-in operations are not bolted onto specific types - they delegate to named dunder methods. len(x) calls type(x).__len__(x); x + y calls __add__; x[i] calls __getitem__; with x calls __enter__/__exit__. The data model is exactly this set of hooks, and built-in types simply happen to define them.\n\nTruthiness rides the same machinery: with no __bool__, bool(x) falls back to __len__ and treats 0 as False, so an empty container is falsy for free. Iteration prefers __iter__, but a class with only __getitem__ still iterates via the legacy protocol - integer indexing from 0 until IndexError. That fallback is why this Playlist loops even without __iter__; for real classes you would still write __iter__ for clarity.',
+      commonMistake: 'Thinking operators are hard-wired to int/str/list and cannot apply to custom classes. **Weak pattern:** the candidate writes a method called length() instead of __len__ and wonders why len(obj) fails. **Interviewer follow-up:** "make len() and a for loop work on your class" - the answer is define __len__ and either __iter__ or __getitem__.',
+      interviewPhrase: '"Built-ins and operators are sugar over dunder methods - len calls __len__, for calls __iter__ or falls back to __getitem__, if calls __bool__ then __len__. Implement the right hook and my object behaves like a native type at the call site."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -229,8 +318,17 @@ export const knowModules = [
     demoOutput: '[\'urgent\']\n[\'urgent\', \'review\']\nstored default: ([\'urgent\', \'review\'],)\n[\'urgent\']\n[\'review\']',
     predict: {
       question: 'add_tag has tags=[]. After add_tag("a") then add_tag("b"), the second call returns?',
-      options: ['[\'b\']', '[\'a\', \'b\']', 'raises an error'],
-      answerIndex: 1,
+      options: [
+        { label: '[\'b\']',
+          level: 'wrong',
+          feedback: 'This assumes each call gets a fresh list. It does not. The default [] was built once at def-time and is reused by every call that omits tags, so "a" is still in it.' },
+        { label: '[\'a\', \'b\']',
+          level: 'strong',
+          feedback: 'Right. The default list is created once when the def line runs and shared across calls, so appends accumulate. Use tags=None and build the list inside the body to get a fresh one each time.' },
+        { label: 'raises an error',
+          level: 'wrong',
+          feedback: 'No error - appending to the shared default is perfectly valid. The bug is silent accumulation, not a crash; you can even watch the list grow in add_tag.__defaults__.' },
+      ],
     },
     explain: [
       {
@@ -247,6 +345,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A default value is created once at def-time and lives on the function - so make mutable defaults None and build them in the body.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'The second call returns [\'a\', \'b\']. The default [] is built once at def-time and shared across every call that omits the argument, so appends accumulate.',
+      why: 'When Python executes the def line, it evaluates each default expression once and stores the results on the function object in __defaults__. tags=[] builds one list right then, and every later call that omits tags reuses that same stored list - which is why you can literally watch it grow in add_tag.__defaults__.\n\nOnly mutable defaults bite. A default of 0 or "x" is shared too, but you can never mutate it in place, so the sharing is invisible. Lists, dicts, sets - and things like a DataFrame - are the trap, because appending or assigning into them changes the one object everyone sees. The fix is a reflex: default to None, then build the real object inside the body, using is None (not or) so a caller can still pass a deliberately empty list.',
+      commonMistake: 'Writing def f(items=[]) or def f(cache={}) and being surprised state leaks between calls. **Weak pattern:** the candidate "fixes" it by clearing the list at the top of the function, which mutates the shared default differently but does not stop the sharing. **Interviewer follow-up:** "why None and not or?" - because or would also override an intentionally-empty list a caller passed.',
+      interviewPhrase: '"Default arguments are evaluated once, at def-time, and stored on the function - so a mutable default like [] is shared across every call and accumulates. I default to None and build the list inside the body, checking is None so an empty list a caller passes still works."',
+      connectsTo: ['gotchas', 'python', 'pandas'],
+    },
     connectsTo: ['gotchas', 'python', 'pandas'],
   },
 
@@ -262,8 +368,17 @@ export const knowModules = [
     demoOutput: '== (value): True\nis (identity): False\n256 is 256: True\n1000 == 1000: True\nv is None: True',
     predict: {
       question: 'x = 256; y = 256. What does (x is y) return in CPython?',
-      options: ['True - small ints are cached', 'False - separate objects', 'Depends on the run'],
-      answerIndex: 0,
+      options: [
+        { label: 'True - small ints are cached',
+          level: 'strong',
+          feedback: 'Right. CPython pre-builds the ints -5..256 and reuses them, so both names point at the one cached object and is returns True. This is a cache artifact, not is working on values - 1000 is 1000 can be False.' },
+        { label: 'False - separate objects',
+          level: 'partial',
+          feedback: 'This is the correct mental model for is in general - distinct literals are distinct objects - but 256 is the exception. It falls inside CPython\'s small-int cache (-5..256), so both names share one object and is is True.' },
+        { label: 'Depends on the run',
+          level: 'wrong',
+          feedback: 'For 256 it is deterministic: the small-int cache is built at interpreter startup every time, so x is y is reliably True. The "do not rely on it" caution is about values OUTSIDE the cache, like 1000, not about randomness.' },
+      ],
     },
     explain: [
       {
@@ -280,6 +395,14 @@ export const knowModules = [
       },
     ],
     mentalModel: '`is` checks identity, `==` checks value - the int and string caches sometimes make `is` look like `==`, so trust it only for None.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'x is y is True for 256 - but only because CPython caches small ints (-5..256). It is an identity coincidence from the cache, not is checking equality.',
+      why: 'is asks "the same object in memory?" - the identity id() reports. == asks "equal value?", which calls __eq__. Two lists built separately are == (equal contents) but not is (distinct objects). Confusing the two is one of the most common Python bugs.\n\nThe caches are what make is look deceptively like ==. CPython pre-builds the integers -5 through 256 and reuses them, and interns some short strings, so 256 is 256 and "ab" is "ab" can be True - not because is works on values, but because both names happen to point at one cached object. Step outside the cache (1000, longer strings) and equal copies are distinct objects. These caches are an optimization detail, never a guarantee. The one place is is correct is singletons: x is None, x is True, x is False.',
+      commonMistake: 'Using is to compare values because it "worked" on small numbers during testing. **Weak pattern:** the candidate writes if status is "active" and it passes locally, then fails in production on a non-interned string. **Interviewer follow-up:** "when is `is` the right operator?" - only for singletons like None, never for value comparison.',
+      interviewPhrase: '"is checks identity, == checks value. Small ints and some strings are cached, so is can look like == by accident - but I only trust is for singletons like None. For comparing actual values I always use ==."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -295,8 +418,17 @@ export const knowModules = [
     demoOutput: 'full truthy: True\nempty truthy: False\nlen 0 but bool True: True\nno dunders: True',
     predict: {
       question: 'A class defines __len__ returning 0 and no __bool__. Is an instance truthy?',
-      options: ['True', 'False', 'raises TypeError'],
-      answerIndex: 1,
+      options: [
+        { label: 'True',
+          level: 'wrong',
+          feedback: 'A plain object with no truth hooks is True - but this one has __len__. With no __bool__, Python falls back to __len__, and length 0 means False.' },
+        { label: 'False',
+          level: 'strong',
+          feedback: 'Right. No __bool__, so Python consults __len__, and 0 reads as False. That fallback is exactly why an empty list or dict is falsy for free.' },
+        { label: 'raises TypeError',
+          level: 'wrong',
+          feedback: 'Truth-testing never raises here - the lookup chain (bool, then len, then default True) always resolves to a boolean. __len__ returning 0 is a clean False, not an error.' },
+      ],
     },
     explain: [
       {
@@ -313,6 +445,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Truth-testing asks __bool__, then __len__ (0 is false), then defaults to True - so a custom object is truthy unless you give it one of those hooks.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'The instance is falsy. With no __bool__, Python falls back to __len__, and a length of 0 reads as False.',
+      why: 'When Python needs a boolean from an object - if obj, while obj, bool(obj), or/and - it asks in a fixed order: call __bool__ if defined; else call __len__ and treat 0 as False and nonzero as True; else, with neither hook, default to True. That chain is why empty lists, dicts, and sets are falsy for free - their __len__ is 0.\n\nTwo consequences follow. When BOTH hooks exist, __bool__ wins, which lets you decouple "is this empty?" from "should this count as true?" when they differ. And a plain class with neither hook is ALWAYS truthy, even with no data - so if obj on a bare custom object tests "not None and not a special falsy type", not "has contents". That is a frequent source of "my empty object is still true" confusion.',
+      commonMistake: 'Writing if my_obj: on a custom class and expecting it to mean "has data" without implementing __len__ or __bool__. **Weak pattern:** the candidate adds a count attribute and checks if obj instead of if obj.count. **Interviewer follow-up:** "what does Python check, in order, to decide truthiness?" - __bool__, then __len__ with 0 as False, then default True.',
+      interviewPhrase: '"Truth-testing asks __bool__ first, then __len__ where 0 is False, then defaults to True. So an empty container is falsy for free, but a plain object with no hooks is always truthy - if I want if obj to mean has-data, I implement __len__ or __bool__."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -328,8 +468,17 @@ export const knowModules = [
     demoOutput: 'add: Money(200)\ncontains: True\nindex: eggs',
     predict: {
       question: 'Money defines __add__. What does Money(150) + Money(50) produce?',
-      options: ['a TypeError', 'Money(200)', '200'],
-      answerIndex: 1,
+      options: [
+        { label: 'a TypeError',
+          level: 'wrong',
+          feedback: 'No error - + is not restricted to built-in types. It dispatches to __add__, which Money defines, so the operation is valid.' },
+        { label: 'Money(200)',
+          level: 'strong',
+          feedback: 'Right. x + y calls x.__add__(y), and this __add__ returns a new Money with the summed cents. The operator does whatever your method builds and returns - here, Money(200).' },
+        { label: '200',
+          level: 'wrong',
+          feedback: 'The sum 200 is the cents value, but __add__ here wraps it: it returns Money(self.cents + other.cents), a Money object, not a bare int. The result is whatever the method returns.' },
+      ],
     },
     explain: [
       {
@@ -346,6 +495,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Operators and built-ins are sugar for dunder calls - implement __add__, __contains__, __getitem__ and your object speaks the same syntax as native types.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'It produces Money(200). x + y dispatches to x.__add__(y), and this __add__ returns a new Money with the summed cents.',
+      why: 'Python operators are syntax over method calls. x + y tries x.__add__(y); x - y tries __sub__; x == y tries __eq__; x[k] tries __getitem__; x in c tries c.__contains__(x). The interpreter does not special-case int or str - it dispatches to these methods, and built-in types just happen to define them. Define __add__ on your class and + works on it, returning whatever you build.\n\nThe dispatch is layered with fallbacks. If x.__add__(y) returns NotImplemented (or x has no __add__), Python tries the reflected y.__radd__(x). For containment, with no __contains__ it falls back to iterating via __iter__ or __getitem__. So operator overloading is not a special feature - it is ordinary method definition plus a well-defined fallback chain.',
+      commonMistake: 'Believing operator overloading is a separate language feature rather than method definition. **Weak pattern:** the candidate names a method add() and is surprised + does not call it. **Interviewer follow-up:** "your left operand does not know how to add the right one - what happens?" - Python tries the right operand\'s __radd__ before giving up with TypeError.',
+      interviewPhrase: '"Operators are sugar for dunder calls - x + y is x.__add__(y), x in c is c.__contains__(x). I implement the hook and my class uses native syntax. If the left side returns NotImplemented, Python tries the right side\'s reflected method before raising."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -361,8 +518,17 @@ export const knowModules = [
     demoOutput: 'a: 1\nb: 2\nargs: (3, 4)\nkwargs: {\'mode\': \'fast\', \'retries\': 2}\ndb:30\n(10, 20, \'fast\')',
     predict: {
       question: 'def f(a, b, *args): ... ; you call f(1, 2, 3, 4). What is args?',
-      options: ['[3, 4]', '(3, 4)', '{3: 4}'],
-      answerIndex: 1,
+      options: [
+        { label: '[3, 4]',
+          level: 'partial',
+          feedback: 'Right contents, wrong type. *args collects leftover positionals into a TUPLE, not a list - so it is (3, 4). The distinction matters when you forward or compare it.' },
+        { label: '(3, 4)',
+          level: 'strong',
+          feedback: 'Right. a and b fill first with 1 and 2; *args scoops the remaining positionals into a tuple, (3, 4). That tuple is what lets a wrapper forward an arbitrary call untouched.' },
+        { label: '{3: 4}',
+          level: 'wrong',
+          feedback: 'That is what **kwargs would build from KEYWORD args - a dict. *args handles positional leftovers and packs them into a tuple, (3, 4). The two stars collect different kinds of argument.' },
+      ],
     },
     explain: [
       {
@@ -379,6 +545,14 @@ export const knowModules = [
       },
     ],
     mentalModel: '*args is the tuple of leftover positionals, **kwargs the dict of leftover keywords - and the same stars unpack a sequence/mapping back into a call.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'args is the tuple (3, 4). a and b fill first; *args scoops the remaining positional arguments into a tuple.',
+      why: 'When Python binds arguments to parameters, named parameters fill first. *args then collects any REMAINING positional arguments into a tuple, and **kwargs collects any remaining keyword arguments into a dict. That is the whole mechanism - and it is how one wrapper forwards an arbitrary call to another function untouched.\n\nTwo refinements matter in practice. A bare * in a signature - def connect(host, *, timeout) - makes every parameter after it keyword-only, so callers must write timeout=30 and cannot pass it by position. And the same stars reverse at the call site: in a definition * and ** COLLECT many arguments into one tuple/dict, while f(*parts, **opts) UNPACKS a tuple into positional slots and a dict into keyword slots. Same symbols, mirror-image jobs.',
+      commonMistake: 'Treating *args as a list, or not knowing that bare * forces keyword-only arguments. **Weak pattern:** the candidate tries args.append(x) and hits an AttributeError because tuples are immutable. **Interviewer follow-up:** "how do you force a caller to name an argument?" - put a bare * before it in the signature.',
+      interviewPhrase: '"*args is the tuple of leftover positionals, **kwargs the dict of leftover keywords - that is how a wrapper forwards any call. The same stars unpack at the call site, and a bare * makes everything after it keyword-only."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -392,8 +566,17 @@ export const knowModules = [
     demoOutput: 'calling greet\ndone\nhi ada\ncalling add\ndone\n5',
     predict: {
       question: '@announce above def greet(...) is equivalent to which line?',
-      options: ['greet = announce(greet)', 'announce = greet(announce)', 'greet = greet(announce)'],
-      answerIndex: 0,
+      options: [
+        { label: 'greet = announce(greet)',
+          level: 'strong',
+          feedback: 'Right. @deco is pure sugar for func = deco(func) run right after the def. The name greet now points at whatever announce returned - the wrapper.' },
+        { label: 'announce = greet(announce)',
+          level: 'wrong',
+          feedback: 'Backwards. The decorator is the function being CALLED with greet as its argument, not the other way round. It is greet = announce(greet) - announce receives greet and returns its replacement.' },
+        { label: 'greet = greet(announce)',
+          level: 'wrong',
+          feedback: 'This calls greet (the undecorated function) on announce, which is not what @ does. @announce calls announce(greet) and rebinds the name greet to the result.' },
+      ],
     },
     explain: [
       {
@@ -410,6 +593,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A decorator is a function-of-a-function; @deco just rebinds the name to deco(func), so the wrapper takes the original name.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'It is equivalent to greet = announce(greet). @deco is pure sugar: it calls the decorator with the function and rebinds the name to the result.',
+      why: 'In Python a function is an ordinary object you can pass around and return. A decorator is just a function that takes a function and returns another function - usually a wrapper that runs code before and after calling the original. @announce written above def greet is exactly greet = announce(greet), executed right after the def.\n\nAfter that line the name greet no longer points at your original function - it points at whatever announce returned, the wrapper. The wrapper accepts *args, **kwargs precisely so it can forward ANY call to the wrapped function unchanged, whatever its signature. That is why nearly every real decorator wraps with def wrapper(*args, **kwargs) - it has to relay arguments it does not know in advance.',
+      commonMistake: 'Treating decorators as framework magic instead of a function call. **Weak pattern:** the candidate cannot say what @app.route actually does to the function below it. **Interviewer follow-up:** "rewrite this decorated function without the @ syntax" - assign func = deco(func) by hand, which is all @ ever did.',
+      interviewPhrase: '"A decorator is just a function that takes a function and returns one. @announce above def greet is literally greet = announce(greet) - the name now points at the wrapper. The wrapper takes *args/**kwargs so it can forward any call unchanged."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -423,8 +614,17 @@ export const knowModules = [
     demoOutput: 'naive name: wrapper\nnaive doc : None\nwraps name: parse2\nwraps doc : Parse a row into fields.',
     predict: {
       question: 'A naive decorator wraps parse(). What does parse.__name__ print afterwards?',
-      options: ['\'parse\'', '\'wrapper\'', 'raises AttributeError'],
-      answerIndex: 1,
+      options: [
+        { label: '\'parse\'',
+          level: 'wrong',
+          feedback: 'Only if the decorator used functools.wraps. A naive one does not, so the name reflects the wrapper, not the original - you get \'wrapper\'.' },
+        { label: '\'wrapper\'',
+          level: 'strong',
+          feedback: 'Right. @deco rebound the name to the inner wrapper function, so its metadata - __name__, __doc__ - leaks out. functools.wraps copies the original\'s metadata back to fix this.' },
+        { label: 'raises AttributeError',
+          level: 'wrong',
+          feedback: '__name__ always exists on a function, so there is no error - it just reports the wrong name, \'wrapper\'. The failure is silent and cosmetic until logging or docs depend on it.' },
+      ],
     },
     explain: [
       {
@@ -441,6 +641,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'A wrapper hides the originals name and docstring; functools.wraps copies that metadata back so the decorated function still looks like itself.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'parse.__name__ prints \'wrapper\'. The decorator rebound the name to its inner wrapper, so all the metadata now describes the wrapper, not parse.',
+      why: 'Because @deco rebinds the name to the wrapper, every bit of metadata read from that name - __name__, __doc__, __module__, the signature - now describes the WRAPPER, not your function. Logging, help(), and debuggers all see "wrapper" and an empty docstring. The original identity still lives inside the closure, but the public name no longer reflects it.\n\nfunctools.wraps(func) is itself a decorator you apply to the wrapper. It copies the wrapped function\'s __name__, __doc__, __module__, __qualname__, and __dict__ onto the wrapper and sets __wrapped__ back to the original, so introspection sees the real function again. Test runners, API frameworks, and structured logging all key off names and docstrings, so treat @functools.wraps as mandatory boilerplate on every decorator.',
+      commonMistake: 'Writing a decorator without @functools.wraps and then debugging why logs and auto-docs all say "wrapper". **Weak pattern:** the candidate writes a working decorator but cannot say what wraps does or why it is needed. **Interviewer follow-up:** "your error logs point at \'wrapper\' for every decorated route - why, and how do you fix it?" - the wrapper overwrote the metadata; add @functools.wraps(func).',
+      interviewPhrase: '"A decorator replaces the function with its wrapper, so __name__ and __doc__ leak as \'wrapper\' and break logging and docs. I always put @functools.wraps(func) on the wrapper - it copies the real metadata back so the decorated function still looks like itself."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -456,8 +664,17 @@ export const knowModules = [
     demoOutput: 'loop: [3, 2, 1]\n10\n20\nexhausted',
     predict: {
       question: 'How does an iterator signal that there are no more values?',
-      options: ['returns None', 'raises StopIteration', 'returns -1'],
-      answerIndex: 1,
+      options: [
+        { label: 'returns None',
+          level: 'wrong',
+          feedback: 'None would collide with real data - an iterator yielding None values would look "done" on every element. Python uses an exception, StopIteration, so any value including None can be a legitimate result.' },
+        { label: 'raises StopIteration',
+          level: 'strong',
+          feedback: 'Right. __next__ raises StopIteration to mean "exhausted", and for/list/sum catch it silently. Using an exception keeps the return channel free for any real value, with no sentinel to clash with your data.' },
+        { label: 'returns -1',
+          level: 'wrong',
+          feedback: 'A sentinel like -1 is a C-style idiom, not Python\'s. -1 is a perfectly valid value to yield, so it cannot mean "done". The protocol raises StopIteration instead.' },
+      ],
     },
     explain: [
       {
@@ -474,6 +691,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'for x in obj means iter(obj) once, then next() until StopIteration - looping is a protocol, not index arithmetic.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'It raises StopIteration. That exception is the protocol\'s "no more values" signal, and every consumer catches it silently.',
+      why: 'for x in obj does not loop by index. It desugars to it = iter(obj), then calls next(it) repeatedly, binding x each time, until next raises StopIteration - which the for swallows. Two dunders make an object iterable: __iter__ returns an iterator, and that iterator\'s __next__ produces the next value or raises StopIteration.\n\nThe iterable/iterator distinction matters. An ITERABLE hands out a fresh iterator each time you call iter() on it - a list does this, so you can loop it repeatedly. An ITERATOR is the cursor that actually advances and gets exhausted; CountDown returns self from __iter__, so it is both at once and can be looped only once, like a generator. Using an exception rather than a sentinel to mean "done" keeps next() free to return any real value with nothing to collide with your data - which is why every consumer (for, list, sum, unpacking) relies on this single signal.',
+      commonMistake: 'Confusing iterable with iterator, or expecting an exhausted iterator to restart. **Weak pattern:** the candidate makes __iter__ return self on a reusable collection and then cannot loop it twice. **Interviewer follow-up:** "why can a list be looped many times but a file object or generator only once?" - the list is an iterable that yields a new iterator each time; the others are iterators that exhaust.',
+      interviewPhrase: '"for is iter() once, then next() until StopIteration - looping is a protocol, not index math. An iterable gives a fresh iterator each time; an iterator is the cursor that advances and exhausts. The StopIteration exception keeps the return channel free for any real value."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -487,8 +712,17 @@ export const knowModules = [
     demoOutput: 'open load\n...work...\nclose load\nopen risky\nclose risky\ncaught after close',
     predict: {
       question: 'Inside a with block the body raises. Does __exit__ still run?',
-      options: ['No - the exception skips it', 'Yes - __exit__ always runs', 'Only if you catch the exception'],
-      answerIndex: 1,
+      options: [
+        { label: 'No - the exception skips it',
+          level: 'wrong',
+          feedback: 'The opposite is the whole point of with. __exit__ runs in the equivalent of a finally, so it executes whether the body finishes normally or raises - that guarantee is why with beats manual open/close.' },
+        { label: 'Yes - __exit__ always runs',
+          level: 'strong',
+          feedback: 'Right. __exit__ is wrapped in a finally, so it runs on both the normal path and the exception path. It even receives the exception type, value, and traceback so it can clean up or log.' },
+        { label: 'Only if you catch the exception',
+          level: 'wrong',
+          feedback: 'No catching needed - __exit__ runs before the exception propagates, regardless of whether anyone catches it. Whether the exception then continues depends on __exit__\'s return value, not on a try around the with.' },
+      ],
     },
     explain: [
       {
@@ -505,6 +739,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'with calls __enter__ then guarantees __exit__ in a finally; __exit__ returning truthy suppresses the exception, falsy lets it propagate.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'Yes - __exit__ always runs, even when the body raises. It is wrapped in the equivalent of a finally, which is the entire reason with is safer than manual cleanup.',
+      why: 'with obj as name calls obj.__enter__() and binds its return to name. When the block ends - normally OR via an exception - Python calls obj.__exit__(exc_type, exc, tb), and that call sits inside the equivalent of a finally. So cleanup is guaranteed regardless of how the body exits.\n\nIf the body raised, __exit__ receives the exception type, value, and traceback (otherwise three Nones), so it can inspect, log, and clean up. The return value then decides suppression: return truthy and Python SWALLOWS the exception as handled; return False or None and the exception propagates after cleanup. The latter is what you almost always want, which is why the demo returns False and the ValueError is still catchable outside the with.',
+      commonMistake: 'Returning True from __exit__ by accident and silently swallowing every exception. **Weak pattern:** the candidate adds a return statement for the value and unknowingly suppresses errors. **Interviewer follow-up:** "your context manager hides all exceptions - why?" - because __exit__ returns a truthy value; return False/None to let them propagate.',
+      interviewPhrase: '"with guarantees __exit__ runs in a finally, even on an exception - that is the safety. __exit__ gets the exception details, and its return value decides suppression: truthy swallows it, falsy or None lets it propagate, which is almost always what I want."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -520,8 +762,17 @@ export const knowModules = [
     demoOutput: 'hashable? True\ncannot put in a set\ndedup: 2',
     predict: {
       question: 'A class defines __eq__ but not __hash__. Can its instances go in a set?',
-      options: ['Yes, always', 'No - it becomes unhashable', 'Only if frozen'],
-      answerIndex: 1,
+      options: [
+        { label: 'Yes, always',
+          level: 'wrong',
+          feedback: 'Defining __eq__ makes Python set __hash__ to None, so instances become unhashable and a set rejects them with TypeError. You must supply a matching __hash__ to put them in a set.' },
+        { label: 'No - it becomes unhashable',
+          level: 'strong',
+          feedback: 'Right. The moment you define __eq__, Python drops the default identity-based __hash__ to None - because that hash would now disagree with your value-equality. Add __hash__ over the same fields to restore set/dict-key use.' },
+        { label: 'Only if frozen',
+          level: 'partial',
+          feedback: 'A frozen dataclass DOES auto-generate __hash__, so it would work - but that is one specific tool, not the rule. A plain class with __eq__ and no __hash__ is unhashable until you write __hash__ yourself.' },
+      ],
     },
     explain: [
       {
@@ -538,6 +789,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Equal objects must hash equal; defining __eq__ nulls __hash__, so re-add __hash__ over the same fields or your objects cannot be set members or dict keys.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'No - defining __eq__ makes the class unhashable. Python sets __hash__ to None automatically, so instances cannot go in a set or be dict keys until you supply a matching __hash__.',
+      why: 'By default every object is hashable via its identity. The moment you define __eq__, Python sets __hash__ to None, making instances unhashable. This is deliberate: the default identity-hash would now disagree with your value-equality, and that disagreement would corrupt hash-based containers.\n\nThe contract is one rule: if a == b then hash(a) == hash(b). Sets and dicts bucket items by hash and only compare within a bucket, so if two equal objects hashed differently they could land in different buckets and a set would store both as "distinct" - silently breaking deduplication and lookups. To restore correct behaviour, define __hash__ to return hash() of a tuple of exactly the fields __eq__ compares, e.g. hash((self.x, self.y)). Those fields should be effectively immutable, because mutating a key after it is in a set makes it unfindable.',
+      commonMistake: 'Adding __eq__ for value equality and then being baffled that the object cannot go in a set, or writing a __hash__ that uses different fields than __eq__. **Weak pattern:** the candidate hashes on id() or a mutable field. **Interviewer follow-up:** "what is the rule linking __eq__ and __hash__?" - equal objects must hash equal, and the hash should come from the same immutable fields.',
+      interviewPhrase: '"Defining __eq__ nulls __hash__, so the object becomes unhashable - because the contract is that equal objects must hash equal, or sets and dicts break. I restore __hash__ from the same immutable fields __eq__ uses: hash((self.x, self.y))."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -551,8 +810,17 @@ export const knowModules = [
     demoOutput: 'repr: Row(name=\'ada\', score=90)\neq: True\ndefault used: Row(name=\'bo\', score=0)\nplain eq: False\nfields: [\'name\', \'score\']',
     predict: {
       question: 'Two @dataclass Row instances with identical fields - does == return True?',
-      options: ['True - generated __eq__ compares fields', 'False - different objects', 'raises TypeError'],
-      answerIndex: 0,
+      options: [
+        { label: 'True - generated __eq__ compares fields',
+          level: 'strong',
+          feedback: 'Right. @dataclass generates an __eq__ that compares the tuple of fields, so equal data means equal objects - unlike a plain class, which inherits identity-based __eq__ from object.' },
+        { label: 'False - different objects',
+          level: 'partial',
+          feedback: 'That is true for a PLAIN class, which compares by identity - but @dataclass overrides exactly that. Its generated __eq__ compares fields, so two Rows with the same data are equal.' },
+        { label: 'raises TypeError',
+          level: 'wrong',
+          feedback: 'No error - comparing two same-typed dataclass instances is well-defined. The generated __eq__ compares their field tuples and returns True when they match.' },
+      ],
     },
     explain: [
       {
@@ -569,6 +837,14 @@ export const knowModules = [
       },
     ],
     mentalModel: '@dataclass turns annotated fields into a generated __init__, __repr__, and value-based __eq__ - it writes the boilerplate, you keep the declarations.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'Yes - == returns True. @dataclass generates an __eq__ that compares the field tuple, so equal data means equal objects, unlike a plain class.',
+      why: '@dataclass inspects the class-level annotations (name: str, score: int = 0), treats each as a field with the assigned value as its default, and code-generates __init__ taking those parameters in order, plus __repr__ and __eq__. dataclasses.fields() lets you read that field list back at runtime.\n\nThe generated __eq__ is the headline. A plain class inherits __eq__ from object, which compares identity, so two separately built rows are never equal. The dataclass __eq__ instead compares the tuple of fields, so equal data means equal objects - which is the single biggest reason to reach for one. The decorator is a code generator with knobs: frozen=True makes instances immutable and adds __hash__; order=True generates the comparison operators; eq=False skips __eq__. You get exactly the methods you ask for, written consistently from your declarations.',
+      commonMistake: 'Reaching for a plain class and then hand-writing __init__, __repr__, and __eq__ (often inconsistently), or forgetting that mutable dataclasses are unhashable. **Weak pattern:** the candidate cannot say which methods @dataclass actually generates. **Interviewer follow-up:** "how do you make a dataclass usable as a dict key?" - pass frozen=True so it is immutable and gets a generated __hash__.',
+      interviewPhrase: '"@dataclass reads my annotated fields and generates __init__, __repr__, and a value-based __eq__ - so equal data compares equal, which a plain class does not. It is a code generator with knobs: frozen=True for immutability and hashing, order=True for comparisons."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -582,8 +858,17 @@ export const knowModules = [
     demoOutput: 'read: 25\ncomputed F: 77.0\nafter set: 212.0\nrejected: below absolute zero',
     predict: {
       question: 'With @property celsius and its setter, what does t.celsius = -300 do?',
-      options: ['sets it to -300', 'raises ValueError from the setter', 'silently ignored'],
-      answerIndex: 1,
+      options: [
+        { label: 'sets it to -300',
+          level: 'wrong',
+          feedback: 'Plain attribute assignment would just store it, but @property routes t.celsius = v through the setter method, which here checks the value and rejects anything below absolute zero.' },
+        { label: 'raises ValueError from the setter',
+          level: 'strong',
+          feedback: 'Right. The assignment runs the @celsius.setter method, which raises ValueError for -300. Same plain syntax at the call site, but a method runs on every write - that is the point of property.' },
+        { label: 'silently ignored',
+          level: 'wrong',
+          feedback: 'The setter does not ignore bad input - it actively raises ValueError, which surfaces loudly. A property turns the write into a method call, so validation is enforced, not skipped.' },
+      ],
     },
     explain: [
       {
@@ -600,6 +885,14 @@ export const knowModules = [
       },
     ],
     mentalModel: '@property makes an attribute run getter/setter code on read and write - same call-site syntax, with validation and computed values underneath.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 't.celsius = -300 raises ValueError. The assignment runs the @celsius.setter method, which rejects values below absolute zero - same plain syntax, but a method runs on every write.',
+      why: '@property turns attribute access into a method call. Reading t.celsius RUNS the decorated getter instead of fetching a stored value, and writing t.celsius = v RUNS the @celsius.setter. The call-site syntax stays plain attribute access - no parentheses - so existing callers do not change, but now you can validate, compute, or log on every read and write. That is why you can start with a bare attribute and add a property later without breaking anyone.\n\nfahrenheit has only a getter and no backing field - it is computed from _c on every read, so it can never drift out of sync. Under the hood property is a descriptor: an object defining __get__/__set__ that lives on the CLASS and intercepts access on every instance. That same descriptor mechanism is how methods, classmethod, and staticmethod work - "attribute access runs code" is implemented across the language this way.',
+      commonMistake: 'Reaching for Java-style getX()/setX() methods in Python, or exposing a public attribute then being unable to add validation without breaking callers. **Weak pattern:** the candidate writes def get_celsius(self) and calls it with parentheses everywhere. **Interviewer follow-up:** "how do you add validation to an existing public attribute without changing call sites?" - convert it to a @property with a setter.',
+      interviewPhrase: '"@property makes attribute access run code - reading runs the getter, writing runs the setter - while the call site stays plain dotted access. So I can ship a bare attribute, then add validation or a computed value later without touching any caller. It is a descriptor under the hood."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -615,8 +908,17 @@ export const knowModules = [
     demoOutput: 'LBYL: EU\nEAFP: missing, using default\nsum of parseable: 30',
     predict: {
       question: 'What does EAFP stand for?',
-      options: ['Easier to Ask Forgiveness than Permission', 'Evaluate All Functions And Pass', 'Explicit Args For Parameters'],
-      answerIndex: 0,
+      options: [
+        { label: 'Easier to Ask Forgiveness than Permission',
+          level: 'strong',
+          feedback: 'Right. EAFP means just try the operation and catch the failure, rather than pre-checking with LBYL. Python leans this way because exceptions are cheap and the try has no race window between check and action.' },
+        { label: 'Evaluate All Functions And Pass',
+          level: 'wrong',
+          feedback: 'Not a real acronym. EAFP is a style principle - Easier to Ask Forgiveness than Permission - about trying first and catching the exception, not pre-checking conditions.' },
+        { label: 'Explicit Args For Parameters',
+          level: 'wrong',
+          feedback: 'Unrelated to argument passing. EAFP is about control flow: try the operation and handle the failure (Easier to Ask Forgiveness than Permission), the Pythonic alternative to LBYL.' },
+      ],
     },
     explain: [
       {
@@ -633,6 +935,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Pythonic code tries the operation and catches the failure (EAFP) rather than pre-checking (LBYL) - exceptions are ordinary control flow here.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'EAFP is "Easier to Ask Forgiveness than Permission" - try the operation and catch the failure, rather than pre-checking with LBYL.',
+      why: 'LBYL - Look Before You Leap - checks a condition first, then acts (if key in d: use d[key]). EAFP just does the action and catches the exception if it fails. Python leans EAFP because exceptions are cheap and the try expresses intent directly, without a separate guard clause.\n\nThe real advantage is correctness, not just style. Between an LBYL check and the action the world can change - a file you confirmed exists could be deleted, a dict key removed by another thread - and EAFP has no such gap: the operation and its failure handling are one atomic attempt. This matters for anything shared or external. And exceptions are routine signals here, not catastrophes: StopIteration ends every for loop, KeyError and IndexError are ordinary "not found" results, ValueError means "could not parse". Catching one to skip a bad row is idiomatic flow control, not error abuse.',
+      commonMistake: 'Porting C/Java habits and pre-checking everything, introducing a check-then-act race. **Weak pattern:** the candidate writes if os.path.exists(p): open(p) and treats the try/except version as sloppy. **Interviewer follow-up:** "what can go wrong between your exists check and the open?" - the file can vanish in the gap; EAFP avoids the window entirely.',
+      interviewPhrase: '"Pythonic style is EAFP - try the operation and catch the failure - over LBYL pre-checking. It reads cleaner and, for anything shared or external, avoids the race window between checking and acting. Exceptions are normal control flow in Python, not just for catastrophes."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
   {
@@ -646,8 +956,17 @@ export const knowModules = [
     demoOutput: 'ints: 10\nstrings: abab\nlists: [1, 1]\nannotations: {\'n\': <class \'int\'>, \'return\': <class \'int\'>}',
     predict: {
       question: 'def double(n: int): return n*2. What does double("ab") do at runtime?',
-      options: ['raises TypeError', 'returns "abab"', 'returns None'],
-      answerIndex: 1,
+      options: [
+        { label: 'raises TypeError',
+          level: 'wrong',
+          feedback: 'Hints are not enforced at runtime - Python inserts no isinstance check. A static checker like mypy would flag this before you run, but the interpreter happily runs "ab" * 2.' },
+        { label: 'returns "abab"',
+          level: 'strong',
+          feedback: 'Right. The hint is recorded in __annotations__ and otherwise ignored, so "ab" * 2 runs and returns "abab". Hints are for tools and readers, not the running interpreter.' },
+        { label: 'returns None',
+          level: 'wrong',
+          feedback: 'The function still returns its computed value - "ab" * 2 is "abab", not None. There is no silent failure; the wrong type simply flows through because hints do not run.' },
+      ],
     },
     explain: [
       {
@@ -664,6 +983,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Type hints are annotations for tools and readers, recorded in __annotations__ but never enforced at runtime - the interpreter runs wrong types without complaint.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'double("ab") returns "abab". Hints are not enforced at runtime - "ab" * 2 just runs, because the interpreter records the annotation and otherwise ignores it.',
+      why: 'At runtime CPython stores hints in __annotations__ and otherwise ignores them - there is no automatic isinstance check inserted anywhere. double("ab") runs "ab" * 2 and returns "abab" because str supports *. The hint said int; Python neither knows nor cares.\n\nHints exist for HUMANS and TOOLS, not the interpreter. Editors use them for autocomplete and inline errors; static checkers like mypy or pyright analyze them BEFORE you run and flag double("ab") at lint time. That is a separate pass over your source, never the running interpreter. If you want actual runtime enforcement you add it yourself - explicit isinstance checks, or a library like pydantic that reads the annotations and validates against them. Out of the box, hints are a contract you and your tooling agree to honor.',
+      commonMistake: 'Believing a type hint guarantees the argument type at runtime, and skipping validation on external input because "it is typed". **Weak pattern:** the candidate annotates a function and assumes bad data cannot reach the body. **Interviewer follow-up:** "you annotated this as int but a string comes in from JSON - what stops it?" - nothing at runtime; you need mypy in CI or pydantic/isinstance validation at the boundary.',
+      interviewPhrase: '"Type hints are annotations, not checks - Python records them in __annotations__ and runs wrong types without complaint. They are for readers and tools like mypy. If I need runtime enforcement I add it explicitly, with isinstance checks or pydantic at the boundary."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 
@@ -679,8 +1006,17 @@ export const knowModules = [
     demoOutput: 'module body executing\ncached value: 42\nsame object: True\nre-import same: True',
     predict: {
       question: 'A module prints at top level. You import it twice. How many times does it print?',
-      options: ['Twice', 'Once', 'Zero times'],
-      answerIndex: 1,
+      options: [
+        { label: 'Twice',
+          level: 'wrong',
+          feedback: 'This assumes each import re-runs the file. It does not. The first import runs the body and caches the module in sys.modules; the second import just hands back the cached object without re-executing.' },
+        { label: 'Once',
+          level: 'strong',
+          feedback: 'Right. Importing executes the module body exactly once, then registers it in sys.modules. Every later import of that name reuses the cached object and skips the body, so the print fires a single time.' },
+        { label: 'Zero times',
+          level: 'wrong',
+          feedback: 'The body does run - on the first import. Top-level code executes once when the module is first loaded, so the print fires exactly once, not never.' },
+      ],
     },
     explain: [
       {
@@ -697,6 +1033,14 @@ export const knowModules = [
       },
     ],
     mentalModel: 'Importing executes a module body once and caches the result in sys.modules; later imports reuse that object without re-running the file.',
+    isFree: true,
+    seniorRead: {
+      shortAnswer: 'Once. The first import runs the module body and caches it in sys.modules; every later import reuses that cached object without re-executing the file.',
+      why: 'The first time a module is imported, Python finds the file, executes its top-level code top to bottom - running every def, class, and statement - and builds a module object holding the resulting names. That execution is where a top-level print fires, exactly once. Before running the body it registers the module in the sys.modules dict by name.\n\nEvery subsequent import of that name checks sys.modules first, finds the already-built object, and binds it WITHOUT re-running the file - which is why the second and third imports are silent and instant, and why two imports of the same name are the same object. The consequences bite in practice: module-level code is a run-once initializer (great for constants, surprising if you expected it each import); to force a re-run you del the sys.modules entry or use importlib.reload; and circular imports hand back a half-built module precisely because the entry exists in sys.modules before the body finishes.',
+      commonMistake: 'Expecting module-level code to run on every import, or fighting a circular import without understanding the half-built-module cause. **Weak pattern:** the candidate puts expensive setup at module top level and is surprised it does not re-run, or adds a re-import to "refresh" state. **Interviewer follow-up:** "two modules import each other and one sees a half-defined name - why?" - the importing module is registered in sys.modules before its body finishes, so the partner gets the incomplete object.',
+      interviewPhrase: '"A module body runs exactly once, on first import, then the module is cached in sys.modules - later imports reuse that object without re-running the file. So module-level code is a run-once initializer, and circular imports get a half-built module because the cache entry exists before the body finishes."',
+      connectsTo: ['gotchas', 'python'],
+    },
     connectsTo: ['gotchas', 'python'],
   },
 ];

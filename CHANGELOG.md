@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.11.0] - 2026-06-23 — KNOW becomes Foundations-grade (leveled MCQ + Senior Read)
+
+> Sidharth: "look at the foundations of PAL - I want Python KNOW to be similar." Studied PAL's richest *data-driven* concept room - the **Stats Room** (`statsModules.js` + `StatsRunner`), not the literal "Foundations" rooms (those are hardcoded-per-module JSX that doesn't scale) - and ported its judgment + depth layer onto KNOW, keeping PL's signature runnable demo.
+
+### Added
+- **Leveled predict MCQ** - every KNOW `predict` converts from a bare correct-index to options carrying `level` (`strong`/`partial`/`wrong`) + per-option `feedback`. Picking now teaches *why* that option is strong/partial/wrong (the Stats-Room payoff), colour-coded teal/yellow/red. **20 strong · 6 partial · 34 wrong** across the bank.
+- **Senior Read panel** (`src/components/shared/SeniorRead.jsx`) - a four-card debrief in every reveal: **Short answer** (the verdict), **Why** (the mechanism, pre-wrap multi-paragraph), **Common mistake** (the trap + interviewer follow-up, with **bold** spans), **Say it like this** (the quotable first-person interview line), plus "practice next" room links. Ported from PAL's `StatsConceptPanel`, themed to Instrument.
+- All 20 KNOW modules authored with `seniorRead` + `isFree: true`.
+
+### Notes
+- `KnowRunner` reads **both** the new leveled shape and the legacy `answerIndex` (`normalizePredict` - back-compatible, nothing broke mid-migration).
+- Verified: `node --check`, apostrophe audit, esbuild transform of `SeniorRead.jsx` + `KnowBrowser.jsx`, and a diff proving **demoCode/demoOutput/explain/mentalModel byte-identical** to the pre-migration snapshot. Item count unchanged (185); KNOW *depth* materially up.
+
 ## [PL 0.10.0] - 2026-06-23 — Progress dashboard + deeper KNOW
 
 > Added the TRACK-level "flow" (a Progress room, like PAL) and made KNOW the rich room it should be.
