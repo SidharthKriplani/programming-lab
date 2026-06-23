@@ -19,6 +19,7 @@ import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
 import { dueIds, reviewSR } from '../utils/pyLabSR.js';
 import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
 import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
+import { MockLoop } from '../components/shared/MockLoop.jsx';
 
 const KEY = 'pl-pylab-progress-v1';
 const DIFFS = ['all', 'warmup', 'core', 'stretch'];
@@ -151,7 +152,10 @@ export function PyLabBrowser() {
   const [topic, setTopic] = useState('all');
   const [q, setQ] = useState('');
   const [reviewMode, setReviewMode] = useState(false);
+  const [mock, setMock] = useState(false);
   const progress = getProgress(KEY);
+
+  if (mock) return <MockLoop onExit={() => setMock(false)} />;
 
   if (activeId) {
     const problem = pyLabProblems.find(p => p.id === activeId);
@@ -175,6 +179,9 @@ export function PyLabBrowser() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
           <Icon name="layers" size={18} color="var(--accent)" />
           <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)' }}>PyLab</h1>
+          <button onClick={() => setMock(true)} className="pal-btn-primary" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.84rem', padding: '0.4rem 0.8rem' }}>
+            <Icon name="clock" size={14} color="currentColor" /> Mock interview
+          </button>
         </div>
         <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '64ch' }}>
           pandas, numpy and Python — the difference between code that runs and code that&apos;s right. Predict, submit, then read which approaches are equivalent, which one is a trap that runs and lies, and when to reach for each.

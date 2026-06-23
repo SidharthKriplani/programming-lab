@@ -5,6 +5,19 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.29.0] - 2026-06-24 — PyLab Phase 3: Mock-loop (timed, no-reveal interview session)
+
+> The pressure test. Pick a length, solve under a running clock with no reveal / debrief / hints, get a scorecard — and the misses feed spaced repetition.
+
+### Added
+- **Mock-loop** (`src/components/shared/MockLoop.jsx` + a "Mock interview" launcher by the PyLab title) — **setup** (3/5/8 problems, mixed or focused by level) → a **timed session** (running clock + progress bar, prompt + fixture + editor + Submit, **no reveal/judgment/debrief**, resubmit freely, move on when ready) → a **scorecard** (solved N/total, total + avg time, per-problem pass/time). Reuses `runPyLab` for grading; passes graduate (`markSolved` + `reviewSR(id, true)`), misses → `reviewSR(id, false)` so they resurface in the review queue.
+
+### Verified
+- esbuild clean (MockLoop, PyLabBrowser); icons confirmed present; reuses the already-verified grading + spaced-repetition paths.
+
+### Next
+- Phase 3's last piece: **Follow-up chains** (the interviewer's escalating next ask — needs authored content per problem). Then Phase 4.
+
 ## [PL 0.28.0] - 2026-06-24 — Cleanup: retire the orphaned old bank rooms + dead green-screen CSS
 
 > Paying down debt from the PyLab consolidation and the Graphite switch. No user-facing change beyond a lighter, less confusing codebase.
@@ -172,8 +185,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All three are deterministic JS steppers (the trace is the lesson); results CPython-verified (pair found, max=9, index 5 / not-found). **Seventeen driven models now**, across Rooms 1/2/3/4/5. esbuild exit 0.
 - *These three share a clear shape (array + indices + step narration) — a candidate "algorithm-trace" template later, the way StateTrace emerged from aliasing/copy-view.*
 
+### Templated + the branch rooms — all 7 rooms now have models
+- **`ArrayTrace.jsx`** — a second config template ("array + indices + step narration"). Two-pointer, sliding-window, binary-search **collapsed onto it** (`arrayTraceModels.js`) — DSA traces are now DATA, not components. Verified (found 5+14, best=9, index 5 / not-found).
+- **`UniquePathsModel.jsx`** (Room 6, DP) — fill a grid where each cell = top + left; the subproblem reuse makes it O(R·C). Total 10 (verified C(5,2)).
+- **`AutogradModel.jsx`** (Room 7) — d = a*b + b runs forward (define-by-run) then `.backward()` replays the chain rule to the leaves; b feeds two paths so its grad SUMS them (da=3, db=3, verified). The broadcasting→autograd through-line.
+- **All seven rooms now have a driven model** — 19 total, **7 config-driven** across the two templates (StateTrace ×4, ArrayTrace ×3). esbuild exit 0.
+
 ### Still to do (F1 cont.)
-- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel`). Consider an algorithm-trace template for the DSA steppers. macOS `npm run build` + approve-first push pending.
+- `git rm` the 5 now-dead bespoke files (`AliasingModel`, `CopyVsViewModel`, `TwoPointerModel`, `SlidingWindowModel`, `BinarySearchModel` — superseded by the two templates; sandbox can't delete). Then F2/F3: author the planned modules' predict→read text alongside their widgets. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
