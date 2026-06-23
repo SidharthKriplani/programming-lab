@@ -890,6 +890,10 @@ body {
   --font-mono: 'Courier New', 'Courier Prime', monospace;
   --bevel-light: #ffffff;
   --bevel-dark: #8f8f8f;
+  /* editor syntax (light) — reads on the gray editor surface */
+  --cm-keyword: #a626a4; --cm-string: #3d8b40; --cm-number: #b76b01;
+  --cm-comment: #7a7a7a; --cm-function: #3a6db5; --cm-type: #9a6b00;
+  --cm-prop: #c4451c; --cm-op: #4d4d4d; --cm-var: #1a1a1a;
 }
 
 /* suppress the green-screen CRT treatment under Platinum */
@@ -990,6 +994,10 @@ body {
   --shadow-glow: 0 0 0 2px #6e88c4;
   --bevel-light: #50505a;
   --bevel-dark: #161618;
+  /* editor syntax (graphite dark) — One-Dark family, reads on charcoal */
+  --cm-keyword: #c678dd; --cm-string: #98c379; --cm-number: #d19a66;
+  --cm-comment: #7f848e; --cm-function: #61afef; --cm-type: #e5c07b;
+  --cm-prop: #e06c75; --cm-op: #abb2bf; --cm-var: #e9e9ec;
 }
 
 /* graphite chrome — dark window on the charcoal desktop, beveled dark cards/buttons */

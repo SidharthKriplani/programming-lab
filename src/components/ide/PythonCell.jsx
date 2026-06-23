@@ -3,8 +3,25 @@ import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
 import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
 import { python } from '@codemirror/lang-python';
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { tags as t } from '@lezer/highlight';
 import { loadPython, runPython, runPythonGlassBox } from './pyodideRuntime.js';
 import { glassBoxParts } from './glassbox.js';
+
+// Theme-aware Python syntax highlighting — token colours resolve through CSS
+// variables (--cm-*) defined per theme in index.css, so the editor colourises
+// AND adapts light <-> graphite-dark automatically (no editor remount).
+const plHighlight = HighlightStyle.define([
+  { tag: t.keyword, color: 'var(--cm-keyword)' },
+  { tag: [t.string, t.special(t.string), t.regexp], color: 'var(--cm-string)' },
+  { tag: [t.number, t.bool, t.null], color: 'var(--cm-number)' },
+  { tag: [t.comment, t.lineComment, t.blockComment], color: 'var(--cm-comment)', fontStyle: 'italic' },
+  { tag: [t.function(t.variableName), t.function(t.propertyName)], color: 'var(--cm-function)' },
+  { tag: [t.className, t.typeName, t.namespace], color: 'var(--cm-type)' },
+  { tag: t.propertyName, color: 'var(--cm-prop)' },
+  { tag: [t.operator, t.punctuation, t.bracket], color: 'var(--cm-op)' },
+  { tag: [t.definition(t.variableName), t.variableName], color: 'var(--cm-var)' },
+]);
 
 /**
  * PythonCell — editable code cell with stdout + glass-box (time/memory) footer.
@@ -57,6 +74,7 @@ export function PythonCell({
         highlightActiveLine(),
         history(),
         python(),
+        syntaxHighlighting(plHighlight),
         keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         EditorView.editable.of(!readOnly),
         EditorState.readOnly.of(readOnly),

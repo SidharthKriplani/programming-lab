@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dark mode = Graphite Platinum** (`src/index.css`, new `:root[data-skin='platinum'][data-theme='dark']` block) — charcoal desktop, raised graphite cards, the same beveled chrome + Geneva type + red seam glyph. The toggle now flips `data-theme` (light ⇄ dark) with the skin **always Platinum**, so the menu bar, bevels, and text-only nav carry across both modes. Scoped specificity (skin+theme) wins over both the light Platinum tokens and the old base green tokens.
 - **Footer toggle rewired** (`Sidebar.jsx`) from skin-cycle (platinum⇄greenscreen) to theme-toggle (light⇄dark). `theme.js` default flipped to **light** (Platinum is the adopted base); `skin.js` coerces any stale stored skin back to platinum (`LIVE=['platinum']`), so a user previously on green-screen lands on Platinum. `PlatinumMenuBar` colors tokenized so it themes.
 - **Green-screen CRT retired** as the dark identity (supersedes D-PL-18). The green tokens + `.pl-crt-overlay` remain in the stylesheet but are now unreachable (skin coerced to platinum); the overlay div stays mounted and dormant. Cleanup of the dead green CSS deferred.
+- **Editor syntax highlighting, theme-aware** (`PythonCell.jsx`) — added a CodeMirror `HighlightStyle` whose token colours resolve through CSS variables (`--cm-*`, defined per theme in `index.css`), so Python code is now **colourised** and adapts light (One-Light family) ↔ graphite-dark (One-Dark family) with no editor remount. Previously the code was monochrome (no highlight style was wired); the editor chrome already themed via tokens, this completes it.
 
 ### Decisions
 - **D-PL-23** — the dark mode is Graphite (a dark theme of Platinum), not a separate skin. Supersedes D-PL-18 (green-screen identity). Platinum is the single skin; light/dark are its two themes.
@@ -21,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - esbuild clean (App, Sidebar, PlatinumMenuBar, theme.js, skin.js); `index.css` brace-balanced (164/164), graphite block present. macOS `npm run build` + approve-first push pending.
 
 ### Next
-- Polish: the CodeMirror editor (`PythonCell`) still renders light — give it a graphite editor theme under dark. Then Phase 3 cont. (spaced repetition / mock-loop / follow-ups).
+- Phase 3 cont. — spaced repetition (SM-2 review queue), mock-loop (timed, no reveal), follow-up chains. Continuous: cleanup the now-dead green CSS.
 
 ## [PL 0.24.0] - 2026-06-24 — PyLab Phase 3 opens: the Trap Museum
 
