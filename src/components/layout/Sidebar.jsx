@@ -12,6 +12,7 @@ import { pandasProblems } from '../../data/pandasProblems.js';
 import { idiomsProblems } from '../../data/idiomsProblems.js';
 import { oopProblems } from '../../data/oopProblems.js';
 import { knowModules } from '../../data/knowModules.js';
+import { FOUNDATION_TALLY } from '../../data/foundationsRooms.js';
 import { judgeProblems } from '../../data/judgeProblems.js';
 import { buildProjects } from '../../data/buildProjects.js';
 import { pyLabProblems } from '../../data/pyLabProblems.js';
@@ -79,7 +80,10 @@ const TRACK = [
 ];
 
 const FRAMES = [
-  { key: 'KNOW', icon: 'book-open', items: [{ label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' }] },
+  { key: 'KNOW', icon: 'book-open', items: [
+    { label: 'Foundations', view: 'foundations', icon: 'book-open', bank: 'foundations' },
+    { label: 'Python & OOP Depth', view: 'know', icon: 'brain', bank: 'know' },
+  ] },
   { key: 'DO', icon: 'terminal', items: [
     { label: 'PyLab', view: 'pylab', icon: 'layers', bank: 'pylab' },
     { label: 'Python Gotchas', view: 'gotchas', icon: 'alert-triangle', bank: 'gotchas' },
@@ -89,12 +93,13 @@ const FRAMES = [
 ];
 
 // which frame owns a given view (follows-navigation auto-expand)
-const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
+const VIEW_FRAME = { pylab: 'DO', gotchas: 'DO', python: 'DO', idioms: 'DO', oop: 'DO', pandas: 'DO', foundations: 'KNOW', know: 'KNOW', judge: 'JUDGE', build: 'BUILD' };
 
 const BANK_TOTAL = {
   pylab: pyLabProblems.length,
   gotchas: gotchaProblems.length, python: pythonProblems.length, pandas: pandasProblems.length,
   idioms: idiomsProblems.length, oop: oopProblems.length,
+  foundations: FOUNDATION_TALLY.modules,
   know: knowModules.length, judge: judgeProblems.length, build: buildProjects.length,
 };
 function bankSolved(bank) {

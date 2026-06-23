@@ -25,6 +25,7 @@ const JudgeBrowser = lazy(() => import('./pages/JudgeBrowser.jsx').then(m => ({ 
 const BuildBrowser = lazy(() => import('./pages/BuildBrowser.jsx').then(m => ({ default: m.BuildBrowser })));
 const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx').then(m => ({ default: m.ProgressPage })));
 const PyLabBrowser = lazy(() => import('./pages/PyLabBrowser.jsx').then(m => ({ default: m.PyLabBrowser })));
+const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').then(m => ({ default: m.FoundationsBrowser })));
 
 function Home({ onNavigate }) {
   return (
@@ -112,6 +113,7 @@ export default function App() {
               )
               : view === 'progress' ? <ProgressPage onNavigate={navigate} />
               : view === 'pylab' ? <PyLabBrowser />
+              : view === 'foundations' ? <FoundationsBrowser />
               : view === 'know' ? <KnowBrowser />
               : view === 'judge' ? <JudgeBrowser />
               : view === 'build' ? <BuildBrowser />

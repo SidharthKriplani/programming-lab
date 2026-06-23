@@ -30,8 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Decisions
 - **D-PL-21** — KNOW becomes the Foundations rooms; the two branches **amend the charter** (Competitive Programming exceeds the easy→medium ceiling, partially superseding D-PL-07 which still governs the trunk; Tensors & Autograd takes **library mechanics only** — modeling stays in `ml-systems-lab`, same KNOW→DO seam). Re-scopes PL from "fluency floor" to "fluency floor + two depth verticals." Approved 2026-06-24.
 
-### Not done (next: F0)
-- No `src/` wiring yet — no `FoundationsBrowser`, no `KnowRunner` `interactive` slot. F0 = build that slot + one `live` module (Room 1 aliasing) as the architecture proof, then author Room 1 to retire the 20-card `knowModules.js` stub. macOS build + approve-first push pending (skeleton is docs + one unimported data file; no build needed until F0 wires it).
+### Wired (F0 structural half — the rooms are now in the app)
+- **`src/pages/FoundationsBrowser.jsx`** — reads the registry and renders the trunk + branches → rooms → clusters → planned module cards (each tagged with its `live`/`sim`/`stepper`/`concept` substrate + an honest "planned" state + a skeleton banner). Uses the lab's tokens, so it themes under both skins.
+- Wired into **`App.jsx`** (lazy route `view==='foundations'`) and **`Sidebar.jsx`** (new KNOW nav item "Foundations" above "Python & OOP Depth"; `VIEW_FRAME` + `BANK_TOTAL`). esbuild bundle of the whole import graph → **exit 0** (Vite/Rolldown build is macOS-only; sandbox-verified via esbuild).
+
+### Still to do (F0 remainder → F1)
+- The `KnowRunner` `interactive` slot + **one `live` module end-to-end** (Room 1 aliasing) as the runnable-model proof; then author Room 1 to retire the 20-card `knowModules.js` stub (F1). macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
