@@ -13,7 +13,9 @@ import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
 import { ScaleRace } from '../components/shared/ScaleRace.jsx';
 import { AmbiguityDrill } from '../components/shared/AmbiguityDrill.jsx';
 import { RefactorChallenge } from '../components/shared/RefactorChallenge.jsx';
+import { FollowUpChain } from '../components/shared/FollowUpChain.jsx';
 import { pyLabFormats } from '../data/pyLabFormats.js';
+import { pyLabFollowups } from '../data/pyLabFollowups.js';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
@@ -147,6 +149,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
           <JudgmentLayer problem={problem} />
           <ScaleRace problem={problem} />
           {fmt.refactor && <RefactorChallenge problem={problem} refactor={fmt.refactor} />}
+          {pyLabFollowups[problem.id] && <FollowUpChain followups={pyLabFollowups[problem.id]} />}
           <ForwardPointerCard onNext={onBack} onNavigate={onBack} />
         </div>
       )}

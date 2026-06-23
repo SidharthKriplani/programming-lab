@@ -5,14 +5,30 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.32.0] - 2026-06-24 — PyLab Phase 3 complete: Follow-up chains
+
+> A real interviewer doesn't stop when your code works — they escalate. The last Phase-3 surface; Phase 3 done.
+
+### Added
+- **Follow-up chains** (`src/components/shared/FollowUpChain.jsx` + `src/data/pyLabFollowups.js`) — in the reveal, the interviewer's escalating next questions unfold one at a time: read the ask → think → reveal the model answer → the next ask appears. Reveal-only (it's the discussion after a solve). **28 chains / 73 escalating follow-ups** across groupby/window/merge/dedup/rank/vectorize/metrics/idioms, decoupled file keyed by id (bank untouched), self-hides when a problem has no honest escalation.
+
+### Verified
+- esbuild clean (FollowUpChain, PyLabBrowser); `pyLabFollowups.js` node-check + id-integrity (28 chains, 0 unknown ids); **full import-graph bundle exit 0**. The subagent verified every code-bearing model answer in CPython (idxmax tie behaviour, rank dense/min/first, resample bucketing, softmax overflow, `merge(validate=)`, safe-ctr `np.where`, …) and rejected ~12 problems with no honest escalation rather than padding.
+
+### Milestone — PyLab Phases 1–3 complete
+- Phase 1 (role/level axis + readiness) · Phase 2 (Scale-it race · Ambiguity drill · Refactor) · Phase 3 (Trap Museum · Spaced repetition · Mock-loop · Follow-up chains), plus the two-pane solve view + schema panel + schema autocomplete (D-PL-26) and the Graphite identity. **Next: Phase 4 — take-home · code-review · explain-it.**
+
+### Next
+- Deploy the 0.22–0.32 stack. Then Phase 4.
+
 ## [PL 0.31.0] - 2026-06-24 — Foundations: the "your turn" active do-and-check step (SQL Lab's lesson for KNOW)
 
-> The deepest thing the learn frame can steal from PAL's SQL Lab isn't the chrome — it's the **active loop**: produce an answer and get *targeted* feedback, not just watch a demo. Piloted on one module, on the existing `KnowRunner`.
+> The deepest thing the learn frame can steal from PAL's SQL Lab isn't the chrome — it's the **active loop**: produce an answer and get *targeted* feedback, not just watch a demo. Rolled out to 8 read-run modules, on the existing `KnowRunner`.
 
 ### Added
 - **`YourTurn` step** in `KnowRunner` (`KnowBrowser.jsx`) — optional per module (`m.yourTurn`). Edit the starter to hit a goal → **Check** (or Cmd/Ctrl+Enter) → a pass/fail verdict with *actionable* feedback ("Still [2, 2, 2]: every lambda closes over the SAME i… freeze it per-iteration, e.g. `lambda i=i: i`"), plus an optional hint. Never just "wrong" — the SQL-Lab feedback voice.
 - **`runCheck(userCode, checkSource)`** in `pyodideRuntime.js` — runs the learner's code + a check snippet in ONE fresh namespace (no global leak); the check sets `__pl_pass`/`__pl_msg`. Returns `{pass, msg, stdout, error}`.
-- **Pilot:** `know-legb-and-closures` (late-binding closure) — a pure predict-run-read module, now with a fix-it challenge. CPython-verified: starter → fail + targeted msg; `lambda i=i:` → pass.
+- **Rolled out to 8 modules** — late-binding closure, aliasing (b = a.copy()), the or-default that eats `""`, the mutable default arg, `__eq__`/`__hash__`, `functools.wraps`, the iterator protocol, and operator dispatch (`__add__`). Each a fix-it/achieve challenge. **All 8 CPython-verified**: every starter fails (or errors informatively — "unhashable", "not iterable", "unsupported operand"), every intended fix passes.
 
 ### Notes
 - The editor half of "adapt CodeMirror" was already done by the PyLab work (D-PL-26): `PythonCell` gained names-only autocomplete (`completions` prop) + Cmd/Ctrl+Enter→`onSubmit` at `Prec.highest`. The your-turn step reuses both (`onSubmit`=Check). No duplicate editor work; no PyLab files touched.

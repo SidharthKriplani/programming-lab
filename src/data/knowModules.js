@@ -47,6 +47,12 @@ export const knowModules = [
   // ───────────────────────── Objects & Identity ─────────────────────────
   {
     id: 'know-names-are-bindings',
+    yourTurn: {
+      prompt: 'Make it so appending to a does NOT change b - give b its own independent list.',
+      starter: 'a = [1, 2]\nb = a\na.append(3)\nprint("a", a, "b", b)',
+      check: '__pl_pass = (a == [1, 2, 3] and b == [1, 2])\n__pl_msg = ("Right - b got its own list, so the append to a never reached it." if __pl_pass else "b is " + repr(b) + ". While b = a they are the SAME list - give b a copy: b = a.copy().")',
+      hint: 'Assignment binds a name, it never copies. Ask for a copy explicitly: a.copy(), list(a), or a[:].',
+    },
     cluster: 'objects-identity',
     title: 'Names are bindings, not boxes',
     subtitle: 'Why a = b = [] makes one list, not two.',
@@ -209,6 +215,12 @@ export const knowModules = [
   // ───────────────────────── Truthiness ─────────────────────────
   {
     id: 'know-truthiness-or-default',
+    yourTurn: {
+      prompt: 'Fix greet so an empty string stays empty - fall back to "stranger" only when name is None.',
+      starter: 'def greet(name):\n    name = name or "stranger"\n    return "Hi " + name\n\nprint(repr(greet("")), repr(greet(None)))',
+      check: '__pl_pass = (greet("") == "Hi " and greet(None) == "Hi stranger")\n__pl_msg = ("Right - you default only on None now, so a valid empty value survives." if __pl_pass else "greet of the empty string gave " + repr(greet("")) + ". The or operator treats the empty string as falsy and replaces it. Default only on None: name if name is not None else the fallback.")',
+      hint: 'or returns the first truthy operand, and "", 0, [] are all falsy - so a valid empty value gets replaced. Test against None explicitly.',
+    },
     cluster: 'truthiness',
     title: 'Truthiness and the or-default trap',
     subtitle: 'Why name or "stranger" eats valid empty input.',
@@ -313,6 +325,12 @@ export const knowModules = [
   // ───────────────────────── Evaluation Model (default args) ─────────────────────────
   {
     id: 'know-mutable-default-args',
+    yourTurn: {
+      prompt: 'Fix add so each call with no bucket starts EMPTY, instead of accumulating across calls.',
+      starter: 'def add(x, bucket=[]):\n    bucket.append(x)\n    return bucket\n\nprint(add(1), add(2))',
+      check: '__pl_pass = (add(1) == [1] and add(2) == [2])\n__pl_msg = ("Right - a fresh list every call." if __pl_pass else "A later call returned " + repr(add(2)) + ", not [2] - the default list is created once and shared. Use bucket=None, then build a new list inside.")',
+      hint: 'Default arguments are evaluated ONCE at definition time and reused. Default to None and do: if bucket is None: bucket = [].',
+    },
     cluster: 'evaluation-model',
     title: 'Default arguments are evaluated once',
     subtitle: 'Why a function with tags=[] remembers across calls.',
@@ -464,7 +482,13 @@ export const knowModules = [
 
   // ───────────────────────── The Data Model (more) ─────────────────────────
   {
-    id: 'know-operator-dispatch', cluster: 'data-model',
+    id: 'know-operator-dispatch',
+    yourTurn: {
+      prompt: 'Make Vector support + so Vector(1, 2) + Vector(3, 4) == Vector(4, 6). Define the dunder Python calls for +.',
+      starter: 'class Vector:\n    def __init__(self, x, y):\n        self.x, self.y = x, y\n    def __eq__(self, other):\n        return (self.x, self.y) == (other.x, other.y)\n\nr = Vector(1, 2) + Vector(3, 4)\nprint(r.x, r.y)',
+      check: '__pl_pass = ((Vector(1, 2) + Vector(3, 4)) == Vector(4, 6))\n__pl_msg = ("Right - a + b dispatches to __add__." if __pl_pass else "Vector + Vector did not work - Python looks for __add__ and there is none. Add def __add__(self, other): return Vector(self.x + other.x, self.y + other.y).")',
+      hint: 'a + b calls type(a).__add__(a, b). Return a new Vector with the summed components.',
+    }, cluster: 'data-model',
     title: 'Operators dispatch to dunders',
     subtitle: 'x + y is really x.__add__(y).',
     difficulty: 'core', estimatedMin: 6,
@@ -610,7 +634,13 @@ export const knowModules = [
     connectsTo: ['gotchas', 'python'],
   },
   {
-    id: 'know-functools-wraps', cluster: 'functions',
+    id: 'know-functools-wraps',
+    yourTurn: {
+      prompt: 'Fix the decorator so greet.__name__ stays "greet" instead of "wrapper".',
+      starter: 'import functools\n\ndef log(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@log\ndef greet(name):\n    return "Hi " + name\n\nprint(greet.__name__)',
+      check: '__pl_pass = (greet.__name__ == "greet")\n__pl_msg = ("Right - @wraps copied the metadata, so greet stays greet." if __pl_pass else "greet.__name__ is " + repr(greet.__name__) + " - the wrapper replaced the function and its identity. Add @functools.wraps(func) above def wrapper.")',
+      hint: 'A decorator replaces the function with the wrapper, so __name__ and __doc__ become the wrapper. functools.wraps(func) copies them across.',
+    }, cluster: 'functions',
     title: 'functools.wraps and the lost identity',
     subtitle: 'Why your decorated function forgets its own name.',
     difficulty: 'core', estimatedMin: 5,
@@ -660,7 +690,13 @@ export const knowModules = [
 
   // ───────────────────────── Iteration & Context Managers ─────────────────────────
   {
-    id: 'know-iterator-protocol', cluster: 'iteration',
+    id: 'know-iterator-protocol',
+    yourTurn: {
+      prompt: 'Make Countdown iterable so list(Countdown(3)) == [3, 2, 1]. Implement the protocol.',
+      starter: 'class Countdown:\n    def __init__(self, n):\n        self.n = n\n\nprint(list(Countdown(3)))',
+      check: '__pl_pass = (list(Countdown(3)) == [3, 2, 1])\n__pl_msg = ("Right - Countdown yields 3, 2, 1." if __pl_pass else "Did not get [3, 2, 1] - Countdown is not iterable yet. Add __iter__, e.g. def __iter__(self): return iter(range(self.n, 0, -1)).")',
+      hint: 'for and list() call __iter__ to get an iterator. Simplest: def __iter__(self): return iter(range(self.n, 0, -1)).',
+    }, cluster: 'iteration',
     title: 'The iterator protocol behind for',
     subtitle: 'for is iter() plus next() until StopIteration.',
     difficulty: 'core', estimatedMin: 6,
@@ -758,7 +794,13 @@ export const knowModules = [
 
   // ───────────────────────── Objects & Classes ─────────────────────────
   {
-    id: 'know-eq-hash-contract', cluster: 'objects',
+    id: 'know-eq-hash-contract',
+    yourTurn: {
+      prompt: 'Make Point usable as a dict key so two equal Points collapse to ONE entry. Add what defining __eq__ took away.',
+      starter: 'class Point:\n    def __init__(self, x, y):\n        self.x, self.y = x, y\n    def __eq__(self, other):\n        return (self.x, self.y) == (other.x, other.y)\n\nseen = {}\nseen[Point(1, 2)] = "a"\nseen[Point(1, 2)] = "b"\nprint("entries", len(seen))',
+      check: '__pl_pass = (len(seen) == 1)\n__pl_msg = ("Right - equal Points hash the same, so they share one entry." if __pl_pass else "Got " + str(len(seen)) + " entries. Defining __eq__ made Point unhashable - add __hash__ returning hash((self.x, self.y)) so equal objects hash equal.")',
+      hint: 'Defining __eq__ sets __hash__ to None (unhashable). Equal objects must hash equal: def __hash__(self): return hash((self.x, self.y)).',
+    }, cluster: 'objects',
     title: 'The __eq__ / __hash__ contract',
     subtitle: 'Why adding __eq__ silently breaks set membership.',
     difficulty: 'stretch', estimatedMin: 7,
