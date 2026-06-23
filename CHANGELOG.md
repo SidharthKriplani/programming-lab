@@ -143,8 +143,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Collapsed aliasing + copy-vs-view onto it** (the two bespoke `AliasingModel.jsx`/`CopyVsViewModel.jsx` are now dead — `git rm` them) and **added mutable-default as config-only** — the proof that a new driven module = data. All three verified: the template generates correct CPython (a is b, x[0] is y[0], the shared default accumulating [1,2,3]). esbuild exit 0.
 - Bespoke widgets stay only where the picture/dynamics need custom viz (call stack, Big-O, hashing, broadcasting, numpy race, index-align, truthiness, decorators).
 
+### Templated cont. — slider variant + is-vs-==
+- `StateTrace` gained a **slider** control and an **equality** probe (`a == b` shown alongside `a is b`). **is-vs-== migrated onto the template, config-only** (`IS_VS_EQ`): drag the value across the small-int cache and watch `is` flip (False→True at -5, True→False past 256) while `==` stays True. Verified at -6/-5/256/257. Four models on the template now (aliasing, copy-view, mutable-default, is-vs-==); ~12 driven total.
+
 ### Still to do (F1 cont.)
-- `git rm` the two superseded bespoke files (sandbox couldn't delete). Migrate is-vs-== onto the template (needs a slider variant); keep authoring bespoke where needed (generators, async timeline). macOS `npm run build` + approve-first push pending.
+- `git rm` the two dead bespoke files (`AliasingModel`/`CopyVsViewModel` — sandbox couldn't delete). Keep authoring bespoke where the picture is the lesson (generators, async timeline, dict insertion-order). macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 

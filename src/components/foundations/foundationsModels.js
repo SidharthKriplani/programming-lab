@@ -41,6 +41,19 @@ export const COPY_DEEPCOPY = {
     : 'Fully independent: deepcopy copied all the way down, so x never touches y.'),
 };
 
+export const IS_VS_EQ = {
+  slider: { label: 'value', min: -10, max: 300, default: 257 },
+  setup: (v) => ['a = int(str(' + v + '))', 'b = int(str(' + v + '))'],
+  ops: [],
+  watch: ['a', 'b'],
+  identity: [['a', 'b']],
+  equality: [['a', 'b']],
+  render: 'values',
+  takeaway: (s, ctx) => !s ? '' : (s.ident.i0
+    ? 'a == b AND a is b. Small ints from about -5 to 256 are pre-made singletons Python caches, so equal values share one object — identity happens to match here.'
+    : 'a == b but a is NOT b. At ' + ctx.sliderVal + ', outside the small-int cache, each int is its own object. == compares value, is compares identity — never use `is` to compare numbers.'),
+};
+
 export const MUTABLE_DEFAULT = {
   setup: ['def add(x, bucket=[]):', '    bucket.append(x)', '    return bucket'],
   ops: [

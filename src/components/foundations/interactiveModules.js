@@ -7,7 +7,7 @@
 // interactive-only planned ids open a lightweight runner in FoundationsBrowser.
 import { createElement } from 'react';
 import { StateTrace } from './StateTrace.jsx';
-import { ALIASING, COPY_DEEPCOPY, MUTABLE_DEFAULT } from './foundationsModels.js';
+import { ALIASING, COPY_DEEPCOPY, MUTABLE_DEFAULT, IS_VS_EQ } from './foundationsModels.js';
 import { CallStackModel } from './CallStackModel.jsx';
 import { BigOModel } from './BigOModel.jsx';
 import { HashBucketsModel } from './HashBucketsModel.jsx';
@@ -24,6 +24,7 @@ export const INTERACTIVE_MODULES = {
   'know-names-are-bindings': trace(ALIASING),        // Room 1 · values-and-names (backed)
   'pf-copy-deepcopy': trace(COPY_DEEPCOPY),          // Room 1 · values-and-names (planned)
   'know-mutable-default-args': trace(MUTABLE_DEFAULT), // Room 1 · control (backed) — NEW driven model, config-only
+  'know-is-vs-equals': trace(IS_VS_EQ),              // Room 1 · the-data-model (backed) — slider variant
   // ── Room 1 bespoke (backed → KnowRunner slot) ──
   'know-bool-len-fallback': TruthinessModel,         // the-data-model
   'know-decorators-from-scratch': DecoratorModel,    // decorators-and-context

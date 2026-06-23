@@ -21,17 +21,20 @@ export function StateTrace({ config }) {
   const [ready, setReady] = useState(false);
   const [modeId, setModeId] = useState(cfg.modes ? cfg.modes[0].id : null);
   const [ops, setOps] = useState([]); // [opId,...] in press order
+  const [sv, setSv] = useState(cfg.slider ? cfg.slider.default : null);
   const [state, setState] = useState(null);
   const [running, setRunning] = useState(false);
 
   const watch = cfg.watch.map((w, i) => (typeof w === 'string' ? { expr: w, label: w, accent: ACCENTS[i % ACCENTS.length] } : { accent: ACCENTS[i % ACCENTS.length], label: w.expr, ...w }));
   const identity = cfg.identity || [];
+  const equality = cfg.equality || [];
 
   const opCount = (id, upto) => ops.slice(0, upto).filter(o => o === id).length;
   const resolve = (v, count) => (typeof v === 'function' ? v(count) : v);
 
   const buildCode = useCallback(() => {
-    const lines = ['import json', ...cfg.setup];
+    const setupLines = typeof cfg.setup === 'function' ? cfg.setup(sv) : cfg.setup;
+    const lines = ['import json', ...setupLines];
     if (cfg.modes && modeId) { const m = cfg.modes.find(x => x.id === modeId); if (m) lines.push(...m.code); }
     ops.forEach((id, idx) => {
       const def = cfg.ops.find(o => o.id === id);
@@ -41,10 +44,12 @@ export function StateTrace({ config }) {
     watch.forEach((w, i) => lines.push('__w["w' + i + '"] = {"repr": repr(' + w.expr + '), "id": id(' + w.expr + ')}'));
     lines.push('__id = {}');
     identity.forEach((p, i) => lines.push('__id["i' + i + '"] = (' + p[0] + ' is ' + p[1] + ')'));
-    lines.push('json.dumps({"watch": __w, "ident": __id})');
+    lines.push('__eq = {}');
+    equality.forEach((p, i) => lines.push('__eq["e' + i + '"] = (' + p[0] + ' == ' + p[1] + ')'));
+    lines.push('json.dumps({"watch": __w, "ident": __id, "eq": __eq})');
     return lines.join('\n');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modeId, ops]);
+  }, [modeId, ops, sv]);
 
   useEffect(() => { let a = true; loadPython().then(() => { if (a) setReady(true); }).catch(() => {}); return () => { a = false; }; }, []);
   useEffect(() => {
@@ -63,7 +68,7 @@ export function StateTrace({ config }) {
     o.names.push({ label: w.label, accent: w.accent });
   });
 
-  const takeaway = cfg.takeaway ? cfg.takeaway(state, { modeId, ops }) : null;
+  const takeaway = cfg.takeaway ? cfg.takeaway(state, { modeId, ops, sliderVal: sv }) : null;
 
   return (
     <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', background: 'var(--surface-2)' }}>
@@ -75,10 +80,15 @@ export function StateTrace({ config }) {
           ))}
           <span style={{ width: 1, height: 20, background: 'var(--border)', margin: '0 0.1rem' }} />
         </>}
+        {cfg.slider && <>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>{cfg.slider.label}</span>
+          <input type="range" min={cfg.slider.min} max={cfg.slider.max} value={sv} onChange={e => setSv(Number(e.target.value))} style={{ flex: 1, minWidth: 140 }} />
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', minWidth: 40, textAlign: 'right' }}>{sv}</span>
+        </>}
         {cfg.ops.map(o => (
           <button key={o.id} onClick={() => setOps(s => [...s, o.id])} style={btnStyle(false)}>{resolve(o.label, opCount(o.id))}</button>
         ))}
-        <button onClick={() => setOps([])} style={btnStyle(true)}>reset</button>
+        {cfg.ops.length > 0 && <button onClick={() => setOps([])} style={btnStyle(true)}>reset</button>}
         {!ready && <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>warming up…</span>}
       </div>
 
@@ -109,6 +119,17 @@ export function StateTrace({ config }) {
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text-muted)' }}>{p[0]} is {p[1]} →</span>
               <span style={verdictStyle(val)}>{val ? 'True' : 'False'}</span>
+              <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>same object?</span>
+            </div>
+          );
+        })}
+        {state && equality.map((p, i) => {
+          const val = state.eq['e' + i];
+          return (
+            <div key={'eq' + i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text-muted)' }}>{p[0]} == {p[1]} →</span>
+              <span style={verdictStyle(val)}>{val ? 'True' : 'False'}</span>
+              <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>equal value?</span>
             </div>
           );
         })}
