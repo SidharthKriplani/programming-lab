@@ -1,10 +1,13 @@
-// interactiveModules — maps a Foundations module id to its DRIVEN model (the F1
-// widget slot). A module with an entry here renders a manipulable model; backed
-// modules (knowModules) render it inside KnowRunner's slot, interactive-only
-// planned modules open a lightweight runner in FoundationsBrowser. Add an entry
-// as each room's driven models are authored (build order F1+).
-import { AliasingModel } from './AliasingModel.jsx';
-import { CopyVsViewModel } from './CopyVsViewModel.jsx';
+// interactiveModules — maps a Foundations module id to its DRIVEN model.
+// Two kinds of entry:
+//   • StateTrace template, config-driven (foundationsModels.js) — a NEW such model
+//     is a DATA config, not a new component. This is the scalable core.
+//   • bespoke widgets — only where the picture/dynamics genuinely need custom viz.
+// Backed modules (knowModules ids) render the model inside KnowRunner's slot;
+// interactive-only planned ids open a lightweight runner in FoundationsBrowser.
+import { createElement } from 'react';
+import { StateTrace } from './StateTrace.jsx';
+import { ALIASING, COPY_DEEPCOPY, MUTABLE_DEFAULT } from './foundationsModels.js';
 import { CallStackModel } from './CallStackModel.jsx';
 import { BigOModel } from './BigOModel.jsx';
 import { HashBucketsModel } from './HashBucketsModel.jsx';
@@ -14,15 +17,21 @@ import { IndexAlignModel } from './IndexAlignModel.jsx';
 import { TruthinessModel } from './TruthinessModel.jsx';
 import { DecoratorModel } from './DecoratorModel.jsx';
 
+const trace = (cfg) => () => createElement(StateTrace, { config: cfg });
+
 export const INTERACTIVE_MODULES = {
-  'know-names-are-bindings': AliasingModel, // Room 1 · values-and-names (backed → KnowRunner slot)
-  'pf-copy-deepcopy': CopyVsViewModel,      // Room 1 · values-and-names (planned → widget runner)
-  'know-bool-len-fallback': TruthinessModel, // Room 1 · the-data-model  (backed → KnowRunner slot)
-  'know-decorators-from-scratch': DecoratorModel, // Room 1 · decorators  (backed → KnowRunner slot)
-  'mc-call-stack': CallStackModel,          // Room 2 · execution        (planned → widget runner)
-  'mc-big-o': BigOModel,                    // Room 2 · cost-felt         (planned → widget runner)
-  'mc-hash-buckets': HashBucketsModel,      // Room 2 · hashing-and-lookup (planned → widget runner)
-  'mc-vectorized': VectorizedRaceModel,     // Room 2 · cost-felt (live numpy race)
-  'np-broadcast': BroadcastModel,           // Room 4 · numpy     (broadcasting sim)
-  'pd-align': IndexAlignModel,              // Room 4 · pandas    (index alignment, live)
+  // ── StateTrace template (config = data, not code) ──
+  'know-names-are-bindings': trace(ALIASING),        // Room 1 · values-and-names (backed)
+  'pf-copy-deepcopy': trace(COPY_DEEPCOPY),          // Room 1 · values-and-names (planned)
+  'know-mutable-default-args': trace(MUTABLE_DEFAULT), // Room 1 · control (backed) — NEW driven model, config-only
+  // ── Room 1 bespoke (backed → KnowRunner slot) ──
+  'know-bool-len-fallback': TruthinessModel,         // the-data-model
+  'know-decorators-from-scratch': DecoratorModel,    // decorators-and-context
+  // ── bespoke (the picture/dynamics need custom viz) ──
+  'mc-call-stack': CallStackModel,                   // Room 2 · execution
+  'mc-big-o': BigOModel,                             // Room 2 · cost-felt
+  'mc-hash-buckets': HashBucketsModel,               // Room 2 · hashing-and-lookup
+  'mc-vectorized': VectorizedRaceModel,              // Room 2 · cost-felt (live numpy race)
+  'np-broadcast': BroadcastModel,                    // Room 4 · numpy (broadcasting)
+  'pd-align': IndexAlignModel,                       // Room 4 · pandas (index alignment, live)
 };
