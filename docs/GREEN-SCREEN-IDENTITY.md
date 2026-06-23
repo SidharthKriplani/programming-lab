@@ -38,6 +38,8 @@ family look and is left exactly as the siblings have it — do not apply any of 
 5. **CRT treatment is always on in dark mode:** scanlines + vignette overlay, phosphor glow on
    headings/chrome. Subtle — readable for a long study session, not a kitsch gimmick.
 6. **Light mode is untouched.** None of the above applies to `[data-theme='light']`.
+7. **No card highlights or decoration.** Cards are flat green-hairline boxes — no colored top
+   bars, no hover lift, no shadow, no card glow. Hierarchy comes from layout + brightness, never ornament.
 
 ---
 
@@ -47,14 +49,14 @@ One hue. Five brightness tiers on a near-black green-tinted void. All tokens res
 
 | Role | Hex | Use |
 |---|---|---|
-| Void (bg) | `#060A07` | page background |
-| Surface | `#0B120D` / `#0E1711` / `#121C15` | cards, panels, raised |
+| Void (bg) | `#000000` | page background — pure black |
+| Surface | `#070D09` / `#0A120C` / `#0C160E` | cards, panels, raised |
 | Bright | `#7FF5B0` | good / active / strong / highlight text |
 | Base (accent) | `#46E08A` | the phosphor — accent, primary, fills, cursor |
 | Mid | `#5FD699` | partial / signal / secondary emphasis |
 | Dim / off | `#9FC9AE` | "broke" / wrong / recessed (reads as *off*, still green) |
 | Muted text | `#6E8274` | secondary labels |
-| Body text | `#D6E4D8` | soft greenish-white — long-form prose (kept readable) |
+| Body text | `#4FE08C` | phosphor green — ALL text is green, no white anywhere |
 | Borders | `#1C3E2A` → `#2E6E48` | hairline → strong green seams |
 | On-green ink | `#04130B` | text/icons that sit ON a bright-green fill |
 
@@ -73,9 +75,10 @@ non-green value into the dark block.**
 
 ## 3. Typography — the terminal font
 
-- **Dark mode:** `--font-ui` and `--font-mono` = **`'VT323'`** (DEC VT320-style bitmap terminal
-  font, loaded from Google Fonts in `index.css` line 1). Fallback `JetBrains Mono` → `monospace`.
-  VT323 has **no curved lettering** — that is the point.
+- **Dark mode:** `--font-ui` and `--font-mono` = **`'Courier Prime'`** (the teletype/typewriter
+  lineage — period-correct, loaded from Google Fonts in `index.css` line 1). Fallback
+  `Courier New` → `monospace`. Governs the whole dark UI: headings, body, nav, code.
+  (Rejected: VT323 — too soft/pixel, read as ugly; JetBrains Mono / Inter — modern, curved.)
 - **Light mode:** restored to the shared family — `Inter` (`--font-ui`) + `JetBrains Mono`
   (`--font-mono`). The terminal font is a dark-identity thing only.
 - VT323 renders small/thin; if a label is illegibly small, **bump its size**, do not switch font.

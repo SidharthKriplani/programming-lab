@@ -219,7 +219,6 @@ export function JudgeBrowser() {
                     background: 'var(--surface)', border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)', padding: '0.9rem 1rem',
                     display: 'flex', flexDirection: 'column', gap: '0.4rem',
-                    borderTop: `2px solid ${group.meta.accent}`,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>

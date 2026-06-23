@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap');
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -210,20 +210,21 @@
    [data-theme='light'] is the SHARED family "Field Notes" mode (left untouched).
    Palette logic (the predict-break-fix loop in CRT colors):
      green = baseline / OK   ·   red = break   ·   amber = signal.
-   Body text is a soft greenish-white (readable); green is the accent + chrome.
+   ALL TEXT is phosphor green; background is pure black; NO white anywhere; NO
+   card highlights/decoration. Hierarchy = brightness + glyphs, never hue. (D-PL-18)
    ═══════════════════════════════════════════════════════════════════════════ */
 :root, :root[data-theme='dark'] {
-  --bg: #060A07;
-  --surface: #0B120D;
-  --surface-2: #0E1711;
-  --surface-raised: #121C15;
+  --bg: #000000;
+  --surface: #070D09;
+  --surface-2: #0A120C;
+  --surface-raised: #0C160E;
   --border: #1C3E2A;
-  --border-subtle: #142A1C;
+  --border-subtle: #122418;
   --border-strong: #2E6E48;
-  --text: #D6E4D8;
-  --text-secondary: #9DB3A2;
-  --text-muted: #6E8274;
-  --text-dim: #47564B;
+  --text: #4FE08C;
+  --text-secondary: #3CB377;
+  --text-muted: #2E9462;
+  --text-dim: #1F6B45;
   --accent: #46E08A;
   --accent-hover: #7FF5B0;
   --accent-light: #7FF5B0;
@@ -257,25 +258,25 @@
   --blue-text: #7FF5B0;
   --blue-bg: rgba(70,224,138,0.10);
   --blue-border: rgba(70,224,138,0.28);
-  --header-bg: rgba(6,10,7,0.97);
+  --header-bg: rgba(0,0,0,0.97);
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
   --shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.35);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.35);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
   --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
   --shadow-glow: 0 0 0 3px rgba(70,224,138,0.30);
-  --input-bg: #0B120D;
+  --input-bg: #070D09;
   --gradient-accent: linear-gradient(135deg, #46E08A 0%, #7FF5B0 100%);
   --gradient-warm: linear-gradient(135deg, #46E08A 0%, #2E8C5A 100%);
   --gradient-teal: linear-gradient(135deg, #7FF5B0 0%, #46E08A 100%);
   --gradient-hero: linear-gradient(135deg, rgba(70,224,138,0.10) 0%, rgba(70,224,138,0.04) 55%, transparent 100%);
   --overlay: rgba(0,0,0,0.66);
   --discovery: #46E08A;
-  /* TERMINAL FONT (D-PL-18): the period CRT typeface — bitmap, no curved
-     lettering — governs the whole dark identity (headings, body, chrome, code).
+  /* TERMINAL FONT (D-PL-18): Courier Prime — the teletype/typewriter lineage,
+     period-correct, governs the whole dark identity (headings, body, chrome, code).
      Light "Field Notes" mode restores the shared Inter family below. */
-  --font-ui: 'VT323', 'JetBrains Mono', ui-monospace, monospace;
-  --font-mono: 'VT323', 'JetBrains Mono', ui-monospace, monospace;
+  --font-ui: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  --font-mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
 }
 :root[data-theme='light'] {
   --bg: #F4F1EA;
@@ -670,6 +671,19 @@ button:not(:disabled):active {
 :root[data-theme='dark'] .pal-badge-accent,
 :root[data-theme='dark'] .btn-run {
   color: var(--on-accent) !important;
+}
+
+/* Bright phosphor headings — hierarchy via brightness, all green (D-PL-18). */
+:root[data-theme='dark'] h1,
+:root[data-theme='dark'] h2,
+:root[data-theme='dark'] h3 { color: #7FF5B0 !important; }
+
+/* NO card highlights/decoration (D-PL-18): flat green-hairline boxes only —
+   no hover lift, no shadow, no glow. */
+:root[data-theme='dark'] .pal-card-hover:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: var(--accent-border) !important;
 }
 
 /* Light "Field Notes" mode is the SHARED family look — restore the sans family

@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.14.0] - 2026-06-23 — Green-screen, finalized: Courier Prime, all-green on black, no decoration
+
+> Aligned with Sidharth on the specifics *before* this build (after two builds drifted from the approved render): the live VT323 was ugly, white lettering had crept back, cards still carried highlight decoration. Locked: Courier Prime · all text phosphor green · pure-black background · no card highlights.
+
+### Changed — dark mode only (shared light mode untouched)
+- **Font → Courier Prime** (teletype/typewriter lineage). The render's JetBrains Mono and the shipped VT323 are both retired. Governs the whole dark UI.
+- **All text phosphor green, zero white** — body `#4FE08C`, bright headings `#7FF5B0` (forced). The greenish-white body color is gone.
+- **Pure-black background** (`--bg #000000`); surfaces are faint green-black.
+- **No card decoration** — removed the colored top-accent bar from all four card browsers (KNOW / Gotchas / Judge / Build) and neutralized the hover lift/shadow/glow. Flat green-hairline boxes only.
+- `docs/GREEN-SCREEN-IDENTITY.md` updated to match (font, palette, new law #7 "no decoration").
+
+### Notes
+- Process correction: font picked from rendered samples and green-text + no-decoration confirmed *before* executing. esbuild clean on all four browsers; Courier Prime wired, VT323 / white / top-bars verified gone.
+
 ## [PL 0.13.0] - 2026-06-23 — Green-screen, governed: pure green+black, terminal font, contrast fix
 
 > Sidharth, on the 0.12.0 deploy: the color's right but it's not actually old-school yet — a bright green can't carry white lettering, a curved sans font kills the nostalgia, and a monochrome tube has only green + black. "Write the entire design idea down so everything is governed by it." Done.
