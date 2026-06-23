@@ -166,7 +166,7 @@ function oneLine(p) {
   return first.length > 130 ? first.slice(0, 128).trim() + '…' : first;
 }
 
-export function PyLabBrowser() {
+export function PyLabBrowser({ onExitRoom }) {
   const [activeId, setActiveId] = useState(null);
   const [role, setRole] = useState('all');
   const [level, setLevel] = useState('all');
@@ -175,6 +175,8 @@ export function PyLabBrowser() {
   const [reviewMode, setReviewMode] = useState(false);
   const [mock, setMock] = useState(false);
   const progress = getProgress(KEY);
+  const total = pyLabProblems.length;
+  const solvedCount = Object.keys(progress.solved || {}).length;
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
 
@@ -196,14 +198,29 @@ export function PyLabBrowser() {
 
   return (
     <div className="pal-page-enter">
-      <div style={{ marginBottom: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+      {onExitRoom && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginBottom: '1rem', flexWrap: 'wrap', borderBottom: '1px solid var(--border)', paddingBottom: '0.7rem' }}>
+          <button onClick={onExitRoom} style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.35rem 0.6rem', cursor: 'pointer', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.84rem' }}>
+            <Icon name="arrow-left" size={15} color="var(--text-muted)" /> Back
+          </button>
           <Icon name="layers" size={18} color="var(--accent)" />
-          <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)' }}>PyLab</h1>
+          <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text)' }}>PyLab</span>
+          <span style={{ fontSize: '0.82rem', fontFamily: 'var(--font-mono)', color: 'var(--text)' }}>{solvedCount}<span style={{ color: 'var(--text-muted)' }}> / {total} solved</span></span>
           <button onClick={() => setMock(true)} className="pal-btn-primary" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.84rem', padding: '0.4rem 0.8rem' }}>
             <Icon name="clock" size={14} color="currentColor" /> Mock interview
           </button>
         </div>
+      )}
+      <div style={{ marginBottom: '1rem' }}>
+        {!onExitRoom && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+            <Icon name="layers" size={18} color="var(--accent)" />
+            <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)' }}>PyLab</h1>
+            <button onClick={() => setMock(true)} className="pal-btn-primary" style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.84rem', padding: '0.4rem 0.8rem' }}>
+              <Icon name="clock" size={14} color="currentColor" /> Mock interview
+            </button>
+          </div>
+        )}
         <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '64ch' }}>
           pandas, numpy and Python — the difference between code that runs and code that&apos;s right. Predict, submit, then read which approaches are equivalent, which one is a trap that runs and lies, and when to reach for each.
         </p>

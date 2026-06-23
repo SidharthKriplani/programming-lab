@@ -1,7 +1,7 @@
 // App — Programming Lab (PL) shell + state routing.
 // Sibling-consistent with PAL: state-based `view` routing, lazy-loaded room
 // pages with the named-export pattern, <Suspense> over <main>.
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { PlatinumMenuBar } from './components/layout/PlatinumMenuBar.jsx';
 import { getSkin, cycleSkin } from './utils/skin.js';
@@ -56,6 +56,35 @@ export default function App() {
   const navigate = (v) => { setView(v); setNavOpen(false); };
   const onCycleSkin = () => setSkinState(cycleSkin());
 
+  // global shortcut: "p" jumps to PyLab — guarded so it never fires while typing,
+  // including in the CodeMirror contenteditable (the exact class of bug PAL hit).
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+      if (e.key === 'p' || e.key === 'P') { e.preventDefault(); setView('pylab'); setNavOpen(false); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  // PyLab opens as its OWN full-screen room (no app sidebar) — like SQL Lab in PAL.
+  if (view === 'pylab') {
+    return (
+      <div className="app-layout">
+        {skin === 'platinum' && <PlatinumMenuBar />}
+        <div className="app-main-wrapper">
+          <main className="app-main">
+            <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 260 }}><span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>loading…</span></div>}>
+              <PyLabBrowser onExitRoom={() => navigate('home')} />
+            </Suspense>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-layout">
       {skin === 'platinum' && <PlatinumMenuBar />}
@@ -77,7 +106,6 @@ export default function App() {
           }>
             {view === 'gotchas' ? <GotchaBrowser />
               : view === 'progress' ? <ProgressPage onNavigate={navigate} />
-              : view === 'pylab' ? <PyLabBrowser />
               : view === 'foundations' ? <FoundationsBrowser />
               : view === 'know' ? <KnowBrowser />
               : view === 'judge' ? <JudgeBrowser />

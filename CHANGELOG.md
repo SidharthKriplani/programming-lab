@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.34.0] - 2026-06-24 — PyLab opens as its own full-screen room + "p" shortcut
+
+> Sidharth: make PyLab open in its own frame like SQL Lab does in PAL (away from the app chrome), and add a "p" shortcut.
+
+### Added
+- **PyLab is now a full-screen room** — opening it **drops the app sidebar** (the Platinum menu bar stays as OS chrome) and PyLab fills the screen with its own top bar: **← Back · PyLab · N / 136 solved · Mock interview**. Mirrors SQL Lab taking over PAL. `App.jsx` renders `view==='pylab'` as a dedicated sidebar-less layout; `PyLabBrowser` gains an `onExitRoom` prop that swaps its page header for the room bar (and shows live solved/total).
+- **Global `p` shortcut → PyLab** — guarded so it never fires while typing in an input/textarea/select or the **CodeMirror contenteditable**. PL's first single-key shortcut; the guard is built in from the start (the exact bug PAL hit when it added single-key shortcuts after the editor swap).
+
+### Verified
+- esbuild clean (App, PyLabBrowser); **full import-graph bundle exit 0**; `isContentEditable` guard + the full-screen branch + `onExitRoom` wiring all confirmed.
+
+### Next
+- Deploy 0.33 + 0.34. Then Phase 4. (Watch-item: confirm the 0.33 editor-lettering fix reads cleanly live.)
+
 ## [PL 0.33.0] - 2026-06-24 — Editor lettering visibility (active-line tint + comment/gutter contrast)
 
 > **0.22–0.32 deployed live** (confirmed on programming-lab.vercel.app: two-pane solve view, schema panel, shape-only target, Graphite — all on). Follow-up to a visibility nit: the editor's active-line band fought the comment text on it, and comments/gutter ran low-contrast in both themes.
