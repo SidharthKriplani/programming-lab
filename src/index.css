@@ -984,3 +984,8 @@ body {
   color: #e9e9ec !important;
   box-shadow: inset 2px 0 0 #6e88c4 !important;
 }
+
+/* PyLab two-pane solve layout — problem + schema (left), editor + results (right);
+   the reveal renders full-width below. Collapses to one column on narrow screens. */
+.pylab-solve-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1.1rem; align-items: start; }
+@media (max-width: 900px) { .pylab-solve-grid { grid-template-columns: 1fr; } }

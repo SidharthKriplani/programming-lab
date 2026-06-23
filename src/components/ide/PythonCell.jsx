@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Prec } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine } from '@codemirror/view';
 import { defaultKeymap, indentWithTab, history, historyKeymap } from '@codemirror/commands';
 import { python } from '@codemirror/lang-python';
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { autocompletion } from '@codemirror/autocomplete';
 import { tags as t } from '@lezer/highlight';
 import { loadPython, runPython, runPythonGlassBox } from './pyodideRuntime.js';
 import { glassBoxParts } from './glassbox.js';
@@ -51,6 +52,8 @@ export function PythonCell({
   glassBox = true,
   onResult,
   onCodeChange,
+  completions = [],
+  onSubmit,
 }) {
   const [status, setStatus]   = useState('idle'); // idle | loading | running | done | error
   const [progress, setProgress] = useState('');
@@ -62,6 +65,9 @@ export function PythonCell({
   const hostRef   = useRef(null);
   const viewRef   = useRef(null);
   const abortRef  = useRef(false);
+  // refs so the mount-once editor always sees the latest submit handler + schema names
+  const onSubmitRef = useRef(onSubmit); onSubmitRef.current = onSubmit;
+  const completionsRef = useRef(completions); completionsRef.current = completions;
 
   // ── CodeMirror editor mount ──────────────────────────────────────────────
   useEffect(() => {
@@ -75,6 +81,16 @@ export function PythonCell({
         history(),
         python(),
         syntaxHighlighting(plHighlight),
+        // schema-name autocomplete (names-only — cut typo friction, don't do the thinking)
+        autocompletion({ activateOnTyping: true, override: [(ctx) => {
+          const list = completionsRef.current || [];
+          if (!list.length) return null;
+          const word = ctx.matchBefore(/['"\w]+/);
+          if (!word || (word.from === word.to && !ctx.explicit)) return null;
+          return { from: word.from, options: list.map(c => (typeof c === 'string' ? { label: c, type: 'variable' } : c)) };
+        }] }),
+        // Cmd/Ctrl+Enter -> submit, at highest precedence so it beats CM's default "insert blank line"
+        Prec.highest(keymap.of([{ key: 'Mod-Enter', preventDefault: true, run: () => { if (onSubmitRef.current) { onSubmitRef.current(); return true; } return false; } }])),
         keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         EditorView.editable.of(!readOnly),
         EditorState.readOnly.of(readOnly),

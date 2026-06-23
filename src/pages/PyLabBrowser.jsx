@@ -2,10 +2,12 @@
 // the SQL-Lab bar (PYLAB-BUILD-SPEC). Browse (filter by topic/difficulty/search) -> solve
 // (prompt + beforeWriting + editor + Submit graded via runPyLab) -> Reveal (solution +
 // debrief) -> JudgmentLayer. Named export (App lazy-imports it).
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { pyLabProblems, PYLAB_TOPICS, PYLAB_TOPIC_ORDER } from '../data/pyLabProblems.js';
 import { pyLabFixtures } from '../data/pyLabFixtures.js';
 import { companyFor } from '../data/pyLabCompanies.js';
+import { pyLabSchemas } from '../data/pyLabSchemas.js';
+import { PyLabSchema } from '../components/shared/PyLabSchema.jsx';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
 import { ScaleRace } from '../components/shared/ScaleRace.jsx';
@@ -40,6 +42,19 @@ function PyLabRunner({ problem, onBack, onSolved }) {
 
   const fx = pyLabFixtures[problem.fixtureId];
   const fmt = pyLabFormats[problem.id] || {};
+  const schema = pyLabSchemas[problem.id];
+  const completions = useMemo(() => {
+    if (!schema) return [];
+    const list = []; const seen = new Set();
+    (schema.inputs || []).forEach(inp => {
+      if (!seen.has(inp.name)) { seen.add(inp.name); list.push({ label: inp.name, type: 'variable', detail: inp.kind }); }
+      (inp.cols || []).forEach(c => {
+        const k = 'c:' + c.name;
+        if (!seen.has(k)) { seen.add(k); list.push({ label: c.name, type: 'property', detail: 'column' }); list.push({ label: "'" + c.name + "'", type: 'property', detail: 'column' }); }
+      });
+    });
+    return list;
+  }, [problem.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     markSeen(KEY, problem.id);
@@ -72,50 +87,53 @@ function PyLabRunner({ problem, onBack, onSolved }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.35rem' }}>
             <Chip label={PYLAB_TOPICS[problem.topic] || problem.topic} color="var(--accent)" />
-            <Chip label={DIFF_LABEL[problem.difficulty] || problem.difficulty} color="var(--text-muted)" />
+            <Chip label={LEVELS[levelOf(problem)].label} color="var(--text-muted)" />
             <Chip label={(problem.estimatedMin || 5) + ' min'} color="var(--text-muted)" />
           </div>
           <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800, color: 'var(--text)', lineHeight: 1.2 }}>{problem.title}</h1>
         </div>
       </div>
 
-      <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.96rem', lineHeight: 1.6 }}>{problem.prompt}</p>
-      {problem.beforeWriting && (
-        <div style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 0.85rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-          <strong style={{ color: 'var(--text)' }}>Before you write: </strong>{problem.beforeWriting}
+      <div className="pylab-solve-grid">
+        {/* LEFT — problem + schema */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          <p style={{ margin: 0, color: 'var(--text)', fontSize: '0.96rem', lineHeight: 1.6 }}>{problem.prompt}</p>
+          {problem.beforeWriting && (
+            <div style={{ background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 'var(--radius-sm)', padding: '0.6rem 0.85rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+              <strong style={{ color: 'var(--text)' }}>Before you write: </strong>{problem.beforeWriting}
+            </div>
+          )}
+          {fmt.ambiguity && <AmbiguityDrill ambiguity={fmt.ambiguity} />}
+          {schema ? <PyLabSchema schema={schema} /> : (fx && (
+            <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>input · {fx.preview}</div>
+          ))}
         </div>
-      )}
-      {fx && (
-        <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-          input · {fx.preview}
-        </div>
-      )}
 
-      {fmt.ambiguity && <AmbiguityDrill ambiguity={fmt.ambiguity} />}
-
-      <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox onCodeChange={setCode} height={editorH} />
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-        <button onClick={submit} disabled={submitting} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-          <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Checking…') : 'Submit'}
-        </button>
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>the editor's ▶ Run executes your code for a scratch look</span>
-      </div>
-
-      {result && (
-        <div className={`pal-reveal-in ${result.pass ? 'pal-success-ring' : ''}`} style={{ border: '1px solid ' + (result.pass ? 'var(--green-border)' : 'var(--red-border)'), background: result.pass ? 'var(--green-bg)' : 'var(--red-bg)', borderRadius: 'var(--radius)', padding: '0.7rem 0.9rem' }}>
-          {result.error ? (
-            <>
-              <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--red-text)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.3rem' }}>Your code raised</div>
-              <pre className="py-output py-error" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{result.error}</pre>
-            </>
-          ) : (
-            <div style={{ fontSize: '0.9rem', color: result.pass ? 'var(--green-text)' : 'var(--red-text)', fontWeight: 600 }}>
-              {result.pass ? 'Correct — output matches.' : 'Runs, but the output is not right: ' + result.message}
+        {/* RIGHT — editor + submit + result */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+          <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox onCodeChange={setCode} height={editorH} completions={completions} onSubmit={submit} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+            <button onClick={submit} disabled={submitting} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+              <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Checking…') : 'Submit'}
+            </button>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>⌘/Ctrl+Enter to submit · ▶ Run for a scratch look</span>
+          </div>
+          {result && (
+            <div className={`pal-reveal-in ${result.pass ? 'pal-success-ring' : ''}`} style={{ border: '1px solid ' + (result.pass ? 'var(--green-border)' : 'var(--red-border)'), background: result.pass ? 'var(--green-bg)' : 'var(--red-bg)', borderRadius: 'var(--radius)', padding: '0.7rem 0.9rem' }}>
+              {result.error ? (
+                <>
+                  <div style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--red-text)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.3rem' }}>Your code raised</div>
+                  <pre className="py-output py-error" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{result.error}</pre>
+                </>
+              ) : (
+                <div style={{ fontSize: '0.9rem', color: result.pass ? 'var(--green-text)' : 'var(--red-text)', fontWeight: 600 }}>
+                  {result.pass ? 'Correct — output matches.' : 'Runs, but the output is not right: ' + result.message}
+                </div>
+              )}
             </div>
           )}
         </div>
-      )}
+      </div>
 
       {!revealed && (
         <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); if (result && !result.pass) reviewSR(problem.id, false); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
