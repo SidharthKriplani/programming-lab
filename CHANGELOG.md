@@ -80,8 +80,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`HashBucketsModel.jsx`** (sim) — drop keys into 8 buckets (teaching hash = char-code sum mod 8), watch a real collision chain, then look a key up and see it jump straight to its bucket (O(1)) instead of scanning all N.
 - **Five driven models now** across Rooms 1–2 (aliasing, copy-vs-view, call-stack, Big-O, hashing). esbuild exit 0; Big-O math + hash placement sanity-checked.
 
+### Driven — the cost race + broadcasting (Rooms 2 & 4)
+- **`VectorizedRaceModel.jsx`** (live numpy) — the glass-box thesis itself: the same sum-of-i² as a Python loop and a numpy vectorized op, raced on real Pyodide wall-clock; drag n, Run, watch the speedup. Verified loop≡numpy total (332,833,500).
+- **`BroadcastModel.jsx`** (sim, Room 4) — drag two array shapes; size-1 axes stretch to match (ghost cells, "never copied"), non-1 mismatches error. Rule verified against `np.broadcast_shapes` ((3,1)+(1,4)→(3,4); (2,3)+(3,2)→error).
+- **Seven driven models now** across Rooms 1, 2, 4. esbuild exit 0.
+
 ### Still to do (F1 cont.)
-- Keep authoring driven models room-by-room (loop-vs-vectorized race, broadcasting, index alignment…); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
+- Keep authoring driven models room-by-room (index alignment, the dict iteration order, decorators); predict-run-read modules upgrade in place. macOS `npm run build` + approve-first push pending.
 
 ## [PL 0.20.0] - 2026-06-24 — PyLab Phase 1: role × seniority axis + readiness dashboard
 
