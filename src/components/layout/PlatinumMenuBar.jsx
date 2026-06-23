@@ -51,13 +51,12 @@ export function PlatinumMenuBar() {
         position: 'fixed', top: 0, left: 0, right: 0, height: '22px', zIndex: 1000,
         display: 'flex', alignItems: 'center', gap: '16px',
         background: '#f0f0f0', borderBottom: '1px solid #000',
-        padding: '0 11px', fontFamily: "'Chicago', 'ChicagoFLF', 'Charcoal', Geneva, 'Helvetica Neue', Arial, sans-serif",
+        padding: '0 11px', fontFamily: "Geneva, 'Helvetica Neue', Helvetica, Arial, sans-serif",
         fontSize: '13px', color: '#000', userSelect: 'none',
       }}
     >
       <RainbowApple />
       <span style={{ fontWeight: 700 }}>Programming Lab</span>
-      {MENUS.map(m => <span key={m} style={{ cursor: 'default' }}>{m}</span>)}
       <span style={{ marginLeft: 'auto', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{clock}</span>
     </div>
   );

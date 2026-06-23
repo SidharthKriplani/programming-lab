@@ -120,6 +120,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
     if (f) setOpenFrame(f);
   }, [view]);
 
+  const noIcons = skin === 'platinum'; // Platinum nav is text-only (Sidharth: drop the symbols)
   const go = (v) => { onNavigate(v); onClose?.(); };
 
   return (
@@ -140,7 +141,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
         {/* TRACK cluster — flat, always visible */}
         <div style={{ marginBottom: '0.85rem' }}>
           {TRACK.map(t => (
-            <NavItem key={t.label} label={t.label} icon={t.icon} active={view === t.view} onClick={() => go(t.view)} />
+            <NavItem key={t.label} label={t.label} icon={noIcons ? undefined : t.icon} active={view === t.view} onClick={() => go(t.view)} />
           ))}
         </div>
 
@@ -154,7 +155,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
                 aria-expanded={isOpen}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.45rem', padding: '0.42rem 0.55rem', background: 'none', border: 'none', cursor: 'pointer', borderRadius: 'var(--radius-sm)' }}
               >
-                <Icon name={frame.icon} size={13} color={isOpen ? 'var(--accent)' : 'var(--text-muted)'} style={{ opacity: isOpen ? 1 : 0.62 }} />
+                {!noIcons && <Icon name={frame.icon} size={13} color={isOpen ? 'var(--accent)' : 'var(--text-muted)'} style={{ opacity: isOpen ? 1 : 0.62 }} />}
                 <span style={{ flex: 1, textAlign: 'left', fontSize: '9.5px', fontWeight: 700, letterSpacing: '0.11em', textTransform: 'uppercase', color: isOpen ? 'var(--accent)' : 'var(--text-muted)' }}>{frame.key}</span>
                 <Chevron open={isOpen} />
               </button>
@@ -168,7 +169,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
                         key={item.label}
                         sub
                         label={item.label}
-                        icon={item.icon}
+                        icon={noIcons ? undefined : item.icon}
                         active={live && view === item.view}
                         soon={!live}
                         count={live ? bankSolved(item.bank) : 0}

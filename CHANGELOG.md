@@ -5,6 +5,15 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.16.1] - 2026-06-23 — Platinum legibility + cleanup
+
+> The cdnfonts "Chicago" loaded as an illegible display face (and I'd wrongly put it on body text). Fixed, plus two cleanups Sidharth called.
+
+### Changed
+- **Font → Geneva** (fallback Helvetica Neue) across Platinum — the actual classic-Mac UI sans, legible, native on Mac. The bad Chicago import is removed.
+- **Menu bar trimmed** — dropped File / Edit / View / Run / Special; the bar is now just the rainbow Apple, "Programming Lab", and the clock.
+- **Nav symbols removed in Platinum only** — the left-nav is text-only under Platinum (`noIcons` gate); other skins keep their icons. Chevrons stay (they're the accordion control).
+
 ## [PL 0.16.0] - 2026-06-23 — Real Platinum: white panes, Chicago, no rails + one light/dark toggle
 
 > Sidharth on the deployed Platinum: greys too faint, side rails hated, and rightly — "you were told to supersede our constraints with *real* Platinum and you token-swapped instead." Rebuilt to the actual thing.

@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Courier+Prime:wght@400;700&display=swap');
-@import url('https://fonts.cdnfonts.com/css/chicago');
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -887,7 +886,7 @@ body {
   --shadow-glow: 0 0 0 2px #3f6196;
   --input-bg: #ffffff;
   --radius: 3px; --radius-sm: 2px; --radius-lg: 4px; --radius-xl: 6px;
-  --font-ui: 'Chicago', 'ChicagoFLF', 'Charcoal', Geneva, 'Helvetica Neue', Arial, sans-serif;
+  --font-ui: Geneva, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono: 'Courier New', 'Courier Prime', monospace;
   --bevel-light: #ffffff;
   --bevel-dark: #8f8f8f;
