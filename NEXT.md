@@ -2,6 +2,23 @@
 
 _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The SWE-for-data fluency lab; Python now, OOP included; DSA + pandas later. HQ dispatches build briefs here (D-13). A PL build session opens, reads this + `PL-BUILD-SPEC.md`, builds, then writes its own STATUS/LINEAGE._
 
+## ⏸ RESUME HERE — PyLab beginner tutorial ladder (0.37.0, skeleton shipped, in progress)
+**What this is:** the SQLBolt-style on-ramp *inside* PyLab (D-PL-28) — catches the complete beginner who would bounce off the gym. Authority: **`docs/PYLAB-TUTORIAL-SPEC.md`**. Decision: **D-PL-28**.
+
+**Shipped this turn (0.37.0):** `src/data/pyTutorial.js` (Python lessons **1–5 fully authored** — values · numbers · text · booleans · lists — 20 inline tasks, all CPython-verified; lessons 6–18 + an 8-lesson pandas section as planned stubs), `src/pages/PyTutorial.jsx` (the lesson player, reuses `PythonCell` + `runCheck`), a "Start from zero" banner + internal `tutorial` view in `PyLabBrowser.jsx`, `docs/PYLAB-TUTORIAL-SPEC.md`. Build verified green (vite 8, 109 modules).
+
+**⚠ Push state:** committed `a61cdea` (PL 0.37.0). The push hit a rebase — `git add -A` swept in the pending 0.33–0.36 stack and its CHANGELOG collided with upstream. **Resolved in the working tree** (CHANGELOG: tutorial = 0.37.0, eval-rubric doc demoted to 0.36.1, markers cleared). **If not yet pushed when you resume:** `git add CHANGELOG.md && GIT_EDITOR=true git rebase --continue && git push origin main` (then Vercel redeploys). Confirm `git status` is clean first.
+
+**Build order for the rest (each: author → CPython-verify every solution+check [correct passes, starter fails, no errors] → brace 0 → macOS `npm run build` → commit):**
+- **T1 — Python lessons 6–13** (dicts · sets/tuples · if · loops · enumerate/zip · comprehensions · functions · *args/**kwargs). The core fluency floor. ← *next batch.*
+- **T2 — Python lessons 14–18** (sort-by-key · Counter/defaultdict · rows-of-data · try/except · review = write a solve()).
+- **T3 — pandas section 1–8** (Series/DataFrame → groupby → merge → clean & answer). Lazy-load pandas/numpy wheels on the first pandas task.
+- **Continuous:** one light "runs vs right" seed at the end of relevant lessons → link into Gotchas/JUDGE (keep the moat DNA without overwhelming a beginner).
+
+**To author a stub:** replace the `{n,title,topic,status:'planned',seed}` object in `pyTutorial.js` with a full `{concept, tasks[]}` lesson, verify in CPython, flip `status:'ready'` — it appears in the ladder automatically. The grader contract + task schema are in §3 of the spec. **Do not** call `present_files`; end the session with a build summary + the approve-first git block (PL convention).
+
+---
+
 ## ▶ NEXT MAJOR TRACK — KNOW Foundations rooms (D-PL-21, spec `docs/FOUNDATIONS-SPEC.md`)
 **Why now:** PAL's handoff (`docs/FOUNDATIONS-HANDOFF.md`) + a live read proved PL's KNOW is a 20-card predict-run-read stub while PAL's is a slider-driven, ~10x-larger Foundations system. KNOW is re-scoped into a **trunk + branches** room set. **Skeleton shipped 2026-06-24** (planning only, nothing wired): `docs/FOUNDATIONS-SPEC.md` + `src/data/foundationsRooms.js` (7 rooms / 24 clusters / 73 seed modules, status `planned`, `node --check`-verified, unimported → no build impact).
 
