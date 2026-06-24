@@ -5,6 +5,28 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.37.0] - 2026-06-24 — PyLab beginner tutorial ladder (the SQLBolt-style on-ramp)
+
+> The welcome mat in front of the PyLab gym: a complete beginner climbs short guided lessons until they can write a passing solve(), then graduates into the bank. Mirrors PAL's SQL Lab tutorial banner; lives entirely inside PyLab (nothing standalone).
+
+### Added
+- **`src/data/pyTutorial.js`** — the beginner ladder. Python section lessons 1–5 (values · numbers · text · booleans · lists) fully authored with **20 inline tasks**, every solution+check CPython-verified (correct passes, starter fails, no errors); lessons 6–18 + an 8-lesson pandas section as planned stubs. House syntax; per-task grader reuses `runCheck` (the Foundations "your turn" contract — `globals().get` → `__pl_pass` + targeted `__pl_msg`).
+- **`src/pages/PyTutorial.jsx`** — the lesson player: ladder list → lesson view (concept + per-task editor with Check + checkmarks) → graduate hand-off. Reuses `PythonCell` + `runCheck`.
+- **Banner in `PyLabBrowser`** — "New to Python or pandas? Start from zero." at the top of the bank + an internal `tutorial` view (like Mock interview). No route/nav change.
+- **`docs/PYLAB-TUTORIAL-SPEC.md`** — the contract, grader spec, verification gate, and the T1–T3 build order for the remaining lessons.
+
+### Notes
+- Ramps **0 → the gym's Easy floor only**, then hands off (`graduatesTo`); the gym takes Easy → Staff. Lane-separated from Foundations (task-first, not concept-first). Build verified green (vite 8, 109 modules).
+
+## [PL 0.36.1] - 2026-06-24 — Quality eval rubric (the standing audit instrument) — docs only
+
+> A single rubric to grade every PL surface before shipping and in periodic health audits.
+
+### Added
+- **`docs/PL-EVAL-RUBRIC.md`** — per-surface **T1 (block) / T2 (warn)** checks across all 9 surfaces (PyLab problem · judgment layer · showcase formats · reference surfaces · practice systems · editor/runtime · Gotchas · Foundations · UI/identity/a11y) + cross-cutting build/theming/spine checks, each tagged **[auto]** (which gate) or **[manual]**. Opens with the **five honesty laws** (execute-never-assert · trap runs-and-diverges · no answer key · representative-not-fabricated · honest emptiness), a full **audit procedure**, and an **automation-coverage** map naming the manual checks worth automating next (a `pl_content_audit`).
+
+### Notes
+- Docs-only; no code/build impact. Companion to the four committed gates (which automate the PyLab-problem slice) and `docs/CONTENT-STANDARD.md` / `PYLAB-VISION.md`. Future audits log runs in `AUDITS.md`.
 ## [PL 0.36.0] - 2026-06-24 — Planned skeletons surfaced as "coming soon" cards in PyLab
 
 > The 0.35 skeletons were a registry only; now they're visible. The PyLab grid shows a **"Planned · coming soon"** section under the live problems — the roadmap is on-screen.

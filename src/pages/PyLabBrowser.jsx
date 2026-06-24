@@ -25,6 +25,8 @@ import { dueIds, reviewSR } from '../utils/pyLabSR.js';
 import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
 import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
 import { MockLoop } from '../components/shared/MockLoop.jsx';
+import { PyTutorial } from './PyTutorial.jsx';
+import { pyTutMeta } from '../data/pyTutorial.js';
 
 const KEY = 'pl-pylab-progress-v1';
 const DIFFS = ['all', 'warmup', 'core', 'stretch'];
@@ -175,11 +177,13 @@ export function PyLabBrowser({ onExitRoom }) {
   const [q, setQ] = useState('');
   const [reviewMode, setReviewMode] = useState(false);
   const [mock, setMock] = useState(false);
+  const [tutorial, setTutorial] = useState(false);
   const progress = getProgress(KEY);
   const total = pyLabProblems.length;
   const solvedCount = Object.keys(progress.solved || {}).length;
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
+  if (tutorial) return <PyTutorial onExit={() => setTutorial(false)} />;
 
   if (activeId) {
     const problem = pyLabProblems.find(p => p.id === activeId);
@@ -231,6 +235,21 @@ export function PyLabBrowser({ onExitRoom }) {
           pandas, numpy and Python — the difference between code that runs and code that&apos;s right. Predict, submit, then read which approaches are equivalent, which one is a trap that runs and lies, and when to reach for each.
         </p>
       </div>
+
+      {!reviewMode && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem', padding: '0.85rem 1.1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' }}>
+          <Icon name="book-open" size={20} color="var(--accent)" />
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text)' }}>New to Python or pandas? Start from zero.</div>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>
+              {pyTutMeta.totalLessons} short lessons that build up to a passing solve() — one idea at a time. Skip ahead anytime.
+            </div>
+          </div>
+          <button onClick={() => setTutorial(true)} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.86rem', padding: '0.45rem 0.9rem', flexShrink: 0 }}>
+            Start tutorial →
+          </button>
+        </div>
+      )}
 
       <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
 

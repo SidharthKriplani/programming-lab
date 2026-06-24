@@ -2,6 +2,14 @@
 
 _Tiered. Most things don't belong here — only what's specific enough to build. Cite the spec (`PL-BUILD-SPEC.md`) for the full plan._
 
+## 🎯 Product-design backlog — from HQ D-24 / `PRODUCT-DESIGN.md` (added 2026-06-24)
+
+_Solve one by one. Full spec: `HQ/IDENTITY-CAPTURE-SPEC.md`. PL already has SM-2 spaced rep — a retention mechanic the Hooked loop plugs straight into._
+
+- **[Tier 2] Identity capture at investment.** Unified BreakLabs account (reuse GSL/Career-OS **Supabase** — don't build PL-only auth). Optional, benefit-framed "save your streak / SM-2 schedule / progress" *after the first short streak + Aha*. No signup wall; merge localStorage on login.
+- **[Tier 2] Hooked loop = SM-2 + trigger.** The spaced-rep schedule already IS the "investment"; add the external return-trigger (newsletter "today's gotcha") and keep the break reveal varied (the variable reward).
+- **[Tier 3] Aha "first break" cold-start** (one curated gotcha — generator-vs-list RAM / SettingWithCopy — <60 sec) **+ usability gate** (Nielsen 10 + Norman discoverability; JTBD copy: "survive the senior follow-up"). The planned `og-image` / social card = the shareable streak-card hook (HQ distribution share-loop).
+
 ## In progress
 - **PL 0.2.0** — Instrument theme + dark/light + break-glyph. Built; awaiting Mac build + push (auto-deploys Vercel), then on-device contrast verify (A-PL-02).
 
