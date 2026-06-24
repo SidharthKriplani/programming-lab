@@ -5,6 +5,23 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.35.0] - 2026-06-24 — PyLab curriculum coverage audit + planned skeletons (no build impact)
+
+> "do we have all of this covered?" — audited PyLab against PAL's PythonLab "Planned curriculum" (6 categories / 25 items), grep-verified against the live bank. **14 covered · 4 partial · 7 planned.** Skeletons stubbed for the gaps.
+
+### Added
+- **`src/data/pyLabPlanned.js`** (UNIMPORTED — zero build/gate impact, like `foundationsRooms.js`): `pyLabCurriculum` (the 25-item map, each `covered|partial|planned` + evidence) + `pyLabPlanned` (11 authoring stubs, each `{id,title,topic,level,curriculum,seed}` — the `seed` names the intended trap so authoring starts from the lesson).
+- **`docs/PYLAB-CURRICULUM.md`** — the coverage table + the gated "author-one-later" recipe.
+
+### Findings
+- Solid: all atomic pandas / time-series / array ops + the **entire Interview Patterns row** (PyLab's differentiator — Ambiguity drill, trap system / Trap Museum, schema row-count validation, judgment dial). Gaps cluster into **Stats methods** (percentile, weighted avg, bootstrap) + **End-to-End tasks** (funnel, retention matrix, cohort LTV, cleaning pipeline, user classification). **5 of 11 stubs are systems-tier** → authoring them fills PyLab's currently-empty systems level (= Phase-4 take-home content).
+
+### Verified
+- `node --check` clean; confirmed **unimported** (no build impact); 25 items (14/4/7), 11 stubs (systems 5 · correctness 3 · judgment 2 · fluency 1).
+
+### Next
+- Phase 4 = author the systems-tier stubs (the End-to-End / take-home cluster) + the Stats sub-bank, gated.
+
 ## [PL 0.34.0] - 2026-06-24 — PyLab opens as its own full-screen room + "p" shortcut
 
 > Sidharth: make PyLab open in its own frame like SQL Lab does in PAL (away from the app chrome), and add a "p" shortcut.
