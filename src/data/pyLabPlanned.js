@@ -5,11 +5,12 @@
 //   pyLabCurriculum — the full 25-item map, each tagged covered | partial | planned.
 //   pyLabPlanned    — the partial + planned items as authoring stubs (topic + level + seed).
 //
-// SKELETON ONLY: this file is UNIMPORTED (no build/gate impact, like foundationsRooms.js).
-// A future authoring pass turns each stub into a real gated problem (fixture + solution +
-// judgment layer) in a pyLabBatch_*.js, run through the four gates. Most gaps are the
-// SYSTEMS tier (currently 0 problems) — i.e. Phase-4 take-home content. See
-// docs/PYLAB-CURRICULUM.md. House syntax: single quotes, no backticks.
+// DISPLAY-ONLY placeholders: `pyLabPlanned` is rendered as greyed "Planned · coming soon"
+// cards in PyLab (imported by PyLabBrowser) — but NOT in the problem bank (`pyLabProblems`),
+// so gates, readiness and grading are untouched. A future authoring pass turns each stub into
+// a real gated problem (fixture + solution + judgment layer) in a pyLabBatch_*.js, run through
+// the four gates, then removes the stub. Most gaps are the SYSTEMS tier (currently 0 problems)
+// — i.e. Phase-4 take-home content. See docs/PYLAB-CURRICULUM.md. House syntax: single quotes.
 
 export const pyLabCurriculum = [
   { category: 'Core pandas', items: [

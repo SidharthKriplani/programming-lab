@@ -7,6 +7,7 @@ import { pyLabProblems, PYLAB_TOPICS, PYLAB_TOPIC_ORDER } from '../data/pyLabPro
 import { pyLabFixtures } from '../data/pyLabFixtures.js';
 import { companyFor } from '../data/pyLabCompanies.js';
 import { pyLabSchemas } from '../data/pyLabSchemas.js';
+import { pyLabPlanned } from '../data/pyLabPlanned.js';
 import { PyLabSchema } from '../components/shared/PyLabSchema.jsx';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
@@ -195,6 +196,11 @@ export function PyLabBrowser({ onExitRoom }) {
         (topic === 'all' || p.topic === topic) &&
         (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
       );
+  const plannedShown = reviewMode ? [] : pyLabPlanned.filter(s =>
+    (topic === 'all' || s.topic === topic) &&
+    (level === 'all' || s.level === level) &&
+    (q === '' || (s.title + ' ' + (s.seed || '')).toLowerCase().includes(q.toLowerCase()))
+  );
 
   return (
     <div className="pal-page-enter">
@@ -283,6 +289,31 @@ export function PyLabBrowser({ onExitRoom }) {
         })}
         {shown.length === 0 && <div style={{ gridColumn: '1 / -1', color: 'var(--text-muted)', fontSize: '0.88rem', padding: '1rem' }}>{reviewMode ? 'Nothing due for review right now.' : 'No problems match.'}</div>}
       </div>
+
+      {plannedShown.length > 0 && (
+        <div style={{ marginTop: '1.6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.6rem' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Planned · coming soon</span>
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>{plannedShown.length}</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(290px, 100%), 1fr))', gap: '0.7rem' }}>
+            {plannedShown.map(s => (
+              <div key={s.id} style={{ background: 'var(--surface-2)', border: '1px dashed var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.85rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', minHeight: 130, opacity: 0.78, cursor: 'default' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                  <span style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--yellow-text)', border: '1px solid var(--yellow-border)', background: 'var(--yellow-bg)', borderRadius: 999, padding: '1px 7px', fontFamily: 'var(--font-mono)' }}>PLANNED</span>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>{s.curriculum}</span>
+                </div>
+                <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.25 }}>{s.title}</span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>{s.seed}</span>
+                <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap', marginTop: 'auto' }}>
+                  <Chip label={PYLAB_TOPICS[s.topic] || s.topic} color="var(--text-muted)" />
+                  <Chip label={LEVELS[s.level] ? LEVELS[s.level].label : s.level} color="var(--text-muted)" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.36.0] - 2026-06-24 — Planned skeletons surfaced as "coming soon" cards in PyLab
+
+> The 0.35 skeletons were a registry only; now they're visible. The PyLab grid shows a **"Planned · coming soon"** section under the live problems — the roadmap is on-screen.
+
+### Added
+- **Planned cards in PyLab** (`PyLabBrowser` now imports `pyLabPlanned`) — the 11 stubs render as **greyed, dashed, non-clickable** cards (PLANNED badge + curriculum category + title + seed + topic/level tags) in a "Planned · coming soon" section below the real grid. They respect the topic/level/search filters and hide in review mode.
+- **Display-only, not in the bank** — `pyLabPlanned` is rendered but never added to `pyLabProblems`, so gates, readiness, grading and the solved count are untouched (verified: 0 stubs leaked into the real bank).
+
+### Verified
+- esbuild clean (PyLabBrowser); full import-graph bundle exit 0; 0 planned stubs in the real bank.
+
+### Next
+- Phase 4 = author the stubs (flip greyed → real), gated, per `docs/PYLAB-CURRICULUM.md`.
+
 ## [PL 0.35.0] - 2026-06-24 — PyLab curriculum coverage audit + planned skeletons (no build impact)
 
 > "do we have all of this covered?" — audited PyLab against PAL's PythonLab "Planned curriculum" (6 categories / 25 items), grep-verified against the live bank. **14 covered · 4 partial · 7 planned.** Skeletons stubbed for the gaps.
