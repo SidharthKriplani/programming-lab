@@ -2,7 +2,17 @@
 
 _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The SWE-for-data fluency lab; Python now, OOP included; DSA + pandas later. HQ dispatches build briefs here (D-13). A PL build session opens, reads this + `PL-BUILD-SPEC.md`, builds, then writes its own STATUS/LINEAGE._
 
-## ⏸ RESUME HERE — PyLab content batch 1: pandas/numpy world (0.40.0)
+## ⏸ RESUME HERE — PyLab content batch 2 (ramp 6-10) + skeleton bank (0.42.0)
+
+**0.41.0 DONE (push pending with 0.38–0.40):** Two-column solve layout fixed (SQL Lab parity) + text contrast boosted.
+- **Layout:** moved `Reveal solution` button + entire revealed section (model solution, debrief, JudgmentLayer, ScaleRace, RefactorChallenge, FollowUpChain, ForwardPointerCard) into the RIGHT column of `pylab-solve-grid`. Left column (prompt+schema) now stays fixed for the full solve cycle.
+- **Contrast:** bumped `--text-secondary`, `--text-muted`, `--text-dim` in all three light/dark theme blocks. Debrief text changed from `var(--text-secondary)` to `var(--text)` (it's reading content, not metadata). Hint text bumped from `var(--text-dim)` to `var(--text-muted)`.
+
+**Next up:** batch 2 (ramp 6-10).
+
+---
+
+## ⏸ PyLab content batch 1: pandas/numpy world (0.40.0)
 
 **Context:** Worlds + Gates skeleton is built (0.39.0, push pending with 0.38.0 Icon system). The gate quiz (`GateQuiz.jsx`) draws MCQs from the world's problem bank. Most existing problems have empty `mcqs[]`, so the quiz falls back to self-declare. Content batch 1 fixes this for the pandas/numpy world — the most populated world and richest for predict-output MCQs.
 
@@ -23,7 +33,16 @@ _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The 
 
 **Build steps:** author → CPython-verify all solution+checks → run audit → 0 T1 failures → batch 2 (next 5 concepts) → repeat → then scaffold stubs.
 
-**After batch 1:** scaffold the full skeleton bank (all worlds, all planned concept slots) — stubs only, no depth fields yet. Gives the bank structure and the planned-cards grid something to render.
+**Batch 1 DONE (0.40.0, push pending):** `pyLabBatch_ramp1.js` — 5 warmup problems, 4 fixtures, all CPython-verified, 141 problems / 0 T1 audit clean.
+
+**Batch 2 (ramp 6-10) — next:**
+6. groupby + multi-agg: `agg({'col_a': 'mean', 'col_b': 'sum'})` — multiple aggregations in one groupby
+7. simple inner merge — first join concept (`merge(on='key')`)
+8. merge with duplicate keys — silent row multiplication (the fan-out trap)
+9. left merge + missing values — `how='left'`, NaN in unmatched rows
+10. pivot_table — reshape: rows become column headers
+
+**After batch 2:** scaffold the full skeleton bank (all worlds, all planned concept slots) — stubs only, no depth fields yet.
 
 **⚠ Push pending:** 0.38.0 (Icon) + 0.39.0 (Worlds+Gates) are built but not pushed. First thing: run `npm run build` on Mac, then push.
 

@@ -120,14 +120,14 @@ function PyLabRunner({ problem, onBack, onSolved }) {
           ))}
         </div>
 
-        {/* RIGHT — editor + submit + result */}
+        {/* RIGHT — editor + submit + result + reveal (all contained, SQL Lab parity) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
           <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox onCodeChange={setCode} height={editorH} completions={completions} onSubmit={submit} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
             <button onClick={submit} disabled={submitting} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
               <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Checking…') : 'Submit'}
             </button>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>⌘/Ctrl+Enter to submit · ▶ Run for a scratch look</span>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>⌘/Ctrl+Enter to submit · ▶ Run for a scratch look</span>
           </div>
           {result && (
             <div className={`pal-reveal-in ${result.pass ? 'pal-success-ring' : ''}`} style={{ border: '1px solid ' + (result.pass ? 'var(--green-border)' : 'var(--red-border)'), background: result.pass ? 'var(--green-bg)' : 'var(--red-bg)', borderRadius: 'var(--radius)', padding: '0.7rem 0.9rem' }}>
@@ -143,25 +143,23 @@ function PyLabRunner({ problem, onBack, onSolved }) {
               )}
             </div>
           )}
+          {!revealed && (
+            <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); if (result && !result.pass) reviewSR(problem.id, false); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
+          )}
+          {revealed && (
+            <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', borderTop: '1px solid var(--border)', paddingTop: '1.1rem' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Model solution</div>
+              <pre style={{ margin: 0, padding: '0.7rem 0.85rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.solution}</pre>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.6 }}>{problem.debrief}</div>
+              <JudgmentLayer problem={problem} />
+              <ScaleRace problem={problem} />
+              {fmt.refactor && <RefactorChallenge problem={problem} refactor={fmt.refactor} />}
+              {pyLabFollowups[problem.id] && <FollowUpChain followups={pyLabFollowups[problem.id]} />}
+              <ForwardPointerCard onNext={onBack} onNavigate={onBack} />
+            </div>
+          )}
         </div>
       </div>
-
-      {!revealed && (
-        <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); if (result && !result.pass) reviewSR(problem.id, false); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
-      )}
-
-      {revealed && (
-        <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', borderTop: '1px solid var(--border)', paddingTop: '1.1rem' }}>
-          <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)' }}>Model solution</div>
-          <pre style={{ margin: 0, padding: '0.7rem 0.85rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.solution}</pre>
-          <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{problem.debrief}</div>
-          <JudgmentLayer problem={problem} />
-          <ScaleRace problem={problem} />
-          {fmt.refactor && <RefactorChallenge problem={problem} refactor={fmt.refactor} />}
-          {pyLabFollowups[problem.id] && <FollowUpChain followups={pyLabFollowups[problem.id]} />}
-          <ForwardPointerCard onNext={onBack} onNavigate={onBack} />
-        </div>
-      )}
     </div>
   );
 }

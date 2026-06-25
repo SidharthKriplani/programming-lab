@@ -23,9 +23,9 @@
 
   /* Text hierarchy — all values at ≥4.5:1 WCAG AA against --bg and --surface */
   --text: #141414;
-  --text-secondary: #4A4036;
-  --text-muted: #756B60;
-  --text-dim: #9B8E80;
+  --text-secondary: #2A1C10;
+  --text-muted: #4A4036;
+  --text-dim: #756B60;
 
   /* Primary accent — cobalt blue */
   --accent: #2457D6;
@@ -154,9 +154,9 @@
   --border-subtle: #2E2519;
   --border-strong: #5A4733;
   --text: #F5EFE4;
-  --text-secondary: #E2D4C2;
-  --text-muted: #B4A693;
-  --text-dim: #8C7B6A;
+  --text-secondary: #EFE7D5;
+  --text-muted: #D4C8B8;
+  --text-dim: #A89888;
   --accent: #7EA2FF;
   --accent-hover: #A6BCFF;
   --accent-light: #A6BCFF;
@@ -284,9 +284,9 @@
   --border-subtle: #ECE7DA;
   --border-strong: #C9C0AD;
   --text: #15130F;
-  --text-secondary: #4A4338;
-  --text-muted: #756B60;
-  --text-dim: #9B8E80;
+  --text-secondary: #2A1C10;
+  --text-muted: #4A4036;
+  --text-dim: #756B60;
   --accent: #7C4DE0;
   --accent-hover: #6A3FCB;
   --accent-light: #9D7BEA;
