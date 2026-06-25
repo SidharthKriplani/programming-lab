@@ -918,11 +918,11 @@ body {
   --border-subtle: #3a3a3e;
   --border-strong: #5c5c61;
   --text: #e9e9ec;
-  --text-secondary: #c3c3c8;
-  --text-muted: #9a9aa0;
-  --text-dim: #74747a;
+  --text-secondary: #dddde2;
+  --text-muted: #bbbbc2;
+  --text-dim: #9a9aa0;
   --ink-hi: #e9e9ec;             /* BrandMark wordmark — light on graphite */
-  --ink-low: #9a9aa0;
+  --ink-low: #bbbbc2;
   --accent: #6e88c4;             /* classic Mac selection blue, lifted for dark */
   --accent-hover: #88a0d8;
   --accent-light: #2d3850;

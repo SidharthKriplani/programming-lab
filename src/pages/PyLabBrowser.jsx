@@ -116,7 +116,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
           )}
           {fmt.ambiguity && <AmbiguityDrill ambiguity={fmt.ambiguity} />}
           {schema ? <PyLabSchema schema={schema} /> : (fx && (
-            <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>input · {fx.preview}</div>
+            <div style={{ fontSize: '0.84rem', color: 'var(--text)', fontFamily: 'var(--font-mono)' }}>input · {fx.preview}</div>
           ))}
         </div>
 
