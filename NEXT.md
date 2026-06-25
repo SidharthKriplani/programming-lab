@@ -2,7 +2,34 @@
 
 _Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The SWE-for-data fluency lab; Python now, OOP included; DSA + pandas later. HQ dispatches build briefs here (D-13). A PL build session opens, reads this + `PL-BUILD-SPEC.md`, builds, then writes its own STATUS/LINEAGE._
 
-## ⏸ RESUME HERE — PyLab beginner tutorial ladder (0.37.0, skeleton shipped, in progress)
+## ⏸ RESUME HERE — PyLab content batch 1: pandas/numpy world (0.40.0)
+
+**Context:** Worlds + Gates skeleton is built (0.39.0, push pending with 0.38.0 Icon system). The gate quiz (`GateQuiz.jsx`) draws MCQs from the world's problem bank. Most existing problems have empty `mcqs[]`, so the quiz falls back to self-declare. Content batch 1 fixes this for the pandas/numpy world — the most populated world and richest for predict-output MCQs.
+
+**Strategy (agreed this session):**
+- Ramp = **concept accumulation**, not abstract difficulty. Each problem introduces exactly one new concept on top of all previous.
+- Then scaffold **400–600 problem stubs** across all worlds — title, topic, level, fixtureId, starterCode, solution, compare, empty depth fields. Audit runs, T1 catches missing required fields, T2 warns on empties. Bank exists; content fills in over time, one batch at a time.
+
+**pandas/numpy concept ladder (warmup, batch 1 = first 5):**
+1. Single-col agg: `df['col'].mean()` — rampIndex 1, establishes solve() pattern
+2. Row filter: `df[df['col'] > val]` — introduce boolean indexing
+3. Filter with NaN: `df[df['col'].notna()]` — first NaN concept
+4. groupby + agg (single fn): `groupby('col')['val'].mean()` — first groupby
+5. groupby with NaN in group column — same pattern + one edge case
+
+**Per-problem schema (full depth, not stubs):** `id, title, topic, level, fixtureId, prompt, beforeWriting, starterCode, solution, compare, methods[] (≥2, one isTrap), mcqs[] (≥1 predict-output question per problem), hints[] (tiered), glassBox, dial`
+
+**Edge test cases per problem (required):** happy path, empty input, NaN in relevant column, single-row/single-group, dtype edge (int vs float)
+
+**Build steps:** author → CPython-verify all solution+checks → run audit → 0 T1 failures → batch 2 (next 5 concepts) → repeat → then scaffold stubs.
+
+**After batch 1:** scaffold the full skeleton bank (all worlds, all planned concept slots) — stubs only, no depth fields yet. Gives the bank structure and the planned-cards grid something to render.
+
+**⚠ Push pending:** 0.38.0 (Icon) + 0.39.0 (Worlds+Gates) are built but not pushed. First thing: run `npm run build` on Mac, then push.
+
+---
+
+## ⏸ ALSO PENDING — PyLab beginner tutorial ladder (0.37.0, skeleton shipped, in progress)
 **What this is:** the SQLBolt-style on-ramp *inside* PyLab (D-PL-28) — catches the complete beginner who would bounce off the gym. Authority: **`docs/PYLAB-TUTORIAL-SPEC.md`**. Decision: **D-PL-28**.
 
 **Shipped this turn (0.37.0):** `src/data/pyTutorial.js` (Python lessons **1–5 fully authored** — values · numbers · text · booleans · lists — 20 inline tasks, all CPython-verified; lessons 6–18 + an 8-lesson pandas section as planned stubs), `src/pages/PyTutorial.jsx` (the lesson player, reuses `PythonCell` + `runCheck`), a "Start from zero" banner + internal `tutorial` view in `PyLabBrowser.jsx`, `docs/PYLAB-TUTORIAL-SPEC.md`. Build verified green (vite 8, 109 modules).

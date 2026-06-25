@@ -11,6 +11,7 @@
 // judgment layer (canonicalMethodId, methods[], dial, mcqs). Single-method problems get
 // an EMPTY dial (honesty rule). Expected output is NEVER stored - computed from solution.
 
+import { problems as _bRamp1 } from './pyLabBatch_ramp1.js';
 import { problems as _bGroupby } from './pyLabBatch_groupby.js';
 import { problems as _bMergeReshape } from './pyLabBatch_mergereshape.js';
 import { problems as _bWindowMissing } from './pyLabBatch_windowmissing.js';
@@ -171,6 +172,6 @@ const _seedProblems = [
 
 // Seed + every migrated batch. PyLab is the single bank for pandas/numpy AND Python;
 // the standalone pandas/idioms/oop/drills rooms fold in here as they migrate (D-PL-20).
-export const pyLabProblems = [..._seedProblems, ..._bGroupby, ..._bMergeReshape, ..._bWindowMissing, ..._bMisc, ..._bOop, ..._bDrills1, ..._bIdioms, ..._bDrills3, ..._bDrills2];
+export const pyLabProblems = [..._bRamp1, ..._seedProblems, ..._bGroupby, ..._bMergeReshape, ..._bWindowMissing, ..._bMisc, ..._bOop, ..._bDrills1, ..._bIdioms, ..._bDrills3, ..._bDrills2];
 
 export default pyLabProblems;

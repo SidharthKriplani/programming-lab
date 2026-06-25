@@ -5,6 +5,7 @@
 // HOUSE SYNTAX (build-breakers): single quotes only; Python stored with DOUBLE quotes
 // inside (so no inner escaping); \n for newlines; NO template literals / backticks.
 // `args` = the fixture object names passed positionally to solve(...).
+import { fixtures as _fRamp1 } from './pyLabBatch_ramp1.js';
 import { fixtures as _fGroupby } from './pyLabBatch_groupby.js';
 import { fixtures as _fMergeReshape } from './pyLabBatch_mergereshape.js';
 import { fixtures as _fWindowMissing } from './pyLabBatch_windowmissing.js';
@@ -34,6 +35,6 @@ const _seedFixtures = {
 };
 
 // Merge the seed fixtures + every migrated batch (pandas, then python/idioms/oop later).
-export const pyLabFixtures = { ..._seedFixtures, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms };
+export const pyLabFixtures = { ..._seedFixtures, ..._fRamp1, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms };
 
 export default pyLabFixtures;
