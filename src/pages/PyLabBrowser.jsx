@@ -29,6 +29,7 @@ import { MockLoop } from '../components/shared/MockLoop.jsx';
 import { PyTutorial } from './PyTutorial.jsx';
 import { pyTutMeta } from '../data/pyTutorial.js';
 import { PYLAB_WORLDS, worldTopicSet } from '../data/pyLabWorlds.js';
+import { WORLD_PATHS, LAB_PATHS } from '../data/pyLabPaths.js';
 import { getAllGateStates, unlockWorld } from '../utils/worldGates.js';
 import { WorldTabs } from '../components/shared/WorldTabs.jsx';
 import { WorldGate } from '../components/shared/WorldGate.jsx';
@@ -186,6 +187,8 @@ export function PyLabBrowser({ onExitRoom }) {
   const [gateOpen, setGateOpen] = useState(null);         // worldId being gate-shown
   const [quizOpen, setQuizOpen] = useState(null);         // worldId being quizzed
   const [gateStates, setGateStates] = useState(() => getAllGateStates());
+  const [activePath, setActivePath] = useState(null);     // '3day' | '7day' | null
+  const [activeDay, setActiveDay] = useState(1);
   const progress = getProgress(KEY);
   const total = pyLabProblems.length;
   const solvedCount = Object.keys(progress.solved || {}).length;
@@ -243,14 +246,31 @@ export function PyLabBrowser({ onExitRoom }) {
   const topics = PYLAB_TOPIC_ORDER.filter(t =>
     pyLabProblems.some(p => p.topic === t && (!worldTopics || worldTopics.has(t)))
   );
+
+  // Active path + day
+  const pathScope = activePath
+    ? (activeWorld ? (WORLD_PATHS[activeWorld] || {})[activePath] : LAB_PATHS[activePath])
+    : null;
+  const pathDay = pathScope ? (pathScope.days[activeDay - 1] || null) : null;
+
   const shown = reviewMode
     ? pyLabProblems.filter(p => dueSet.has(p.id))
-    : pyLabProblems.filter(p =>
-        (!worldTopics || worldTopics.has(p.topic)) &&
-        matchesRoleLevel(p, role, level) &&
-        (topic === 'all' || p.topic === topic) &&
-        (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
-      );
+    : pyLabProblems.filter(p => {
+        if (!matchesRoleLevel(p, role, level)) return false;
+        if (topic !== 'all' && p.topic !== topic) return false;
+        if (q !== '' && !(p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase())) return false;
+        if (pathDay) {
+          if (pathDay.problemIds && pathDay.problemIds.length > 0) return pathDay.problemIds.includes(p.id);
+          if (!activeWorld && pathDay.worlds) {
+            const dayTopics = new Set(pathDay.worlds.flatMap(wid => {
+              const w = PYLAB_WORLDS.find(x => x.id === wid);
+              return w ? w.topics : [];
+            }));
+            return dayTopics.has(p.topic);
+          }
+        }
+        return !worldTopics || worldTopics.has(p.topic);
+      });
   const plannedShown = reviewMode ? [] : pyLabPlanned.filter(s =>
     (!worldTopics || worldTopics.has(s.topic)) &&
     (topic === 'all' || s.topic === topic) &&
@@ -313,18 +333,68 @@ export function PyLabBrowser({ onExitRoom }) {
           if (worldId === null) {
             setActiveWorld(null);
             setTopic('all');
+            setActivePath(null);
+            setActiveDay(1);
             return;
           }
           const state = gateStates[worldId];
           if (state && state.unlocked) {
             setActiveWorld(worldId);
             setTopic('all');
+            setActivePath(null);
+            setActiveDay(1);
             if (state.defaultLevel && state.defaultLevel !== 'all') setLevel(state.defaultLevel);
           } else {
             setGateOpen(worldId);
           }
         }}
       />
+
+      {/* ── Path selector ── */}
+      {!reviewMode && !activePath && (
+        <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.9rem' }}>
+          {['3day', '7day'].map(type => {
+            const p = activeWorld ? (WORLD_PATHS[activeWorld] || {})[type] : LAB_PATHS[type];
+            if (!p) return null;
+            const icon = type === '3day' ? 'zap' : 'target';
+            return (
+              <button key={type} onClick={() => { setActivePath(type); setActiveDay(1); }} className="pal-card-hover" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.9rem', cursor: 'pointer', textAlign: 'left', flex: '1 1 200px', maxWidth: 320 }}>
+                <Icon name={icon} size={16} color="var(--accent)" style={{ marginTop: 2, flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{p.label}</div>
+                  <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{p.tagline}</div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── Active path day strip ── */}
+      {!reviewMode && activePath && pathScope && (
+        <div style={{ marginBottom: '0.9rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.9rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+            <Icon name={activePath === '3day' ? 'zap' : 'target'} size={14} color="var(--accent)" />
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--accent)' }}>{pathScope.label}</span>
+            <button onClick={() => { setActivePath(null); setActiveDay(1); }} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', padding: '0.1rem 0.3rem', borderRadius: 4 }} aria-label="Exit path">
+              <Icon name="x" size={14} color="var(--text-muted)" />
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.45rem' }}>
+            {pathScope.days.map(d => (
+              <button key={d.day} onClick={() => setActiveDay(d.day)} style={{ padding: '0.25rem 0.6rem', borderRadius: 999, border: '1px solid ' + (activeDay === d.day ? 'var(--accent)' : 'var(--border)'), background: activeDay === d.day ? 'var(--accent-bg)' : 'var(--surface-2)', color: activeDay === d.day ? 'var(--accent)' : 'var(--text-muted)', fontSize: '0.74rem', fontWeight: 600, cursor: 'pointer' }}>
+                Day {d.day}
+              </button>
+            ))}
+          </div>
+          {pathDay && (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text)', fontWeight: 600 }}>
+              {pathDay.title}
+              <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: '0.4rem' }}>· {pathDay.focus}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {(due.length > 0 || reviewMode) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.9rem', padding: '0.55rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' }}>
