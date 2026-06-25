@@ -3,6 +3,7 @@
 // __len__ (0 = falsy), then defaults to True. Live in Pyodide — the verdict and
 // which dunder decided are computed by real CPython.
 import { useState, useEffect, useCallback } from 'react';
+import { Icon } from '../shared/Icon.jsx';
 import { loadPython, runPython } from '../ide/pyodideRuntime.js';
 
 export function TruthinessModel() {
@@ -98,7 +99,7 @@ function Toggle({ on, onClick, label }) {
       border: '1px solid ' + (on ? 'var(--accent)' : 'var(--border)'),
       background: on ? 'var(--accent-bg)' : 'var(--surface)',
       color: on ? 'var(--accent)' : 'var(--text-dim)',
-    }}>{on ? '✓ ' : '+ '}{label}</button>
+    }}>{on ? <><Icon name="check" size={13} />{' '}</> : '+ '}{label}</button>
   );
 }
 function Seg({ active, onClick, children }) {

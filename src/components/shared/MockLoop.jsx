@@ -174,7 +174,7 @@ export function MockLoop({ onExit }) {
           <Icon name="check" size={14} color="currentColor" /> {busy ? (progress || 'Checking…') : 'Submit'}
         </button>
         <button onClick={next} style={pill(false)}>{idx + 1 >= queue.length ? 'Finish →' : 'Next problem →'}</button>
-        {last && !last.error && <span style={{ fontSize: '0.86rem', fontWeight: 700, color: last.pass ? 'var(--green-text)' : 'var(--red-text)' }}>{last.pass ? '✓ passes' : '✗ not right yet'}</span>}
+        {last && !last.error && <span style={{ fontSize: '0.86rem', fontWeight: 700, color: last.pass ? 'var(--green-text)' : 'var(--red-text)' }}>{last.pass ? <><Icon name="check" size={13} /> passes</> : <><Icon name="x" size={13} /> not right yet</>}</span>}
         {last && last.error && <span style={{ fontSize: '0.84rem', color: 'var(--red-text)' }}>raised an error</span>}
       </div>
       <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)' }}>No reveal in a mock — submit as many times as you like, then move on. Misses come back later.</div>

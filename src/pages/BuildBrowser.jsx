@@ -68,7 +68,7 @@ function StepCard({ project, step, index, status, locked, solved, onSolved }) {
           fontSize: '0.72rem', fontWeight: 800, fontFamily: 'var(--font-mono)',
           background: solved ? 'var(--green-bg, var(--surface-2))' : 'var(--surface-2)',
           color: solved ? 'var(--green-text)' : 'var(--text-muted)', border: '1px solid var(--border)',
-        }}>{solved ? '✓' : index + 1}</span>
+        }}>{solved ? <Icon name="check" size={12} color="var(--green-text)" /> : index + 1}</span>
         <h3 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 700, color: 'var(--text)' }}>{step.title}</h3>
         {locked && <span style={{ marginLeft: 'auto', fontSize: '0.68rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>locked</span>}
       </div>

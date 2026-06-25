@@ -3,6 +3,7 @@
 // made), and a non-1 mismatch is an error. The "stretch, never copy" mental model
 // the numpy docs themselves teach with, made draggable.
 import { useState } from 'react';
+import { Icon } from '../shared/Icon.jsx';
 
 function clamp(v) { return Math.max(1, Math.min(4, v)); }
 
@@ -35,7 +36,7 @@ export function BroadcastModel() {
         <Labeled title={ok ? 'result (' + R + '×' + C + ')' : 'no result'}>
           {ok
             ? <Grid R={R} C={C} or={R} oc={C} accent="var(--green-text)" />
-            : <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.3rem', color: 'var(--red-text)' }}>✗</div>}
+            : <Icon name="x" size={18} color="var(--red-text)" />}
         </Labeled>
       </div>
 

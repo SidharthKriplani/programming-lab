@@ -6,6 +6,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { pyLabProblems, PYLAB_TOPICS, PYLAB_TOPIC_ORDER } from '../data/pyLabProblems.js';
 import { pyLabFixtures } from '../data/pyLabFixtures.js';
 import { companyFor } from '../data/pyLabCompanies.js';
+import { CompanyLogo } from '../components/shared/CompanyLogo.jsx';
 import { pyLabSchemas } from '../data/pyLabSchemas.js';
 import { pyLabPlanned } from '../data/pyLabPlanned.js';
 import { PyLabSchema } from '../components/shared/PyLabSchema.jsx';
@@ -292,7 +293,7 @@ export function PyLabBrowser({ onExitRoom }) {
           return (
             <button key={p.id} onClick={() => { setActiveId(p.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pal-card-hover" style={{ textAlign: 'left', cursor: 'pointer', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.85rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', minHeight: 152 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                <span style={{ width: 18, height: 18, borderRadius: 4, background: co.hue, color: '#fff', fontSize: '0.62rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{co.initial}</span>
+                <CompanyLogo company={co.name} size={18} />
                 <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>{co.name}</span>
                 {solved && <span style={{ marginLeft: 'auto', display: 'inline-flex' }}><Icon name="clipboard-check" size={13} color="var(--green-text)" /></span>}
               </div>

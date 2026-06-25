@@ -38,7 +38,7 @@ export function formatGlassBox({ timeMs, peakKb }) {
   const m = typeof peakKb === 'number' ? peakKb : 0;
   const tStr = t < 1 ? t.toFixed(3) : t < 10 ? t.toFixed(2) : t.toFixed(1);
   const mStr = m < 1024 ? `${m.toFixed(m < 10 ? 1 : 0)} KB` : `${(m / 1024).toFixed(2)} MB`;
-  return `⏱ ${tStr} ms · 🧠 ${mStr} peak`;
+  return `time: ${tStr} ms · mem: ${mStr} peak`;
 }
 
 /**

@@ -8,6 +8,7 @@ import { autocompletion } from '@codemirror/autocomplete';
 import { tags as t } from '@lezer/highlight';
 import { loadPython, runPython, runPythonGlassBox } from './pyodideRuntime.js';
 import { glassBoxParts } from './glassbox.js';
+import { Icon } from '../shared/Icon.jsx';
 
 // Theme-aware Python syntax highlighting — token colours resolve through CSS
 // variables (--cm-*) defined per theme in index.css, so the editor colourises
@@ -246,7 +247,7 @@ export function PythonCell({
         <div className="pl-hud" style={{ padding: '9px 14px', background: 'var(--surface-2)', borderTop: '1px solid var(--border)' }}>
           <div className="pl-hud-cell">
             <span className="pl-hud-key">status</span>
-            <span className="pl-hud-val" style={{ color: status === 'error' ? 'var(--red)' : 'var(--accent)' }}>{status === 'error' ? 'broke' : 'ran ✓'}</span>
+            <span className="pl-hud-val" style={{ color: status === 'error' ? 'var(--red)' : 'var(--accent)' }}>{status === 'error' ? 'broke' : <>ran <Icon name="check" size={12} /></>}</span>
           </div>
           <div className="pl-hud-cell">
             <span className="pl-hud-key">runtime</span>
