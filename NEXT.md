@@ -1,146 +1,86 @@
 # PL — NEXT (build queue)
 
-_Renamed PSL → **PL (Programming Lab)** — 2026-06-23 (Sidharth's call). The SWE-for-data fluency lab; Python now, OOP included; DSA + pandas later. HQ dispatches build briefs here (D-13). A PL build session opens, reads this + `PL-BUILD-SPEC.md`, builds, then writes its own STATUS/LINEAGE._
-
-## ⏸ RESUME HERE — PyLab content batch 2 (ramp 6-10) + skeleton bank (0.42.0)
-
-**0.41.0 DONE (push pending with 0.38–0.40):** Two-column solve layout fixed (SQL Lab parity) + text contrast boosted.
-- **Layout:** moved `Reveal solution` button + entire revealed section (model solution, debrief, JudgmentLayer, ScaleRace, RefactorChallenge, FollowUpChain, ForwardPointerCard) into the RIGHT column of `pylab-solve-grid`. Left column (prompt+schema) now stays fixed for the full solve cycle.
-- **Contrast:** bumped `--text-secondary`, `--text-muted`, `--text-dim` in all three light/dark theme blocks. Debrief text changed from `var(--text-secondary)` to `var(--text)` (it's reading content, not metadata). Hint text bumped from `var(--text-dim)` to `var(--text-muted)`.
-
-**Next up:** batch 2 (ramp 6-10).
+_PL = Programming Lab (SWE-for-data fluency; D-07/D-15). React+Vite+Pyodide SPA. Repo: `github.com/SidharthKriplani/programming-lab`. Local: `labs/production-systems-lab`. Always read this + `STATUS.md` + `CLAUDE.md` before any session._
 
 ---
 
-## ⏸ PyLab content batch 1: pandas/numpy world (0.40.0)
+## ⚠ PUSH FIRST (Mac only)
 
-**Context:** Worlds + Gates skeleton is built (0.39.0, push pending with 0.38.0 Icon system). The gate quiz (`GateQuiz.jsx`) draws MCQs from the world's problem bank. Most existing problems have empty `mcqs[]`, so the quiz falls back to self-declare. Content batch 1 fixes this for the pandas/numpy world — the most populated world and richest for predict-output MCQs.
+**0.38.0–0.42.0 are all built locally but not pushed.** Run this before anything else:
 
-**Strategy (agreed this session):**
-- Ramp = **concept accumulation**, not abstract difficulty. Each problem introduces exactly one new concept on top of all previous.
-- Then scaffold **400–600 problem stubs** across all worlds — title, topic, level, fixtureId, starterCode, solution, compare, empty depth fields. Audit runs, T1 catches missing required fields, T2 warns on empties. Bank exists; content fills in over time, one batch at a time.
+```
+cd ~/Documents/Professional/BreakLabs/labs/production-systems-lab && rm -f .git/index.lock .git/HEAD.lock && npm run build && git add -A && git commit -m "PL 0.38-0.42: Icon, Worlds+Gates, ramp1, two-col layout, contrast, learning paths" && git push origin main
+```
 
-**pandas/numpy concept ladder (warmup, batch 1 = first 5):**
-1. Single-col agg: `df['col'].mean()` — rampIndex 1, establishes solve() pattern
-2. Row filter: `df[df['col'] > val]` — introduce boolean indexing
-3. Filter with NaN: `df[df['col'].notna()]` — first NaN concept
-4. groupby + agg (single fn): `groupby('col')['val'].mean()` — first groupby
-5. groupby with NaN in group column — same pattern + one edge case
-
-**Per-problem schema (full depth, not stubs):** `id, title, topic, level, fixtureId, prompt, beforeWriting, starterCode, solution, compare, methods[] (≥2, one isTrap), mcqs[] (≥1 predict-output question per problem), hints[] (tiered), glassBox, dial`
-
-**Edge test cases per problem (required):** happy path, empty input, NaN in relevant column, single-row/single-group, dtype edge (int vs float)
-
-**Build steps:** author → CPython-verify all solution+checks → run audit → 0 T1 failures → batch 2 (next 5 concepts) → repeat → then scaffold stubs.
-
-**Batch 1 DONE (0.40.0, push pending):** `pyLabBatch_ramp1.js` — 5 warmup problems, 4 fixtures, all CPython-verified, 141 problems / 0 T1 audit clean.
-
-**Batch 2 (ramp 6-10) — next:**
-6. groupby + multi-agg: `agg({'col_a': 'mean', 'col_b': 'sum'})` — multiple aggregations in one groupby
-7. simple inner merge — first join concept (`merge(on='key')`)
-8. merge with duplicate keys — silent row multiplication (the fan-out trap)
-9. left merge + missing values — `how='left'`, NaN in unmatched rows
-10. pivot_table — reshape: rows become column headers
-
-**After batch 2:** scaffold the full skeleton bank (all worlds, all planned concept slots) — stubs only, no depth fields yet.
-
-**⚠ Push pending:** 0.38.0 (Icon) + 0.39.0 (Worlds+Gates) are built but not pushed. First thing: run `npm run build` on Mac, then push.
+**What's in this batch:**
+- **0.38.0** — HQ Icon superset (84+4 icons, GLYPH_TO_ICON) + CompanyLogo (319 mappings) merged in; 6 emoji/glyphs replaced across PythonCell/MockLoop/models.
+- **0.39.0** — Worlds + Gates skeleton: 7-world tab layer (`pyLabWorlds.js`, `worldGates.js`, `WorldTabs.jsx`, `WorldGate.jsx`, `GateQuiz.jsx`), PyLabBrowser fully wired.
+- **0.40.0** — ramp1: `pyLabBatch_ramp1.js` — 5 warmup problems + 4 fixtures (col-mean, filter-rows, filter-notna, groupby-mean, groupby-count-nan), all CPython-verified. 141 problems / 0 T1 / 0 T2 audit clean.
+- **0.41.0** — Two-column solve layout (SQL Lab parity): reveal section moved into RIGHT column; left column (prompt+schema) stays fixed. Text contrast: Graphite theme (`data-skin='platinum'][data-theme='dark'`) boosted (`--text-muted: #9a9aa0→#bbbbc2`, `--text-secondary: #c3c3c8→#dddde2`, `--text-dim: #74747a→#9a9aa0`); debrief text changed from `var(--text-secondary)` to `var(--text)`; fixture preview from `var(--text-muted)` to `var(--text)`.
+- **0.42.0** — Learning paths built and wired: `src/data/pyLabPaths.js` (16 path objects: 7 worlds × 2 tiers + 2 lab-wide). PathSelector (two cards shown when no path active) + day strip (day buttons + title + focus + × to exit) wired into PyLabBrowser. Filter logic: day `problemIds` if populated → day `worlds` topics for lab-wide → world filter fallback. Path resets on world tab switch.
 
 ---
 
-## ⏸ ALSO PENDING — PyLab beginner tutorial ladder (0.37.0, skeleton shipped, in progress)
-**What this is:** the SQLBolt-style on-ramp *inside* PyLab (D-PL-28) — catches the complete beginner who would bounce off the gym. Authority: **`docs/PYLAB-TUTORIAL-SPEC.md`**. Decision: **D-PL-28**.
+## ⏸ RESUME HERE — Content batch 2 (ramp 6-10)
 
-**Shipped this turn (0.37.0):** `src/data/pyTutorial.js` (Python lessons **1–5 fully authored** — values · numbers · text · booleans · lists — 20 inline tasks, all CPython-verified; lessons 6–18 + an 8-lesson pandas section as planned stubs), `src/pages/PyTutorial.jsx` (the lesson player, reuses `PythonCell` + `runCheck`), a "Start from zero" banner + internal `tutorial` view in `PyLabBrowser.jsx`, `docs/PYLAB-TUTORIAL-SPEC.md`. Build verified green (vite 8, 109 modules).
+**Context:** pandas/numpy world concept ladder — batch 1 (ramp 1-5) done. Batch 2 = the next 5 concepts. Same rules: one new concept per problem, CPython-verify all solutions+traps before transcribing, run audit gate (0 T1), then batch 3.
 
-**⚠ Push state:** committed `a61cdea` (PL 0.37.0). The push hit a rebase — `git add -A` swept in the pending 0.33–0.36 stack and its CHANGELOG collided with upstream. **Resolved in the working tree** (CHANGELOG: tutorial = 0.37.0, eval-rubric doc demoted to 0.36.1, markers cleared). **If not yet pushed when you resume:** `git add CHANGELOG.md && GIT_EDITOR=true git rebase --continue && git push origin main` (then Vercel redeploys). Confirm `git status` is clean first.
+**Batch 2 (ramp 6-10):**
+6. **groupby + multi-agg** — `df.groupby('dept', as_index=False).agg({'score': 'mean', 'salary': 'sum'})`. New concept: multiple aggregations in one groupby. Trap: `agg('mean')` vs `agg({'col': 'mean'})` returns different shapes.
+7. **simple inner merge** — `pd.merge(left, right, on='key')`. New concept: first join. Trap: assumes key is unique — silent row multiplication if it isn't.
+8. **merge with duplicate keys (fan-out trap)** — same `merge(on='key')` but `right` has duplicate keys → 4 rows from 2×2 fan-out. The trap IS the concept: show the cardinality blow-up.
+9. **left merge + missing values** — `merge(how='left')`. New concept: `how='left'` keeps all left rows; unmatched right = NaN. Trap: inner merge silently drops them.
+10. **pivot_table** — `df.pivot_table(index='dept', columns='role', values='score', aggfunc='mean')`. New concept: reshape (rows→column headers). Trap: `pivot` vs `pivot_table` (pivot fails on duplicates).
 
-**Build order for the rest (each: author → CPython-verify every solution+check [correct passes, starter fails, no errors] → brace 0 → macOS `npm run build` → commit):**
-- **T1 — Python lessons 6–13** (dicts · sets/tuples · if · loops · enumerate/zip · comprehensions · functions · *args/**kwargs). The core fluency floor. ← *next batch.*
-- **T2 — Python lessons 14–18** (sort-by-key · Counter/defaultdict · rows-of-data · try/except · review = write a solve()).
-- **T3 — pandas section 1–8** (Series/DataFrame → groupby → merge → clean & answer). Lazy-load pandas/numpy wheels on the first pandas task.
-- **Continuous:** one light "runs vs right" seed at the end of relevant lessons → link into Gotchas/JUDGE (keep the moat DNA without overwhelming a beginner).
+**Per-problem schema (full depth):** `id, title, topic, level, fixtureId, prompt, beforeWriting, starterCode, solution, compare, methods[] (≥2, one isTrap), mcqs[] (≥1), hints[] (tiered), glassBox, dial`
 
-**To author a stub:** replace the `{n,title,topic,status:'planned',seed}` object in `pyTutorial.js` with a full `{concept, tasks[]}` lesson, verify in CPython, flip `status:'ready'` — it appears in the ladder automatically. The grader contract + task schema are in §3 of the spec. **Do not** call `present_files`; end the session with a build summary + the approve-first git block (PL convention).
+**Fixtures needed:**
+- For 6: `fx_dept_salary` — dept+score+salary (eng×3, pm×2, designed so multi-agg gives different results per col)
+- For 7: `fx_scores` + `fx_dept` — two small dfs, unique keys, clean merge
+- For 8: `fx_scores` + `fx_dept_dup` — dept has duplicate key rows so merge fans out
+- For 9: same left + a right with one unmatched key
+- For 10: `fx_dept_role_scores` — dept×role×score (designed so pivot_table has clear non-NaN cells)
 
----
-
-## ▶ NEXT MAJOR TRACK — KNOW Foundations rooms (D-PL-21, spec `docs/FOUNDATIONS-SPEC.md`)
-**Why now:** PAL's handoff (`docs/FOUNDATIONS-HANDOFF.md`) + a live read proved PL's KNOW is a 20-card predict-run-read stub while PAL's is a slider-driven, ~10x-larger Foundations system. KNOW is re-scoped into a **trunk + branches** room set. **Skeleton shipped 2026-06-24** (planning only, nothing wired): `docs/FOUNDATIONS-SPEC.md` + `src/data/foundationsRooms.js` (7 rooms / 24 clusters / 73 seed modules, status `planned`, `node --check`-verified, unimported → no build impact).
-
-Build phases (each its own session + spine close; gates per `CONTENT-STANDARD.md`; every `live` demo CPython-verified before transcribing):
-- **F0 — architecture proof.** ✅ *Structural half done (2026-06-24):* `FoundationsBrowser` reads the registry and renders trunk+branches→rooms→clusters→planned modules; wired into the KNOW nav + route; esbuild-verified (Mac build + push pending). **Remaining:** add the optional `interactive` widget slot to `KnowRunner` (between demo and reveal; back-compatible like `normalizePredict`) + **one `live` module end-to-end** (Room 1 aliasing) as the runnable-model proof. Decide progress model (sequence vs free-browse; spec §8). **Do this before authoring at volume.**
-- **F0.5 — KNOW consolidated ✅ (2026-06-24):** the 20 authored "Python & OOP Depth" modules folded **into** Foundations as **ready** modules (`KNOW_BACKING`/`KNOW_EXTRA` → 17 Python Foundations / 2 Shipping Python / 1 The Machine), openable via the exported `KnowRunner`; standalone nav item removed → one KNOW surface. esbuild-verified, all 20 reachable.
-- **F1 — Room 1 Python Foundations** — ▶ *started (2026-06-24):* the **first driven model shipped** — `AliasingModel.jsx` (the two-names-one-list model, computed live in Pyodide: toggle alias/copy, append/rebind, watch `a is b` + the heap), wired via the new `KnowRunner` `interactive` slot (`interactiveModules.js`, module-id→widget, back-compatible). esbuild + CPython verified. **Ten+ driven models now** across Rooms 1/2/4. **Scalable turn (D-PL-24):** the recurring "binding/identity" shape is now a config-driven template (`StateTrace.jsx` + `foundationsModels.js`) — aliasing + copy-vs-view collapsed onto it, mutable-default added as **config only** (a new such model = a data entry, not code). Bespoke widgets stay only where the picture/dynamics need custom viz (call-stack, Big-O, hashing, broadcasting, numpy-race, index-align, truthiness, decorators). Template does **ops + slider + equality** variants (4 models on it, config-only). **Nineteen driven models — all 7 rooms covered.** **Two config templates now:** `StateTrace` (binding/identity ×4) + `ArrayTrace` (DSA array traces ×3) — those 7 are DATA, not components. Branch rooms seeded: Room 6 DP grid (`UniquePathsModel`) + Room 7 autograd (`AutogradModel`, the broadcasting→autograd through-line). **Next:** `git rm` the 5 dead bespoke files (Aliasing/CopyVsView/TwoPointer/SlidingWindow/BinarySearch — superseded by templates); then F2/F3 author the planned modules' predict→read text alongside the widgets. **Next:** `git rm` the dead `AliasingModel`/`CopyVsViewModel` (sandbox couldn't delete); keep authoring bespoke where the picture is the lesson (generators, async/GIL timeline); then F2/F3 author the planned modules' predict→read text. **Heavy unpushed batch — recommend a Mac build + deploy before authoring more.** **Active "your turn" step (0.31.0, D-PL-27):** `KnowRunner` now has an optional do-and-check step (`m.yourTurn` + `runCheck`) — edit code to a goal → targeted feedback; shipped on **8 read-run modules**, a new one is pure data (no engineering). The SQL-Lab lesson for KNOW = active recall, not the solve-chrome; editor autocomplete + Cmd+Enter reused from D-PL-26.
-- **F2 — Room 2 The Machine** (glass-box already exists → cheapest `live`/race widgets; PL's signature room).
-- **F3 — Room 4 NumPy & pandas** (pairs with PyLab DO; broadcasting `sim` is the standout).
-- **F4 — Room 3 DS&A** · **F5 — Room 5 Shipping Python** (trunk complete).
-- **F6 — Branch 6 Competitive Programming** · **F7 — Branch 7 Tensors & Autograd** (the charter-amendment branches; bespoke graph/DP/autograd viz; confirm the MSL seam holds).
-
-**Substrate rule:** prefer `live` (real Pyodide run — PL's edge over PAL's hand-built SVG); `sim` only where the picture is the lesson, `stepper` where the dynamics are, `concept` only for genuinely-not-in-browser topics (never fake interactivity). **Do NOT rebuild PAL's scaffold** — reuse the existing `KnowRunner`.
+**Build steps:** author → CPython-verify solutions+traps (diverge confirmed) → run `node scripts/_extract_pylab.mjs out.json && python3 scripts/audit_py.py out.json` → 0 T1 → add to `pyLabBatch_ramp2.js` → wire into `pyLabProblems.js` + `pyLabFixtures.js` → audit clean → push.
 
 ---
 
-## ✅ DONE — BreakLabs logo (D-19) implemented 2026-06-23 (PL 0.3.0)
-`BrandMark` built (`src/components/shared/BrandMark.jsx`) per `docs/BRANDMARK-ROLLOUT.md` (canonical in HQ); descriptor `Programming`, accent violet `#8B5CF6`, red seam + wordmark constant. Wired into all 7 in-scope slots: sidebar header (full), favicon (shared red monogram — old violet favicon archived to `_legacy/`), OG card (`public/og-image.png` 1200×630 + meta tags), hero (wordmark), gate header (wordmark), footer (wordmark + "part of BreakLabs"), loading (monogram). esbuild-verified; awaiting macOS build + push.
+## Batch 3+ and skeleton bank
 
-## ✅ §0 RESOLVED — both sign-offs in, build is unblocked
-- **Option A approved** (Sidharth: "approve yes"): rebuild as a **React + Vite + Pyodide SPA**, sibling-consistent with PAL/MSL/GAL; archive the legacy FastAPI/Docker/`modules` scaffold to `_legacy/` (don't delete).
-- **Rename approved + DONE (2026-06-23):** lab = **PL (Programming Lab)**. The GitHub repo slug was renamed to **`programming-lab`** and the local remote repointed (`git remote set-url`); `a7677fc` pushed. (Slug rename pulled forward from "deferred" — Sidharth did it during deploy.) **Local folder stays `labs/production-systems-lab`** so the mount + CLAUDE.md paths keep working. Vercel: first deploy via dashboard import off `programming-lab`.
-- **`PSL-BUILD-SPEC.md` → treat as `PL-BUILD-SPEC.md`** (rename the file in B0; same content, scope is fixed by D-07 + D-15).
+**After batch 2:** scaffold 400–600 problem stubs across all worlds — title, topic, level, fixtureId, starterCode, solution, compare; empty depth fields (methods[], mcqs[], hints[]). Audit catches missing required fields (T1), warns on empty depth (T2). Bank exists; depth fills in over time, one batch at a time.
 
-## ⚠ Distribution-gate override (conscious)
-PL was held behind the distribution keystone (D-01/D-10). **Sidharth is overriding that to dogfood PL early.** The override holds *only* because B1's content **is** the distribution: every Bank-A gotcha doubles as a LinkedIn post. **Condition: the daily LinkedIn post keeps running alongside the build** — PL build does not replace the keystone, it feeds it. If the daily slips, PL pauses.
-
-## ✅ B0 + B1 SHIPPED — 2026-06-23 (this pass)
-Built and verified (esbuild bundle exit 0; data + Python snippets verified). See `STATUS.md`.
-- **B0:** legacy archived to `_legacy/`; React+Vite+Pyodide SPA scaffolded sibling-consistent; MVP IDE (`PythonCell`: CodeMirror → Pyodide 0.25.1) + **glass-box built early** (time + peak-mem footer; `raceMethods` ready for DSA). Inherited Sidebar/Icon/HowToStrip/ForwardPointerCard/GateOverlay/unlock.
-- **B1:** Bank A = **23 Python gotchas**, 7 clusters, predict→run→reveal→fix→"copy as post". Seeded by PY1–PY7 + 16 new. `src/data/gotchaProblems.js`.
-- **Not done in-sandbox:** `npm install` + `vite build` (macOS-only). Run on Mac before deploy. Git prepared approve-first, not pushed.
-- **Deviation:** Pyodide on main thread (per MSL), not a worker — flagged for hardening.
-
-**B2 (pandas → 41) + B3 (Python drills → 56) at interview scope — SHIPPED 2026-06-23**, 337 checks independently verified. 120 problems total. **Two-pane solve UI + filterable browse (0.7.0)** and **all four frames live — KNOW/BUILD/JUDGE populated (0.8.0)**. **DO Idioms (20) + OOP (15) banks SHIPPED (0.9.0)** — DO is now 5 banks / 155 drills; audit gates them. **Progress dashboard + KNOW deepened 6→20 SHIPPED (0.10.0)** — 185 items across 8 banks; `src/data/banks.js` is the bank registry. **KNOW upgraded to PAL Stats-Room Foundations format SHIPPED (0.11.0)** — leveled predict MCQ (per-option feedback) + a four-card `SeniorRead` debrief on all 20 modules; `KnowRunner.normalizePredict` is back-compatible so other banks can adopt it next (D-PL-17). **Green-screen identity SHIPPED (0.12.0)** — PL's dark mode is now the old-school CRT: P1 phosphor green `#46E08A` on void, scanlines + glow, inverse-video nav, box-panel + HUD utilities; supersedes violet (D-PL-18). Shared light mode untouched. **PYLAB ARCHITECTED + PHASE 1 SHIPPED (0.20.0, 2026-06-24)** — `docs/PYLAB-VISION.md` is the blueprint (two-axis ROLE×SENIORITY, 9 formats, differentiators, roadmap), from market research across DS/DA/BA/PA/SWE/MLE/AIE. Phase 1 = `pyLabMeta.js` (roles[]+level, derived/override-able) + role/level filters + `PyLabReadiness` dashboard. **PHASE 2 SHIPPED (0.22.0–0.23.0)** — three showcase formats: **Scale-it race** (`ScaleRace.jsx`+`runPyLabBench`; predict→race valid methods at scale, 22/136 eligible), **Ambiguity drill** (`AmbiguityDrill.jsx`; 8, above the editor — pin the reading before coding), **Refactor** (`RefactorChallenge.jsx`+`runPyLabBenchFull`; 5, working-but-slow→rewrite, graded correct + faster). The last two read a decoupled `src/data/pyLabFormats.js` (id→{ambiguity?,refactor?}; bank untouched, no re-gating). esbuild + CPython verified (rep-share refactor: 959× at 5k rows). **PHASE 3 SHIPPED (0.24.0–0.29.0)** — **Trap Museum** (`TrapMuseum.jsx`+`pyLabTraps.js`; gallery of all 100 traps, copy-as-post, JUDGE nav), **Spaced repetition** (`pyLabSR.js`; SM-2 review queue + "N due" strip, tracks only submitted), **Mock-loop** (`MockLoop.jsx`; timed no-reveal session → scorecard, misses feed SR). **UI/identity (0.25–0.28):** Graphite dark mode (Platinum at night; green-screen retired — D-PL-23) + theme-aware editor highlighting (`--cm-*`); PyLab grid → square **company cards** (`pyLabCompanies.js` — D-PL-25, representative tags); **cleanup** — old bank files (python/pandas/idioms/oop) + `ProblemBrowser` + dead green CSS removed (full bundle exit 0). **UI (0.30.0):** two-pane solve view (problem+schema left / editor+results right; reveal full-width below) + **schema panel** (`PyLabSchema.jsx`←`pyLabSchemas.js`, build-time CPython introspection via `scripts/build_py_schemas.py`; input sample + **output SHAPE ONLY**, D-PL-26) + **schema-name autocomplete** + `Cmd/Ctrl+Enter`→Submit (`Prec.highest`); square company cards (D-PL-25). **Follow-up chains SHIPPED (0.32.0)** — `FollowUpChain.jsx` + `pyLabFollowups.js` (28 chains / 73 escalating follow-ups, reveal-only, CPython-verified, decoupled by id). **→ PyLab Phases 1–3 COMPLETE.** **✅ 0.22.0–0.32.0 DEPLOYED LIVE** (programming-lab.vercel.app — two-pane solve view, schema panel, shape-only target, Graphite, all confirmed by screenshot). **⚠ Pending push: 0.33.0–0.34.0** (0.33 editor lettering; 0.34 **PyLab = own full-screen room** — sidebar drops, own Back·PyLab·N/136·Mock bar like SQL Lab — + global **`p` shortcut**, typing/contenteditable-guarded; deploy via rsync-to-/tmp `--exclude='public/'`). **CURRICULUM AUDIT (0.35.0):** PyLab vs PAL's PythonLab planned curriculum (25 items) = **14 covered · 4 partial · 7 planned**; gaps = Stats methods + End-to-End tasks. **Skeletons stubbed + surfaced (0.36)** — `src/data/pyLabPlanned.js` (+ `docs/PYLAB-CURRICULUM.md`), 11 authoring stubs (**5 systems-tier**, the empty level), now **rendered as greyed "Planned · coming soon" cards** in the PyLab grid (display-only, not in the bank — gates/readiness untouched). **NEXT = Phase 4 = author those stubs** (systems-tier End-to-End/take-home cluster: funnel, retention matrix, cohort LTV, cleaning pipeline + the Stats sub-bank: percentile, weighted avg, bootstrap), gated per `docs/PYLAB-CURRICULUM.md`; then code-review · explain-it formats (`docs/PYLAB-VISION.md`). Continuous: grow ambiguity/refactor/follow-up coverage; daily trap→post keystone. (Watch-item: confirm editor lettering reads cleanly after 0.33.) Continuous: grow ambiguity/refactor coverage; daily trap→post keystone.
-
-**PYLAB CONSOLIDATED — drills+idioms+oop folded in (0.19.0, 2026-06-24)** — migrated the remaining 91 (drills 56, idioms 20, oop 15 via self-contained-solve class-driver reframe) in 5 gated batches. **PyLab = 136 problems, 98 with a judgment layer**, all gates green (audit T1 0, verify 0, content 0). Standalone Drills/Idioms/OOP rooms removed from nav + banks.js; Gotchas stays separate. **NEXT: author NEW depth beyond the migrated set; build beforeWriting/study-plan/alsoAskedAt surfaces; cleanup pass to delete dead old bank files (pythonProblems/idiomsProblems/oopProblems/pandasProblems.js) + their App routes.**
-
-**PANDAS MIGRATED INTO PYLAB (0.18.0, 2026-06-24)** — all 41 pandas problems re-authored onto the PyLab contract (4 gated subagent batches, 33 with a real judgment layer), merged via `pyLabBatch_*.js`; PyLab = 45 problems; standalone pandas/numpy room removed from nav + `banks.js`. Full-set gates green. **NEXT migration batches: Python Drills (56) → Idioms (20) → OOP (15)**, same method (subagent batches, gate each, fold the room when done). Gotchas stays predict→reveal. After that: author NEW fluency/footgun banks beyond the migrated set; build the `beforeWriting`/`alsoAskedAt`/study-plan surfaces.
-
-**PYLAB FOUNDATION SHIPPED (0.17.0, 2026-06-24)** — comparator (`pl_compare`) + four gates (`audit_py`/`verify_py_methods`/`py_content_scan`/`run_py` + `_extract_pylab`) + `runPyLab` runtime + `JudgmentLayer` + `PyLabBrowser` (DO nav). 4-problem seed, all CPython-verified, all gates green. **Pre-commit (PyLab):** `node scripts/_extract_pylab.mjs out.json && PYTHONPATH=scripts python3 scripts/audit_py.py out.json && PYTHONPATH=scripts python3 scripts/verify_py_methods.py out.json && node scripts/py_content_scan.mjs` — 0 Tier-1 / 0 failures / 0 GATE before commit. **NEXT: author the fluency bank in gated subagent batches of ~8** (groupby/agg, merge/join, reshape/pivot, window, numpy-vectorize, python-core) — de-jargoned, executed expected, ≥2 hints, executed debriefs (PYLAB-BUILD-SPEC §10 step 3); then the footgun tier, then the judgment layer on multi-method problems; migrate the existing pandas/__pl_checks drills onto the contract.
-
-**PYLAB HANDOFF RECEIVED (2026-06-23)** — `docs/PYLAB-HANDOFF.md` is the governing reference: SQL Lab is a *judgment gym*, copy the 3 depth systems (content depth + judgment layer + verification rigor), not the runner UI. **PyLab = the single entry for pandas/numpy AND Python.** PL already has runner + Pyodide + Tier-1 audit + 6 forensics; the WORK is the judgment layer (`methods[]`/`dial`/`mcqs` + `verify_py_methods.py`), the comparison contract (`solve(df)→df` + `assert_frame_equal` — DECISION: migrate `__pl_checks` or run forward), engineered shared fixtures, executed debriefs/`beforeWriting`/`hints`, and the expanded footgun/Forensic tier. Build order in handoff §7. **First step (not yet started): lock the per-problem schema + comparison contract.**
-
-**Real Platinum + Chicago + no rails + one light/dark toggle SHIPPED (0.16.0)** — light=Platinum (only light mode; casefile retired), dark=green now. White cards on gray window, Chicago font, 16 side rails stripped. NEXT UNIT: build **dark = Mac OS X Aqua terminal + ambient Matrix rain** (the mockup `pl_aqua_dark_ambient_matrix` is approved-pending) and the **`TerminalReveal`** trickery (rain on problem-open, run-overlapped) on one problem as a unit test. Then tune Platinum once seen.
-**Pluggable SKIN system + Platinum skin SHIPPED (0.15.0)** — a skin = the whole visual world, swapped in one line (`src/utils/skin.js`, `[data-skin]`); Platinum (classic Mac, Apple menu bar) is now the active look and supersedes the green-screen (which becomes a skin). Spec: `docs/SKIN-SYSTEM.md` (D-PL-19). NEXT UNIT: the terminal window for a single problem (greenscreen/aqua skin) opened from a Finder-style `.py` list, with the Matrix reveal (run-overlapped) — the `hybrid` skin. Then tune Platinum once seen live.
-**Green-screen FINALIZED SHIPPED (0.14.0)** — dark mode = Courier Prime · all text phosphor green · pure-black bg · no card decoration (top bars + hover glow removed). (0.13.0 first made it pure green+black; 0.14.0 swapped VT323→Courier Prime and killed white text + card highlights.) The whole identity is written down in **`docs/GREEN-SCREEN-IDENTITY.md`** (the authority — read it before any PL visual change; D-PL-18). Open follow-ups (also listed in that doc §8): apply `pl-panel`/`pl-hud` + glow across more room surfaces (KNOW/JUDGE/BUILD) so the whole app reads as one terminal; confirm CodeMirror picks up VT323; audit small VT323 labels for legibility; decide whether the brand seam goes green in PL dark mode (currently red per HQ D-19). Reframe: PL = programming/Python depth, JUDGE = pure code forensics, NOT GenAI (D-PL-15). Roadmap in `docs/CURRICULUM-RESEARCH.md`. Remaining passes (sequence, no grind): **deepen each frame** (more JUDGE forensics, KNOW explainers, BUILD projects); **testing & typing DO banks** (code craft, not AI); **extend `audit_problems.py`** to gate the judge/know/build runnable code; then the **content-depth pass** — add `hints[]` to the test-based problems (T2 warnings; port PAL's `hintSteps`), then the **`forensic` bug-fix format + `beforeWriting`** (= PL's judgment layer / B4), and optionally **shared DataFrame fixtures** (the datamart pattern). Plus **worker-hardening (A-PL-01) is now urgent** — heavy pandas on the main thread will jank. Audit gate is committed (`scripts/audit_problems.py`, `docs/CONTENT-STANDARD.md`). Four-frame KNOW/BUILD/JUDGE spec still paper-only.
+**Also:** as the bank grows, fill in `problemIds` arrays in `src/data/pyLabPaths.js` so the learning paths actually filter to curated problems instead of falling back to topic-matching. Target: batch 3+ fills in at least the pandas/numpy 3-day path's `problemIds`.
 
 ---
 
-## Original brief (for reference) — Build now = B0 + B1 only. Nothing below B1 starts this pass.
+## ⏸ Tutorial ladder (0.37.0, in progress, lower priority)
 
-### B0 — foundation (infra, no content)
-1. Archive legacy infra → `_legacy/`; rename spec file to `PL-BUILD-SPEC.md`.
-2. Scaffold the React+Vite+localStorage SPA matching the siblings (lazy-load pattern, CSS-variable system, progress-in-localStorage).
-3. **MVP IDE:** CodeMirror 6 editor → run code in a **Pyodide Web Worker** → hidden assert-based tests → pass/fail + stdout. (Spec §5.)
-4. **Glass-box layer — build it here, not last.** `time.perf_counter()` + `tracemalloc` peak-mem + the canonical-vs-contrast race rendered as a small bar/number. This is the entire differentiator; without it PL is just a code runner. (Spec §5 step 2.)
+Python lessons **1–5 authored** (values, numbers, text, booleans, lists — 20 tasks, CPython-verified). Lessons 6–18 + pandas section are planned stubs in `src/data/pyTutorial.js`.
 
-**Best-of-breed picks PL inherits (HQ `DESIGN-STANDARD.md`, ruled 2026-06-23 — adopt, don't reinvent):**
-- **Python runner → adopt MSL's `PythonCell`** (the canonical DO-runner for Python). PL does **not** build its own Pyodide cell — reuse MSL's clean prop API (`initialCode/withPlot/readOnly/onResult`). This is the delegation rule in UI form.
-- **Left nav → PAL `Sidebar.jsx`**; **icon set → PAL `Icon.jsx`** (zero-dep); **paywall → the synthesized `GateOverlay`** (GSL base + PAL portal + MSL copy); **frame-setter → MSL `HowToStrip`**; **forward-pointer → PAL `ForwardPointerCard`**.
-- Nav labels: **KNOW / DO / BUILD / JUDGE** (D-15). PL's first surface is the **DO** rung.
+**Next:** Python lessons 6–13 (dicts · sets/tuples · if · loops · enumerate/zip · comprehensions · functions · *args/**kwargs). Author → CPython-verify (correct passes, starter fails) → flip `status:'ready'` — appears automatically.
 
-### B1 — Bank A (Python gotchas), ~20–30 problems
-- **Already seeded** by the LinkedIn Python track (PY1–PY7 in `CONTENT_QUEUE.md`): mutable defaults, aliasing vs copy, `is` vs `==`/int-cache, list-vs-generator memory, late-binding closures, `in list` O(n) vs `in set` O(1), the `or`-default that eats `0`. Extend to the full §2-A cluster set.
-- **Per-problem schema = spec §4 (B-ready), authored once.** Warmup tier = `solution` + `glassBox.lesson` (empty dial). Don't over-author Warmups; no fake dials. (Judgment dial/MCQ is B4, not now.)
-- **House syntax rule (PAL CLAUDE.md):** data files use single quotes only, escape apostrophes as `\'`, no template literals (Rolldown parse errors).
-- Each gotcha is written to double as a LinkedIn "watch it break" post → feeds the keystone.
+Authority: `docs/PYLAB-TUTORIAL-SPEC.md`. Decision: D-PL-28.
 
-### Explicitly NOT now
-B2 (pandas/numpy), B3 (DSA by pattern), B4 (idioms + judgment dial/MCQ). Those are later passes — each its own build session with its own spine close. Resist building all four banks at once; that's the grind D-07 forbids.
+---
 
-## The four-frame spec expansion (parallel, paper-only)
-PL's spec is currently DO-heavy (the fluency banks). It still needs its **KNOW / BUILD / JUDGE** layers mapped to D-15 (KNOW = the Python/OOP depth explainers; BUILD = scaffolded mini-projects; JUDGE = the dial/MCQ + a Forensic/Spot-the-Flaw tier). This is a **planning** task that can run in parallel with B0+B1 — it doesn't block code, and code doesn't block it.
+## ⏸ KNOW Foundations F2/F3 (lower priority, mostly authoring)
 
-## Build rules (CLAUDE.md)
-macOS-only build (sandbox Rollup ARM64 fails); **approve-first / never auto-push** — prepare commands, Sidharth runs them on his Mac; `rm -f .git/index.lock .git/HEAD.lock` before staging; full repo path.
+19 driven models across all 7 rooms (F0/F1 complete). Two config templates: `StateTrace` (binding/identity ×4) + `ArrayTrace` (DSA traces ×3).
 
-**Full spec:** `docs/PL-BUILD-SPEC.md` — banks (§2), variety bar (§3), per-problem schema (§4), Pyodide IDE (§5), tiers (§6), build order (§7), sourcing/moat (§8).
+**Remaining work (F2/F3):**
+- `git rm` the 5 superseded bespoke files (Aliasing/CopyVsView/TwoPointer/SlidingWindow/BinarySearch — sandbox couldn't delete last session)
+- Author planned modules' predict→read text alongside the existing widgets (mostly text authoring, no new engineering)
+- Extend `yourTurn` to more read-run modules
+
+Authority: `docs/FOUNDATIONS-SPEC.md`. State: `STATUS.md` KNOW section.
+
+---
+
+## Standing rules (always)
+
+- **Pre-commit (PyLab):** `node scripts/_extract_pylab.mjs out.json && python3 scripts/audit_py.py out.json` — 0 T1 failures before commit.
+- **macOS-only build.** Sandbox can't `npm run build` (Rollup ARM64). Prepare commands, Sidharth runs on Mac.
+- **Approve-first.** `git push` auto-deploys to Vercel. Never auto-push.
+- **Lock files:** `rm -f .git/index.lock .git/HEAD.lock` before every git operation.
+- **Single quotes only in `src/data/*.js`.** Escape apostrophes as `\'`. No backticks.
+- **Close ritual:** update STATUS.md + append LINEAGE.md + rewrite NEXT.md before ending any session.
