@@ -28,6 +28,11 @@ import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
 import { MockLoop } from '../components/shared/MockLoop.jsx';
 import { PyTutorial } from './PyTutorial.jsx';
 import { pyTutMeta } from '../data/pyTutorial.js';
+import { PYLAB_WORLDS, worldTopicSet } from '../data/pyLabWorlds.js';
+import { getAllGateStates, unlockWorld } from '../utils/worldGates.js';
+import { WorldTabs } from '../components/shared/WorldTabs.jsx';
+import { WorldGate } from '../components/shared/WorldGate.jsx';
+import { GateQuiz } from '../components/shared/GateQuiz.jsx';
 
 const KEY = 'pl-pylab-progress-v1';
 const DIFFS = ['all', 'warmup', 'core', 'stretch'];
@@ -179,12 +184,55 @@ export function PyLabBrowser({ onExitRoom }) {
   const [reviewMode, setReviewMode] = useState(false);
   const [mock, setMock] = useState(false);
   const [tutorial, setTutorial] = useState(false);
+  const [activeWorld, setActiveWorld] = useState(null);   // null = all worlds
+  const [gateOpen, setGateOpen] = useState(null);         // worldId being gate-shown
+  const [quizOpen, setQuizOpen] = useState(null);         // worldId being quizzed
+  const [gateStates, setGateStates] = useState(() => getAllGateStates());
   const progress = getProgress(KEY);
   const total = pyLabProblems.length;
   const solvedCount = Object.keys(progress.solved || {}).length;
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
   if (tutorial) return <PyTutorial onExit={() => setTutorial(false)} />;
+
+  if (quizOpen) {
+    const world = PYLAB_WORLDS.find(w => w.id === quizOpen);
+    const worldProblems = pyLabProblems.filter(p => world.topics.includes(p.topic));
+    return (
+      <GateQuiz
+        world={world}
+        problems={worldProblems}
+        onPass={(defaultLevel) => {
+          unlockWorld(quizOpen, 'quiz', defaultLevel);
+          setGateStates(getAllGateStates());
+          setActiveWorld(quizOpen);
+          setLevel(defaultLevel);
+          setQuizOpen(null);
+        }}
+        onFail={() => { setQuizOpen(null); setGateOpen(quizOpen); }}
+        onClose={() => { setQuizOpen(null); setGateOpen(null); }}
+      />
+    );
+  }
+
+  if (gateOpen) {
+    const world = PYLAB_WORLDS.find(w => w.id === gateOpen);
+    return (
+      <WorldGate
+        world={world}
+        onSelfDeclare={() => {
+          unlockWorld(gateOpen, 'self', 'correctness');
+          setGateStates(getAllGateStates());
+          setActiveWorld(gateOpen);
+          setLevel('correctness');
+          setGateOpen(null);
+        }}
+        onStartQuiz={() => { const id = gateOpen; setGateOpen(null); setQuizOpen(id); }}
+        onStartTutorial={() => { setGateOpen(null); setTutorial(true); }}
+        onClose={() => setGateOpen(null)}
+      />
+    );
+  }
 
   if (activeId) {
     const problem = pyLabProblems.find(p => p.id === activeId);
@@ -193,15 +241,20 @@ export function PyLabBrowser({ onExitRoom }) {
 
   const due = dueIds();
   const dueSet = new Set(due);
-  const topics = PYLAB_TOPIC_ORDER.filter(t => pyLabProblems.some(p => p.topic === t));
+  const worldTopics = activeWorld ? worldTopicSet(activeWorld) : null;
+  const topics = PYLAB_TOPIC_ORDER.filter(t =>
+    pyLabProblems.some(p => p.topic === t && (!worldTopics || worldTopics.has(t)))
+  );
   const shown = reviewMode
     ? pyLabProblems.filter(p => dueSet.has(p.id))
     : pyLabProblems.filter(p =>
+        (!worldTopics || worldTopics.has(p.topic)) &&
         matchesRoleLevel(p, role, level) &&
         (topic === 'all' || p.topic === topic) &&
         (q === '' || (p.title + ' ' + p.prompt).toLowerCase().includes(q.toLowerCase()))
       );
   const plannedShown = reviewMode ? [] : pyLabPlanned.filter(s =>
+    (!worldTopics || worldTopics.has(s.topic)) &&
     (topic === 'all' || s.topic === topic) &&
     (level === 'all' || s.level === level) &&
     (q === '' || (s.title + ' ' + (s.seed || '')).toLowerCase().includes(q.toLowerCase()))
@@ -254,6 +307,27 @@ export function PyLabBrowser({ onExitRoom }) {
 
       <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
 
+      <WorldTabs
+        worlds={PYLAB_WORLDS}
+        activeWorldId={activeWorld}
+        gateStates={gateStates}
+        onTabClick={(worldId) => {
+          if (worldId === null) {
+            setActiveWorld(null);
+            setTopic('all');
+            return;
+          }
+          const state = gateStates[worldId];
+          if (state && state.unlocked) {
+            setActiveWorld(worldId);
+            setTopic('all');
+            if (state.defaultLevel && state.defaultLevel !== 'all') setLevel(state.defaultLevel);
+          } else {
+            setGateOpen(worldId);
+          }
+        }}
+      />
+
       {(due.length > 0 || reviewMode) && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.9rem', padding: '0.55rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' }}>
           <Icon name="clipboard-check" size={15} color="var(--accent)" />
@@ -272,10 +346,12 @@ export function PyLabBrowser({ onExitRoom }) {
           <option value="all">All roles</option>
           {ROLE_ORDER.map(r => <option key={r} value={r}>{ROLES[r]}</option>)}
         </select>
-        <select value={topic} onChange={e => setTopic(e.target.value)} style={{ padding: '0.35rem 0.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }}>
-          <option value="all">All topics</option>
-          {topics.map(t => <option key={t} value={t}>{PYLAB_TOPICS[t]}</option>)}
-        </select>
+        {!activeWorld && (
+          <select value={topic} onChange={e => setTopic(e.target.value)} style={{ padding: '0.35rem 0.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', color: 'var(--text)', fontSize: '0.82rem' }}>
+            <option value="all">All topics</option>
+            {topics.map(t => <option key={t} value={t}>{PYLAB_TOPICS[t]}</option>)}
+          </select>
+        )}
         <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
           <button onClick={() => setLevel('all')} style={chipStyle(level === 'all')}>All levels</button>
           {LEVEL_ORDER.map(lv => (
