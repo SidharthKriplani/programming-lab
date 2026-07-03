@@ -5,6 +5,18 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.44.0] - 2026-07-03 — Leaderboard: shared PAL identity, own scores (D-PL-31)
+
+> PL gets a leaderboard by pointing at **PAL's Supabase project** for identity (one login across labs) while keeping its own `pl_leaderboard` table so scores never clobber PAL's. Code-complete + esbuild-validated; not live until the infra (env vars + SQL + OAuth redirect) is set. Entitlements stay per-lab — shared identity does not couple paygating.
+
+### Added
+- **Leaderboard** ranked by total problems solved across every bank (KNOW/DO/BUILD/JUDGE). New `src/utils/supabase.js`, `src/utils/auth.js` (Google/GitHub OAuth + session), `src/utils/leaderboard.js` (`computeTotalSolved` over `BANKS`, `upsertLeaderboardRow`, `fetchLeaderboard`, targets `pl_leaderboard`), `src/pages/Leaderboard.jsx` (rank + your-standing + sign-in CTA).
+- `#/leaderboard` view (`hashRoute.VIEWS`); `App.jsx` `user` session (getUser on mount + `onAuthStateChange`, upsert on SIGNED_IN); `Sidebar.jsx` gets a **Leaderboard** nav item (`star` icon) + a footer sign-in/out control.
+- `@supabase/supabase-js` added to `package.json` (needs `npm install`).
+
+### Notes
+- **Not live until infra is set:** PL Vercel env vars = PAL's `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`; the `pl_leaderboard` create-table + RLS run in PAL's Supabase project; PL's domain added to PAL Supabase → Auth → Redirect URLs (otherwise OAuth falls back to PAL's Site URL and redirects to PAL). See D-PL-31.
+
 ## [PL 0.43.0] - 2026-07-03 — The "come-alive" program (D-PL-29) + deep linking (D-PL-30)
 
 > PyLab went from 141 problems in 2 usable worlds to **264 across all 8**, with a real practice loop, structured inputs, a placement diagnostic, common-band breadth (30 pandas + 30 python), 12 FAANG skeletons, readability fixes, and app-wide deep linking. Every problem CPython-verified before it touched JS; zero shipped bugs. Built + verified locally in batches, handed to Sidharth's Mac (approve-first).

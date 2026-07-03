@@ -1,9 +1,10 @@
 # PL — STATUS
 
-_Last updated: 2026-07-03 (session close). PL 0.43.x — the "come-alive" program. Built + verified locally in incremental batches; commit/push commands handed to Sidharth's Mac per batch (approve-first)._
+_Last updated: 2026-07-03 (session close). PL 0.44.x — leaderboard (shared PAL identity) on top of the "come-alive" program. Built + verified locally in incremental batches; commit/push commands handed to Sidharth's Mac per batch (approve-first)._
 
 ## Where we are now (read this first)
 
+- **Leaderboard (0.44.0, D-PL-31):** ranked by total problems solved across all banks. PL points at **PAL's Supabase project** for identity (one login across labs); scores live in a separate `pl_leaderboard` table so PAL/PL never clobber each other. Google sign-in in the sidebar footer; `#/leaderboard` view + nav item. **Code-complete + esbuild-validated; NOT live until infra is set** — PL Vercel env = PAL's values, `pl_leaderboard` SQL run in PAL's Supabase, PL domain added to PAL's Auth redirect URLs. Entitlements stay per-lab (shared identity ≠ shared paygate).
 - **264 problems + 23 planned stubs. All 8 worlds populated. All gates green (audit 0 T1 / 0 T2, method-verify 0, content-scan 0).** Schemas regenerated for all 264 (0 errors).
 - **Full solve loop (SQL-Lab parity):** Check (⌘/Ctrl+Enter — runs your solve() and shows YOUR output, no grade) → Submit (manual; grades vs the canonical, records **attempt history**) → **gated two-step reveal**. Structured input tables (DataFrames render as tables; lists/dicts as titled value cards).
 - **Placement diagnostic** ("Find my level" — 9-question ladder quiz → sets role/level, persists to `pl-placement-v1`) + the PyLabReadiness dashboard. This closes the come-alive report's three gaps (learning paths, world coverage, diagnostic).
