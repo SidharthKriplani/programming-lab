@@ -6,7 +6,7 @@
 import { Icon } from './Icon.jsx';
 
 const mono = { fontFamily: 'var(--font-mono)' };
-const cap = { fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--text-muted)' };
+const cap = { fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--text-secondary)' };
 
 function Dtype({ d }) {
   return <span style={{ ...mono, fontSize: '0.64rem', color: 'var(--text-muted)', marginLeft: '0.3rem' }}>{d}</span>;
@@ -43,7 +43,7 @@ function InputCard({ inp }) {
   const chips = (vals) => (
     <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
       {(vals || []).map((v, i) => (
-        <span key={i} style={{ ...mono, fontSize: '0.72rem', padding: '2px 7px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{String(v)}</span>
+        <span key={i} style={{ ...mono, fontSize: '0.74rem', padding: '2px 8px', borderRadius: 6, border: '1px solid var(--border-strong)', background: 'var(--surface)', color: 'var(--text)' }}>{String(v)}</span>
       ))}
     </div>
   );

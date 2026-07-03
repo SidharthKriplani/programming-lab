@@ -805,8 +805,8 @@ body {
 :root[data-skin='platinum'] {
   --bg: #566e6c;                 /* desktop — deeper teal-gray so windows pop */
   --surface: #ffffff;            /* content panes / cards — WHITE (real Platinum contrast) */
-  --surface-2: #dcdcdc;          /* secondary panels / headers — mid gray */
-  --surface-raised: #ececec;
+  --surface-2: #eef0f2;          /* secondary panels / headers — near-white (was #dcdcdc mid-gray; text was fighting a gray bg) */
+  --surface-raised: #f6f7f8;
   --border: #000000;             /* classic 1px black window border */
   --border-subtle: #9a9a9a;
   --border-strong: #000000;
@@ -841,9 +841,9 @@ body {
   --font-mono: 'Courier New', 'Courier Prime', monospace;
   --bevel-light: #ffffff;
   --bevel-dark: #8f8f8f;
-  /* editor syntax (light) — reads on the gray editor surface */
-  --cm-keyword: #a626a4; --cm-string: #3d8b40; --cm-number: #b76b01;
-  --cm-comment: #5f5f5f; --cm-function: #3a6db5; --cm-type: #9a6b00; --cm-active: rgba(0,0,0,0.05);
+  /* editor syntax (light) — reads on the near-white editor surface */
+  --cm-keyword: #a626a4; --cm-string: #2f7d34; --cm-number: #b76b01;
+  --cm-comment: #4a4a4a; --cm-function: #2f5da8; --cm-type: #8a5f00; --cm-active: rgba(0,0,0,0.05);
   --cm-prop: #c4451c; --cm-op: #4d4d4d; --cm-var: #1a1a1a;
 }
 

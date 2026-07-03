@@ -163,7 +163,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
             <button onClick={submit} disabled={submitting || checking} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
               <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Grading…') : 'Submit'}
             </button>
-            <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>Check (⌘/Ctrl+Enter) runs your code · Submit grades it against the target</span>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Check (⌘/Ctrl+Enter) runs your code · Submit grades it against the target</span>
           </div>
 
           {checkResult && (
