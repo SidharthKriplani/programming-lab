@@ -211,6 +211,19 @@ export const WORLD_PATHS = {
     },
   },
 
+  'ai-ml': {
+    '3day': {
+      id: 'ai-ml-3day',
+      label: '3 Days to Intermediate',
+      tagline: 'ML metrics + AI-engineering logic, from scratch',
+      days: [
+        { day: 1, title: 'Day 1 — ML Metrics', focus: 'precision/recall, confusion counts, F1', problemIds: ['mlx-precision-recall', 'mlx-confusion-counts', 'ml-f1-score'], conceptSlugs: ['metrics'] },
+        { day: 2, title: 'Day 2 — ML Primitives', focus: 'sigmoid, z-score, train-stat standardization, k-NN', problemIds: ['mlx-sigmoid', 'ml-zscore', 'mlx-standardize-train-stats', 'mlx-knn-classify'], conceptSlugs: ['from-scratch'] },
+        { day: 3, title: 'Day 3 — AI Engineering', focus: 'cosine top-k, recall@k, MRR, chunking, LLM-as-judge', problemIds: ['aix-cosine-topk', 'aix-recall-at-k', 'aix-mrr', 'aix-chunk-overlap', 'aix-llm-judge-passrate'], conceptSlugs: ['retrieval', 'evaluation'] },
+      ],
+    },
+  },
+
 };
 
 // ── Lab-wide paths ────────────────────────────────────────────────────────────

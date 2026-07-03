@@ -84,6 +84,17 @@ export const PYLAB_WORLDS = [
     tutorialEnabled: false,
     quizCount: 5,
   },
+  {
+    id: 'ai-ml',
+    label: 'AI / ML Craft',
+    icon: 'cpu',
+    tagline: 'The numeric + AI-engineering coding DS/ML/AIE interviews ask for',
+    description: 'Implement it from scratch: k-NN, precision/recall, sigmoid, standardization — plus AI-engineering logic: cosine top-k retrieval, recall@k, MRR, chunking, LLM-as-judge. Pure numpy/Python, no live models.',
+    topics: ['ml-scratch', 'ai-eng'],
+    unlockDefaultLevel: { self: 'correctness', quiz: 'judgment', tutorial: 'fluency' },
+    tutorialEnabled: false,
+    quizCount: 3,
+  },
 ];
 
 // Set of topic slugs that belong to a given world id.

@@ -86,7 +86,7 @@ _Worlds: pandas-numpy (mechanics) + data-craft (judgment). The DA/DS/PA take-hom
 - [x] **Data-craft v1** — 10 problems shipped (2026-07-03).
 - [x] **Ladder batch 1** — 9 problems shipped (2026-07-03): data-structure manipulation (dedup-order, invert-multimap, group-consecutive, top-k-frequent), senior/advanced data manipulation (merge fan-out, chained-assign, multi-step net-revenue pipeline), ML-from-scratch (F1, z-score). **First 2 stretch/systems-tier problems.**
 - [x] **DSA taxonomy fix** — done (2026-07-03): re-tagged 45 algorithmic drills to `dsa`; DSA world now has 50 problems + curated 3/7-day paths. 5 of 7 worlds populated.
-- [ ] **ML-from-scratch + AI-engineering world** — ~10 problems (DS/ML + AIE weighting). ML-from-scratch started (F1, z-score); AI-eng still to come.
+- [x] **ML-from-scratch + AI-engineering world** — done (2026-07-03): new `ai-ml` world, 10 problems (k-NN, precision/recall, confusion, sigmoid, train-stat standardization; cosine top-k, recall@k, MRR, chunking, LLM-as-judge). 6 of 7 worlds now populated.
 - [~] **Data-manipulation medium→advanced top-up** — started (fan-out, chained-indexing, pipeline). More multi-step + a scale race to go.
 - [~] **Data-structures ladder** — started (4 senior traps). Easy/medium reflex tier + more structure-choice traps (set-vs-list membership, deque vs list, heap vs sort) still to fill.
 - [ ] **Data-craft v2** — grow 10 → ~25.

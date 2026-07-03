@@ -9,7 +9,7 @@ const mono = { fontFamily: 'var(--font-mono)' };
 const cap = { fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--text-muted)' };
 
 function Dtype({ d }) {
-  return <span style={{ ...mono, fontSize: '0.62rem', color: 'var(--text-dim)', marginLeft: '0.3rem' }}>{d}</span>;
+  return <span style={{ ...mono, fontSize: '0.64rem', color: 'var(--text-muted)', marginLeft: '0.3rem' }}>{d}</span>;
 }
 
 function InputCard({ inp }) {
@@ -35,7 +35,7 @@ function InputCard({ inp }) {
             </tbody>
           </table>
         </div>
-        {inp.rows > (inp.sample || []).length && <div style={{ ...mono, fontSize: '0.64rem', color: 'var(--text-dim)', padding: '0.25rem 0.6rem' }}>… {inp.rows - inp.sample.length} more rows</div>}
+        {inp.rows > (inp.sample || []).length && <div style={{ ...mono, fontSize: '0.66rem', color: 'var(--text-muted)', padding: '0.25rem 0.6rem' }}>… {inp.rows - inp.sample.length} more rows</div>}
       </div>
     );
   }
@@ -90,7 +90,7 @@ function TargetShape({ out }) {
     <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', padding: '0.55rem 0.7rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
       <span style={cap}>Returns · shape only</span>
       {body}
-      <span style={{ fontSize: '0.66rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>values hidden on purpose — match it from your own reasoning, not an answer key.</span>
+      <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>values hidden on purpose — match it from your own reasoning, not an answer key.</span>
     </div>
   );
 }

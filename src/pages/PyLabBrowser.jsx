@@ -120,7 +120,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
     if (res.pass) { markSolved(KEY, problem.id); reviewSR(problem.id, true); onSolved && onSolved(problem.id); }
   }
 
-  const editorH = Math.min(360, 120 + problem.starterCode.split('\n').length * 19);
+  const editorH = Math.min(440, Math.max(260, 110 + problem.starterCode.split('\n').length * 22));
 
   return (
     <div className="pal-page-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

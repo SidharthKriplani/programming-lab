@@ -16,7 +16,9 @@ _Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.**
 - **Tab click no longer forces the correctness filter**: entering a world (tab / self-declare / quiz-pass) sets the level filter to `all`.
 - **Structured input**: regenerated `pyLabSchemas.js` (all 160 have schema, 0 errors) so DataFrame inputs render as tables; `PyLabSchema.jsx` non-df inputs (lists/dicts) now render as a titled card with value chips, not a one-line string.
 - Verified: all 5 edited JSX/JS files bundle clean via esbuild (exit 0); data gates still 0 T1 / 0 T2 / verify 0.
-Next (Track 2, from backlog): ML-from-scratch + AI-engineering world; more senior/advanced (stretch) tier; python-internals + code-craft; data-craft v2.
+**AI / ML Craft world (Track-2, DS/ML + AIE):** new `pyLabBatch_aiml.js` — 10 problems, new 8th world `ai-ml` (topics `ml-scratch` + `ai-eng`). ML-from-scratch: k-NN, precision/recall, confusion counts, sigmoid, train-stat standardization (data-leakage trap, stretch). AI-engineering (pure logic over fixtures, no live API): cosine top-k retrieval (stretch), recall@k, MRR, chunking-with-overlap, LLM-as-judge pass-rate. Topics + roles (DS/MLE/AIE) registered; 3-day ai-ml path added (reuses ml-f1-score + ml-zscore). All CPython-verified.
+**Bank now 170 problems; 6 of 7 worlds populated** (python-core 25, pandas-numpy 59, dsa-patterns 50, oop-design 15, data-craft 11, ai-ml 10; python-internals + code-craft still empty → hidden). All gates green (0 T1 / 0 T2 / verify 0 / scan 0); all path IDs valid; schemas regenerated (170, 0 errors).
+Next (Track 2, from backlog): more senior/advanced (stretch) tier + multi-step pipelines with scale-race; python-internals + code-craft worlds; data-craft v2; data-structures easy/medium reflex ladder.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)

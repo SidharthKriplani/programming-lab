@@ -811,9 +811,9 @@ body {
   --border-subtle: #9a9a9a;
   --border-strong: #000000;
   --text: #000000;
-  --text-secondary: #2b2b2b;
-  --text-muted: #4d4d4d;
-  --text-dim: #6e6e6e;
+  --text-secondary: #232323;
+  --text-muted: #2f2f2f;         /* darkened: readable on the #dcdcdc surface-2 cards (was #4d4d4d) */
+  --text-dim: #454545;           /* darkened: was #6e6e6e — too weak on gray panels */
   --ink-hi: #000000;             /* BrandMark wordmark — dark on platinum */
   --ink-low: #555555;
   --accent: #3f6196;             /* classic Mac selection blue */
