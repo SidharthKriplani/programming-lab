@@ -993,3 +993,24 @@ body {
    the reveal renders full-width below. Collapses to one column on narrow screens. */
 .pylab-solve-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 1.1rem; align-items: start; }
 @media (max-width: 900px) { .pylab-solve-grid { grid-template-columns: 1fr; } }
+
+/* ── Mobile pass (≤600px): touch ergonomics on top of the already-responsive shell.
+   The layout (off-canvas sidebar @860, solve grid @900, min(290px,100%) cards) already
+   collapses; this block fixes the phone-specific paper cuts: iOS zoom-on-focus, tap
+   target size, and squeezed padding. ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* iOS zooms the viewport when a focused field is < 16px — keep the editor + all
+     inputs at 16px so focusing the code editor doesn't yank the page around. */
+  .cm-editor { font-size: 16px !important; }
+  input, textarea, select { font-size: 16px; }
+
+  /* Comfortable touch targets (≥44px is the iOS/Android guideline). */
+  .pal-btn-primary { min-height: 44px; }
+  .btn-run { min-height: 40px; padding: 8px 14px; }
+
+  /* Tighter shell padding so content isn't crushed on a narrow screen. */
+  .app-main { padding: 1rem 0.8rem 3rem; }
+
+  /* Glass-box HUD wraps cleanly instead of overflowing. */
+  .pl-hud { gap: 0.85rem 1.1rem; }
+}

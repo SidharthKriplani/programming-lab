@@ -5,6 +5,20 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.44.1] - 2026-07-03 — Mobile touch pass (Tier 1 + tap targets)
+
+> The shell was already responsive (off-canvas sidebar @860, solve grid → 1 col @900, `min(290px,100%)` cards, tables already `overflow-x:auto`). This fixes the phone-specific paper cuts — it's a polish pass, not a rebuild.
+
+### Fixed
+- **Editor on touch** — `PythonCell` sets `EditorView.contentAttributes` (autocapitalize/autocorrect/autocomplete off, spellcheck false) so mobile keyboards stop mangling code; a new `≤600px` CSS block forces the CodeMirror editor + all inputs to **16px** (prevents iOS zoom-on-focus).
+- **Tap targets** — `.pal-btn-primary` ≥44px, `.btn-run` ≥40px on mobile; tighter `.app-main` padding; `.pl-hud` wraps cleanly.
+
+### Files
+`src/components/ide/PythonCell.jsx`, `src/index.css`.
+
+### Deferred (Tier 3, optional)
+- Pyodide lazy-load "tap to start the runtime" affordance + a "best on desktop for writing code" nudge on the hardest problems; Platinum menu-bar chrome tuning under 640px.
+
 ## [PL 0.44.0] - 2026-07-03 — Leaderboard: shared PAL identity, own scores (D-PL-31)
 
 > PL gets a leaderboard by pointing at **PAL's Supabase project** for identity (one login across labs) while keeping its own `pl_leaderboard` table so scores never clobber PAL's. Code-complete + esbuild-validated; not live until the infra (env vars + SQL + OAuth redirect) is set. Entitlements stay per-lab — shared identity does not couple paygating.

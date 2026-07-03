@@ -96,6 +96,8 @@ export function PythonCell({
         keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
         EditorView.editable.of(!readOnly),
         EditorState.readOnly.of(readOnly),
+        // Mobile keyboards mangle code — turn off autocorrect/autocapitalize/spellcheck.
+        EditorView.contentAttributes.of({ autocapitalize: 'off', autocorrect: 'off', autocomplete: 'off', spellcheck: 'false' }),
         EditorView.theme({
           '&': {
             fontSize: '13px',
