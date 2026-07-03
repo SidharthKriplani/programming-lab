@@ -33,6 +33,7 @@ const TOPIC_ROLES = {
   'python-core':     ['SWE', 'MLE', 'AIE', 'DS'],
   'idioms':          ['SWE', 'MLE', 'AIE', 'DS', 'DA'],
   'oop':             ['SWE', 'MLE', 'AIE'],
+  'data-craft':      ['PA', 'BA', 'DA', 'DS', 'MLE', 'AIE'],
 };
 
 export function rolesOf(p) {

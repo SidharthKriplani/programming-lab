@@ -15,6 +15,7 @@ import { fixtures as _fDrills1 } from './pyLabBatch_drills1.js';
 import { fixtures as _fIdioms } from './pyLabBatch_idioms.js';
 import { fixtures as _fDrills3 } from './pyLabBatch_drills3.js';
 import { fixtures as _fDrills2 } from './pyLabBatch_drills2.js';
+import { fixtures as _fDataCraft } from './pyLabBatch_datacraft.js';
 
 const _seedFixtures = {
   'fx_sales': {
@@ -35,6 +36,6 @@ const _seedFixtures = {
 };
 
 // Merge the seed fixtures + every migrated batch (pandas, then python/idioms/oop later).
-export const pyLabFixtures = { ..._seedFixtures, ..._fRamp1, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms };
+export const pyLabFixtures = { ..._seedFixtures, ..._fRamp1, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms, ..._fDataCraft };
 
 export default pyLabFixtures;

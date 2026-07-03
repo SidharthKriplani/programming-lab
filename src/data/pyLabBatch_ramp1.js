@@ -16,8 +16,8 @@ export const fixtures = {
 
   'fx_scores': {
     args: ['scores'],
-    setup: 'import pandas as pd\nscores = pd.DataFrame({"name": ["ada", "bo", "cara", "dan"], "score": [90, 80, 85, 60]})',
-    preview: 'scores: name, score  (ada=90, bo=80, cara=85, dan=60 — bo is the boundary case)',
+    setup: 'import pandas as pd\nscores = pd.DataFrame({"name": ["ada", "bo", "cara", "dan"], "score": [90, 80, 85, 60], "age": [20, 21, 22, 19]})',
+    preview: 'scores: name, score, age  (ada=90, bo=80, cara=85, dan=60 — bo is the boundary case)',
   },
 
   'fx_scores_na': {
@@ -64,7 +64,7 @@ export const problems = [
     ],
     solution: 'def solve(scores):\n    return float(scores["score"].mean())',
     compare: { kind: 'float' },
-    debrief: 'scores["score"].mean() totals 90+80+85+60=315 across 4 students, giving 78.75. Calling .mean() on the whole DataFrame instead of one column returns a Series (one mean per numeric column) — the right value is buried inside the wrong container. Select the column first, then aggregate to a scalar.',
+    debrief: 'scores["score"].mean() totals 90+80+85+60=315 across 4 students, giving 78.75. Calling .mean() on the whole DataFrame instead of one column returns a Series with a mean for every numeric column (score AND age here) — the right value is buried inside the wrong container, and asking for it as a single number then fails. Select the column first, then aggregate to a scalar.',
     canonicalMethodId: 'col_mean',
     methods: [
       {
@@ -80,7 +80,7 @@ export const problems = [
         name: 'scores.mean(numeric_only=True)',
         code: 'return scores.mean(numeric_only=True)',
         tradeoff: 'Reads as one short line with no column selection.',
-        breaksWhen: 'Returns a Series, not a float. If the DataFrame had more numeric columns you\'d get means for all of them — a Series{"score": 78.75} instead of the scalar 78.75.',
+        breaksWhen: 'Returns a Series, not a float — here means for both numeric columns, Series{"score": 78.75, "age": 20.5}, so the single number the prompt asks for cannot be read out cleanly.',
         isTrap: true,
       },
     ],
@@ -91,7 +91,7 @@ export const problems = [
         stem: 'What does scores.mean(numeric_only=True) return for this data?',
         options: ['col_mean', 'df_mean'],
         answerId: 'df_mean',
-        explanation: 'Without column selection, .mean() aggregates every numeric column and returns a Series — here Series({"score": 78.75}). The value 78.75 is inside a container, not a bare float. Selecting the column first with scores["score"].mean() gives the scalar directly.',
+        explanation: 'Without column selection, .mean() aggregates every numeric column and returns a Series — here Series({"score": 78.75, "age": 20.5}). The score you want is inside a multi-value container, not a bare float. Selecting the column first with scores["score"].mean() gives the scalar directly.',
       },
     ],
   },
