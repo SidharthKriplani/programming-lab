@@ -31,7 +31,9 @@ _Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.**
 **Bank now 201 problems, all 8 worlds, all gates green.** Ladder now has an easy tier in data-craft/code-craft/ai-ml (was 0). Remaining easy=0: oop-design, python-internals (internals are inherently trap-based).
 **oop warmups added** (to `pyLabBatch_warmups.js`): Counter, Stack, computed @property — single-method fluency. oop-design easy tier now 3.
 **Bank now 204 problems; every world has an easy on-ramp EXCEPT python-internals** (correct — internals are inherently correctness/judgment gotchas). All 8 worlds; all gates green (0 T1 / 0 T2 / verify 0 / scan 0); schemas 204/0 errors.
-Next (Track 2): the placement diagnostic (a short quiz → role/level detection → lights up the readiness meter — the one marquee feature from the report still unbuilt); wiring a Scale-race onto the multi-step pipeline problems.
+**Common-band breadth — round 1 of 2 (pandas everyday):** new `pyLabBatch_pandas_everyday.js` — 15 problems, easy→medium, filling the thinnest/most-common pandas topics. Merge: inner (warmup), left+fill, anti-join, suffixes. Reshape: pivot (warmup), melt, crosstab. Cleaning/datetime: rename (warmup), str-contains (case), drop-dup-subset, str-split (warmup), value_counts normalize, day_name (warmup), groupby-month, strip-$-then-parse. 6 warmups + 9 core (each a real runs-but-wrong trap). All CPython-verified; one prompt reworded for the de-jargon gate.
+Pandas now: groupby 24, merge 10, reshape 8, window/everyday 24. **Bank 219 problems; all gates green.**
+**Round 2 (next): basic-Python problem-solving breadth (~15)** — string manipulation, dict/list transforms, small parsing tasks, easy→medium. Then: placement diagnostic; Scale-race on the pipeline problems.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)
