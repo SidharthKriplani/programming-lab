@@ -27,7 +27,9 @@ _Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.**
 **Font-weight readability fix (the real root cause):** the recurring "thin/weak text" was `-webkit-font-smoothing: antialiased` on `body` — it thins every glyph on macOS/Chrome. Switched to `subpixel-antialiased` + `-moz-osx-font-smoothing: auto` + base `font-weight: 450`. Fixes stroke weight globally (color tokens were already fine). Sidharth confirmed good.
 **Depth batch v2:** new `pyLabBatch_v2.js` — 8 problems. Data-craft v2 (analyst): active-user definition, bounce rate (per-session denominator), trimmed mean, median-per-group, small-sample rate guard [stretch]. Data-structure reflex (idioms): flatten-one-level, combine-dicts-summing, second-largest-distinct. All CPython-verified; two prompts reworded to clear the de-jargon gate ("merge"→"combine", "concatenate"→"join end to end").
 **Bank now 192 problems** (data-craft 18, idioms/python-core 28, ...); all 8 worlds; all gates green (0 T1 / 0 T2 / verify 0 / scan 0); schemas regenerated (192, 0 errors).
-Next (Track 2): keep deepening the stretch tier + wire a Scale-race onto the pipeline problems; more code-craft/internals; a fluency (warmup) floor for the newer worlds; then the placement diagnostic.
+**Warmup floor batch:** new `pyLabBatch_warmups.js` — 9 single-method fluency reps (empty dial, no trap) giving the newer worlds an easy on-ramp: distinct-users (data-craft); dot-product, euclidean-distance, vector-mean (ml-scratch); clamp, abs-diff (code-craft); unique-count, sum-of-evens, reverse-string (idioms). All CPython-verified.
+**Bank now 201 problems, all 8 worlds, all gates green.** Ladder now has an easy tier in data-craft/code-craft/ai-ml (was 0). Remaining easy=0: oop-design, python-internals (internals are inherently trap-based).
+Next (Track 2): warmups for oop; wire a Scale-race onto the multi-step pipeline problems; then the placement diagnostic (role/level detection → readiness meter).
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)
