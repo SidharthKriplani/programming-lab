@@ -72,6 +72,7 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 const TRACK = [
   { label: 'Home', view: 'home', icon: 'layout' },
   { label: 'Progress', view: 'progress', icon: 'bar-chart' },
+  { label: 'Leaderboard', view: 'leaderboard', icon: 'star' },
 ];
 
 const FRAMES = [
@@ -108,7 +109,7 @@ function bankSolved(bank) {
   return 0;
 }
 
-export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'platinum', onCycleSkin }) {
+export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'platinum', onCycleSkin, user, onSignIn, onSignOut }) {
   const [theme, setThemeState] = useState(getTheme());
   const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'DO');
 
@@ -120,6 +121,8 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
 
   const noIcons = skin === 'platinum'; // Platinum nav is text-only (Sidharth: drop the symbols)
   const go = (v) => { onNavigate(v); onClose?.(); };
+  const m = (user && user.user_metadata) || {};
+  const authName = user ? (m.full_name || m.name || m.user_name || user.email || 'Signed in') : null;
 
   return (
     <aside className={`app-sidebar${open ? ' open' : ''}`}>
@@ -183,8 +186,29 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
         })}
       </nav>
 
-      {/* Footer — break⌇labs wordmark + theme toggle */}
+      {/* Footer — auth + break⌇labs wordmark + theme toggle */}
       <div style={{ padding: '0.7rem 1.05rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {/* Auth control — shared identity with PAL */}
+        {user ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+            <Icon name="user" size={13} color="var(--text-muted)" />
+            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{authName}</span>
+            <button
+              onClick={() => onSignOut && onSignOut()}
+              style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '2px 8px', fontSize: '0.66rem', color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'var(--font-mono)' }}
+            >
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => onSignIn && onSignIn()}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', width: '100%', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.4rem', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text)', cursor: 'pointer' }}
+          >
+            <Icon name="user" size={13} color="var(--text-muted)" /> Sign in
+          </button>
+        )}
+
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <BrandMark variant="wordmark" size={13} />
           <button

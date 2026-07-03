@@ -9,6 +9,8 @@ import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
 import { parseHash, setHash } from './utils/hashRoute.js';
+import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/auth.js';
+import { upsertLeaderboardRow } from './utils/leaderboard.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
@@ -20,6 +22,7 @@ const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx').then(m => ({ 
 const PyLabBrowser = lazy(() => import('./pages/PyLabBrowser.jsx').then(m => ({ default: m.PyLabBrowser })));
 const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').then(m => ({ default: m.FoundationsBrowser })));
 const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
+const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ default: m.Leaderboard })));
 
 function Home({ onNavigate }) {
   return (
@@ -53,9 +56,27 @@ export default function App() {
   const [view, setView] = useState(() => parseHash().view);
   const [navOpen, setNavOpen] = useState(false);
   const [skin, setSkinState] = useState(getSkin());
+  const [user, setUser] = useState(null);
 
   const navigate = (v) => { setView(v); setHash(v); setNavOpen(false); };
   const onCycleSkin = () => setSkinState(cycleSkin());
+  const onSignIn = () => signInWithGoogle();
+  const onSignOut = () => { signOut(); setUser(null); };
+
+  // Auth session — shared with PAL (same Supabase project). On sign-in, push the
+  // user's current PL total to the leaderboard so their row exists immediately.
+  useEffect(() => {
+    getUser().then(u => { if (u) { setUser(u); upsertLeaderboardRow(u); } });
+    const { data } = onAuthStateChange((event, session) => {
+      if (session && session.user) {
+        setUser(session.user);
+        if (event === 'SIGNED_IN') upsertLeaderboardRow(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+    return () => { data?.subscription?.unsubscribe?.(); };
+  }, []);
 
   // Deep linking: reflect back/forward + external links into the view. PyLab/Gotchas read
   // the sub-path (problem id) themselves; here we only track the top-level view.
@@ -97,7 +118,7 @@ export default function App() {
   return (
     <div className="app-layout">
       {skin === 'platinum' && <PlatinumMenuBar />}
-      <Sidebar view={view} onNavigate={navigate} open={navOpen} onClose={() => setNavOpen(false)} skin={skin} onCycleSkin={onCycleSkin} />
+      <Sidebar view={view} onNavigate={navigate} open={navOpen} onClose={() => setNavOpen(false)} skin={skin} onCycleSkin={onCycleSkin} user={user} onSignIn={onSignIn} onSignOut={onSignOut} />
 
       <div className="app-main-wrapper">
         {/* Mobile top bar */}
@@ -120,6 +141,7 @@ export default function App() {
               : view === 'judge' ? <JudgeBrowser />
               : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
+              : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}
           </Suspense>
         </main>
