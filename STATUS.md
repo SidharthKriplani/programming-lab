@@ -8,8 +8,9 @@ _Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.**
 - Rubric added: `docs/PYLAB-CONTENT-RUBRIC.md` — the two-lens bar (SQL-Lab pedagogy parity + interview-competence) every problem clears.
 - Track-2 backlog added: `docs/PYLAB-TRACK2-BACKLOG.md` — the full content universe by world × difficulty ladder × role (data-structures + data-manipulation enumerated, senior/advanced tier flagged as the gap).
 - **Ladder batch 1** (`pyLabBatch_ladder1.js`): 9 problems — Python data-structure manipulation (dedup-order, invert-multimap, group-consecutive-runs, top-k-frequent) + senior/advanced data manipulation (merge fan-out, chained-assignment, a multi-step net-revenue pipeline) + ML-from-scratch (F1, z-score). **First 2 `stretch` (systems-tier) problems in the whole bank** (merge fan-out, net-revenue pipeline). All CPython-verified, wired.
-- **Bank now 160 problems; all gates green (0 T1 / 0 T2 / verify 0 / scan 0).**
-Next (Track 2, from backlog): DSA taxonomy fix (light up the DSA world); ML/AI-engineering world; more senior/advanced tier.
+- **DSA taxonomy fix:** re-tagged the 45 algorithmic drills (drills1/2/3) from topic `python-core` to a new `dsa` topic — lighting up the **DSA world with 50 problems** (hashing, two-pointer, sliding window, binary search, heap, stack, intervals, greedy/DP) + curated 3-day/7-day DSA paths. Near-zero authoring. python-core world now = idioms + data-structure manipulation; `group-names-by-team` kept as core. `dsa` registered (TOPICS/ORDER, meta roles SWE/MLE/AIE/DS). Python-core + lab paths cleaned of the moved ids.
+- **Worlds now: 5 of 7 populated** (python-core 25, pandas-numpy 59, dsa-patterns 50, oop-design 15, data-craft 11; python-internals + code-craft still empty → hidden). **Bank 160 problems; all gates green (0 T1 / 0 T2 / verify 0 / scan 0); all path IDs valid.**
+Next (Track 2, from backlog): ML-from-scratch + AI-engineering world; more senior/advanced (stretch) tier; python-internals + code-craft; data-craft v2.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)

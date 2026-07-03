@@ -34,11 +34,12 @@ export const PYLAB_TOPICS = {
   'idioms':         'python · idioms',
   'oop':            'python · oop',
   'data-craft':     'data · craft',
+  'dsa':            'dsa · patterns',
 };
 
 export const PYLAB_TOPIC_ORDER = [
   'pandas-groupby', 'pandas-merge', 'pandas-reshape', 'pandas-window',
-  'numpy-vectorize', 'python-core', 'idioms', 'oop', 'data-craft',
+  'numpy-vectorize', 'python-core', 'idioms', 'oop', 'data-craft', 'dsa',
 ];
 
 const _seedProblems = [

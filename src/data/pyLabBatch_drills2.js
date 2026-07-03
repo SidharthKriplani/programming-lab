@@ -149,7 +149,7 @@ export const problems = [
   {
     id: 'pylab-py-max-vowels-window',
     title: 'Densest vowel stretch of length k',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['string', 'window', 'count'],
     estimatedMin: 5,
@@ -176,7 +176,7 @@ export const problems = [
   {
     id: 'pylab-py-running-max',
     title: 'Running peak of a metric',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['scan', 'running', 'list'],
     estimatedMin: 4,
@@ -203,7 +203,7 @@ export const problems = [
   {
     id: 'pylab-py-range-sum-prefix',
     title: 'Fast repeated range totals',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['precompute', 'range', 'list'],
     estimatedMin: 7,
@@ -230,7 +230,7 @@ export const problems = [
   {
     id: 'pylab-py-subarray-sum-k',
     title: 'Count windows summing to a target',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['count', 'running', 'footgun'],
     estimatedMin: 9,
@@ -261,7 +261,7 @@ export const problems = [
   {
     id: 'pylab-py-equilibrium-index',
     title: 'Balance point of a ledger',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['running', 'index', 'footgun'],
     estimatedMin: 8,
@@ -292,7 +292,7 @@ export const problems = [
   {
     id: 'pylab-py-daily-temperatures',
     title: 'Days until a warmer reading',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['scan', 'pending', 'footgun'],
     estimatedMin: 9,
@@ -323,7 +323,7 @@ export const problems = [
   {
     id: 'pylab-py-next-greater',
     title: 'Next greater price for each day',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['scan', 'pending', 'footgun'],
     estimatedMin: 8,
@@ -354,7 +354,7 @@ export const problems = [
   {
     id: 'pylab-py-min-stack',
     title: 'Pile reads that always know the minimum',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['structure', 'class', 'invariant'],
     estimatedMin: 8,
@@ -381,7 +381,7 @@ export const problems = [
   {
     id: 'pylab-py-eval-rpn',
     title: 'Evaluate a postfix formula',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['stack', 'arithmetic', 'footgun'],
     estimatedMin: 9,
@@ -412,7 +412,7 @@ export const problems = [
   {
     id: 'pylab-py-binary-search',
     title: 'Find an id in a sorted index',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['sorted', 'search', 'footgun'],
     estimatedMin: 6,
@@ -443,7 +443,7 @@ export const problems = [
   {
     id: 'pylab-py-search-insert',
     title: 'Where would this value slot in?',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['sorted', 'insertion', 'footgun'],
     estimatedMin: 7,
@@ -474,7 +474,7 @@ export const problems = [
   {
     id: 'pylab-py-first-geq',
     title: 'First reading at or above a threshold',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['sorted', 'boundary', 'footgun'],
     estimatedMin: 7,
@@ -505,7 +505,7 @@ export const problems = [
   {
     id: 'pylab-py-integer-sqrt',
     title: 'Integer square root without floats',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['integer', 'precision', 'footgun'],
     estimatedMin: 8,
@@ -536,7 +536,7 @@ export const problems = [
   {
     id: 'pylab-py-koko-rate',
     title: 'Slowest rate to clear the backlog in time',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['feasibility', 'boundary', 'footgun'],
     estimatedMin: 9,
@@ -567,7 +567,7 @@ export const problems = [
   {
     id: 'pylab-py-k-largest',
     title: 'k largest transactions',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['selection', 'top-k', 'order'],
     estimatedMin: 5,
@@ -594,7 +594,7 @@ export const problems = [
   {
     id: 'pylab-py-kth-smallest',
     title: 'kth smallest latency',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['selection', 'order-statistic'],
     estimatedMin: 5,
@@ -621,7 +621,7 @@ export const problems = [
   {
     id: 'pylab-py-top-k-frequent-heap',
     title: 'Top k trending tags',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['frequency', 'top-k', 'count'],
     estimatedMin: 6,
@@ -648,7 +648,7 @@ export const problems = [
   {
     id: 'pylab-py-merge-k-sorted',
     title: 'Merge k sorted shards',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['merge', 'sorted', 'order'],
     estimatedMin: 8,
@@ -675,7 +675,7 @@ export const problems = [
   {
     id: 'pylab-py-merge-intervals',
     title: 'Collapse overlapping bookings',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['intervals', 'sweep', 'footgun'],
     estimatedMin: 9,

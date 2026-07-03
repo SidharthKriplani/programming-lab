@@ -151,7 +151,7 @@ export const problems = [
   {
     id: 'pylab-py-first-unique',
     title: 'First non-repeating event',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['hashing', 'frequency'],
     estimatedMin: 4,
@@ -178,7 +178,7 @@ export const problems = [
   {
     id: 'pylab-py-two-sum',
     title: 'Two transactions that hit a target',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['hashing'],
     estimatedMin: 6,
@@ -208,7 +208,7 @@ export const problems = [
   {
     id: 'pylab-py-anagram',
     title: 'Are two tags anagrams?',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['hashing', 'frequency'],
     estimatedMin: 4,
@@ -235,7 +235,7 @@ export const problems = [
   {
     id: 'pylab-py-sliding-window',
     title: 'Longest session with no repeated page',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['window'],
     estimatedMin: 7,
@@ -265,7 +265,7 @@ export const problems = [
   {
     id: 'pylab-py-balanced',
     title: 'Validate a nested filter expression',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['stack'],
     estimatedMin: 6,
@@ -295,7 +295,7 @@ export const problems = [
   {
     id: 'pylab-py-prefix-sum',
     title: 'Day revenue first crosses target',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['running-total'],
     estimatedMin: 5,
@@ -325,7 +325,7 @@ export const problems = [
   {
     id: 'pylab-py-group-anagrams',
     title: 'Group anagram tags',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['hashing'],
     estimatedMin: 7,
@@ -355,7 +355,7 @@ export const problems = [
   {
     id: 'pylab-py-dup-within-k',
     title: 'Duplicate alert within k events',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['hashing'],
     estimatedMin: 6,
@@ -385,7 +385,7 @@ export const problems = [
   {
     id: 'pylab-py-majority-element',
     title: 'Majority vote winner',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['hashing', 'frequency'],
     estimatedMin: 4,
@@ -412,7 +412,7 @@ export const problems = [
   {
     id: 'pylab-py-first-k-frequent',
     title: 'Top k events by volume',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['hashing'],
     estimatedMin: 7,
@@ -442,7 +442,7 @@ export const problems = [
   {
     id: 'pylab-py-pair-sum-sorted',
     title: 'Pair sum in a sorted ledger',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['two-pointers'],
     estimatedMin: 5,
@@ -473,7 +473,7 @@ export const problems = [
   {
     id: 'pylab-py-remove-duplicates',
     title: 'Compact a sorted reading list',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['two-pointers'],
     estimatedMin: 6,
@@ -500,7 +500,7 @@ export const problems = [
   {
     id: 'pylab-py-merge-sorted',
     title: 'Merge two sorted price feeds',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['two-pointers'],
     estimatedMin: 5,
@@ -527,7 +527,7 @@ export const problems = [
   {
     id: 'pylab-py-valid-palindrome',
     title: 'Palindrome check on a noisy string',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['two-pointers'],
     estimatedMin: 5,
@@ -554,7 +554,7 @@ export const problems = [
   {
     id: 'pylab-py-move-zeroes',
     title: 'Push idle sensors to the end',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['two-pointers'],
     estimatedMin: 5,
@@ -581,7 +581,7 @@ export const problems = [
   {
     id: 'pylab-py-max-water',
     title: 'Widest reservoir between two walls',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['two-pointers'],
     estimatedMin: 7,
@@ -611,7 +611,7 @@ export const problems = [
   {
     id: 'pylab-py-max-window-sum',
     title: 'Best k-minute traffic burst',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['window'],
     estimatedMin: 6,
@@ -641,7 +641,7 @@ export const problems = [
   {
     id: 'pylab-py-min-window-len',
     title: 'Shortest run hitting a quota',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['window'],
     estimatedMin: 7,
@@ -671,7 +671,7 @@ export const problems = [
   {
     id: 'pylab-py-longest-k-distinct',
     title: 'Longest span with at most k products',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['window'],
     estimatedMin: 8,

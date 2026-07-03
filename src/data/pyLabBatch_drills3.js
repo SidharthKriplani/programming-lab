@@ -320,7 +320,7 @@ export const problems = [
   {
     id: 'pylab-can-attend',
     title: 'Any double-booked meetings?',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['intervals', 'sort', 'boolean'],
     estimatedMin: 4,
@@ -347,7 +347,7 @@ export const problems = [
   {
     id: 'pylab-min-meeting-rooms',
     title: 'Rooms needed at the busiest moment',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['intervals', 'sort', 'concurrency', 'footgun'],
     estimatedMin: 7,
@@ -386,7 +386,7 @@ export const problems = [
   {
     id: 'pylab-insert-interval',
     title: 'Slot a booking into a clean calendar',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['intervals', 'merge', 'sweep'],
     estimatedMin: 6,
@@ -413,7 +413,7 @@ export const problems = [
   {
     id: 'pylab-max-subarray',
     title: 'Best contiguous profit streak',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['scan', 'running-sum', 'footgun'],
     estimatedMin: 6,
@@ -444,7 +444,7 @@ export const problems = [
   {
     id: 'pylab-can-jump',
     title: 'Can you reach the last checkpoint?',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['scan', 'reachability', 'boolean'],
     estimatedMin: 5,
@@ -471,7 +471,7 @@ export const problems = [
   {
     id: 'pylab-best-buy-sell',
     title: 'Best single buy-then-sell',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['scan', 'running-min', 'footgun'],
     estimatedMin: 6,
@@ -502,7 +502,7 @@ export const problems = [
   {
     id: 'pylab-gas-station',
     title: 'Where to start the delivery loop',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['scan', 'circular', 'footgun'],
     estimatedMin: 7,
@@ -533,7 +533,7 @@ export const problems = [
   {
     id: 'pylab-factorial',
     title: 'Factorial of a number',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['recursion', 'math'],
     estimatedMin: 4,
@@ -560,7 +560,7 @@ export const problems = [
   {
     id: 'pylab-fibonacci',
     title: 'The nth number in the sequence',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['recursion', 'sequence', 'footgun'],
     estimatedMin: 6,
@@ -599,7 +599,7 @@ export const problems = [
   {
     id: 'pylab-fast-power',
     title: 'Raise a number to a power, quickly',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['recursion', 'bitwise', 'footgun'],
     estimatedMin: 6,
@@ -630,7 +630,7 @@ export const problems = [
   {
     id: 'pylab-flatten-nested',
     title: 'Flatten a deeply nested list',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'core',
     tags: ['recursion', 'nesting'],
     estimatedMin: 5,
@@ -657,7 +657,7 @@ export const problems = [
   {
     id: 'pylab-gcd',
     title: 'Greatest common divisor',
-    topic: 'python-core',
+    topic: 'dsa',
     difficulty: 'warmup',
     tags: ['recursion', 'math'],
     estimatedMin: 4,

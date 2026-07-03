@@ -34,6 +34,7 @@ const TOPIC_ROLES = {
   'idioms':          ['SWE', 'MLE', 'AIE', 'DS', 'DA'],
   'oop':             ['SWE', 'MLE', 'AIE'],
   'data-craft':      ['PA', 'BA', 'DA', 'DS', 'MLE', 'AIE'],
+  'dsa':             ['SWE', 'MLE', 'AIE', 'DS'],
 };
 
 export function rolesOf(p) {
