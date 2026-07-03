@@ -4,7 +4,21 @@ _PL = Programming Lab (SWE-for-data fluency; D-07/D-15). React+Vite+Pyodide SPA.
 
 ---
 
-_Deployment note: 0.38.0–0.42.0 (Icon superset, Worlds+Gates, ramp1, two-column layout, contrast, learning paths) are shipped and live._
+_Deployment note: 0.38.0–0.42.0 shipped and live. 0.43.0 (come-alive Track 1 + Data-craft world) built locally — see STATUS.md._
+
+---
+
+## ▶ ACTIVE PROGRAM — "Make PyLab come alive" (D-PL-29)
+
+The authority for content work is now **`docs/PYLAB-TRACK2-BACKLOG.md`** (the full universe by world × difficulty ladder × role, with checkboxes) + **`docs/PYLAB-CONTENT-RUBRIC.md`** (the bar every problem clears). Track 1 (debrief grammar, paths, hide-empty-worlds) + Data-craft v1 (10 problems) are done locally.
+
+**Immediate next (from the backlog, in order):**
+1. **DSA taxonomy fix** — re-tag the DSA problems living under the `python-core` topic to `dsa` so the empty DSA world lights up (near-zero authoring, high leverage).
+2. **ML-from-scratch + AI-engineering world** — ~10 problems (k-NN, precision/recall, gradient step; cosine-sim retrieval@k, chunking, LLM-as-judge as pure logic over fixtures).
+3. **Fill the senior/advanced tier** — the whole bank has 0 stretch/systems problems; author the first multi-step pipeline + scale-race problems.
+4. **Data-structures reflex ladder** (easy→senior) + **data-manipulation medium→advanced top-up**.
+
+The pandas ramp-6-10 batch below is folded into backlog Bucket 2 (still valid seeds).
 
 ---
 
