@@ -660,8 +660,12 @@ body {
   font-family: var(--font-ui);
   font-size: var(--text-base);
   line-height: var(--leading-body);
-  -webkit-font-smoothing: antialiased;
+  /* subpixel (the browser default) renders glyphs at FULL weight; `antialiased` thins
+     every stroke on macOS/Chrome — that was the "weak/thin text" everywhere. */
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
   text-rendering: optimizeLegibility;
+  font-weight: 450;
 }
 
 #root { min-height: 100vh; }
