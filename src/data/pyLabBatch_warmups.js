@@ -52,6 +52,21 @@ export const fixtures = {
     setup: 's = "hello"',
     preview: 's="hello" → reversed "olleh".',
   },
+  'fx_oopw_counter': {
+    args: [],
+    setup: '',
+    preview: 'Driver: Counter starts at 0 (value 0), increments twice (2), once more (3). Returns (0, 2, 3).',
+  },
+  'fx_oopw_stack': {
+    args: [],
+    setup: '',
+    preview: 'Driver: empty Stack (is_empty True), push 1 & 2, peek (2), pop (2), peek (1). Returns (True, 2, 2, 1).',
+  },
+  'fx_oopw_temp': {
+    args: [],
+    setup: '',
+    preview: 'Driver: Temp(100).f = 212.0, Temp(0).f = 32.0. Returns (212.0, 32.0).',
+  },
 };
 
 const warm = (o) => ({ difficulty: 'warmup', dial: { axes: [], rules: [] }, mcqs: [], ...o });
@@ -218,6 +233,60 @@ export const problems = [
     debrief: '"hello" reversed is "olleh". The slice s[::-1] steps through the string backwards.',
     canonicalMethodId: 'slice',
     methods: [{ id: 'slice', name: 's[::-1]', code: 'return s[::-1]', tradeoff: 'A negative-step slice reverses in one expression.', breaksWhen: 'Nothing here.', isTrap: false }],
+  }),
+
+  warm({
+    id: 'oop-counter',
+    title: 'A counter class',
+    topic: 'oop',
+    tags: ['classes', 'state', 'fluency'],
+    estimatedMin: 4,
+    fixtureId: 'fx_oopw_counter',
+    signature: 'solve()',
+    prompt: 'Write a Counter class that starts at 0, has inc() to add one, and value() to read the current count. The driver reads value() before any inc, increments a few times, and returns the readings.',
+    starterCode: 'def solve():\n    class Counter:\n        # start at 0; inc() adds one; value() returns the count\n        ...\n    c = Counter()\n    a = c.value()\n    c.inc(); c.inc()\n    b = c.value()\n    c.inc()\n    d = c.value()\n    return (a, b, d)',
+    hints: ['Store the count as an instance attribute set to 0 in __init__.', 'inc() mutates it (+= 1); value() returns it.'],
+    solution: 'def solve():\n    class Counter:\n        def __init__(self):\n            self.n = 0\n        def inc(self):\n            self.n += 1\n        def value(self):\n            return self.n\n    c = Counter()\n    a = c.value()\n    c.inc(); c.inc()\n    b = c.value()\n    c.inc()\n    d = c.value()\n    return (a, b, d)',
+    compare: { kind: 'seq' },
+    debrief: 'Readings are 0 (before any inc), 2 (after two), 3 (after one more) → (0, 2, 3). State lives on the instance and inc() mutates it.',
+    canonicalMethodId: 'counter',
+    methods: [{ id: 'counter', name: 'instance attribute', code: 'class Counter:\n    def __init__(self):\n        self.n = 0\n    def inc(self):\n        self.n += 1\n    def value(self):\n        return self.n\nc = Counter()\na = c.value()\nc.inc(); c.inc()\nb = c.value()\nc.inc()\nd = c.value()\nreturn (a, b, d)', tradeoff: 'A single integer attribute holds the state.', breaksWhen: 'Nothing here.', isTrap: false }],
+  }),
+
+  warm({
+    id: 'oop-stack',
+    title: 'A stack class',
+    topic: 'oop',
+    tags: ['classes', 'stack', 'fluency'],
+    estimatedMin: 5,
+    fixtureId: 'fx_oopw_stack',
+    signature: 'solve()',
+    prompt: 'Write a Stack class backed by a list with push(x), pop() (returns and removes the top), peek() (returns the top without removing), and is_empty(). The driver exercises it and returns the readings.',
+    starterCode: 'def solve():\n    class Stack:\n        # push/pop/peek/is_empty over an internal list\n        ...\n    s = Stack()\n    e = s.is_empty()\n    s.push(1); s.push(2)\n    top = s.peek()\n    popped = s.pop()\n    after = s.peek()\n    return (e, top, popped, after)',
+    hints: ['Keep an internal list; push appends, pop removes from the end.', 'peek returns the last element without removing it.'],
+    solution: 'def solve():\n    class Stack:\n        def __init__(self):\n            self._items = []\n        def push(self, x):\n            self._items.append(x)\n        def pop(self):\n            return self._items.pop()\n        def peek(self):\n            return self._items[-1]\n        def is_empty(self):\n            return not self._items\n    s = Stack()\n    e = s.is_empty()\n    s.push(1); s.push(2)\n    top = s.peek()\n    popped = s.pop()\n    after = s.peek()\n    return (e, top, popped, after)',
+    compare: { kind: 'seq' },
+    debrief: 'Empty at first (True), top is 2, pop returns 2, then the new top is 1 → (True, 2, 2, 1). A list\'s end is the top of the stack.',
+    canonicalMethodId: 'stack',
+    methods: [{ id: 'stack', name: 'list-backed stack', code: 'class Stack:\n    def __init__(self):\n        self._items = []\n    def push(self, x):\n        self._items.append(x)\n    def pop(self):\n        return self._items.pop()\n    def peek(self):\n        return self._items[-1]\n    def is_empty(self):\n        return not self._items\ns = Stack()\ne = s.is_empty()\ns.push(1); s.push(2)\ntop = s.peek()\npopped = s.pop()\nafter = s.peek()\nreturn (e, top, popped, after)', tradeoff: 'A list gives O(1) push/pop at the end.', breaksWhen: 'pop/peek on an empty stack would error; the driver never does that.', isTrap: false }],
+  }),
+
+  warm({
+    id: 'oop-temperature',
+    title: 'A computed property',
+    topic: 'oop',
+    tags: ['classes', 'property', 'fluency'],
+    estimatedMin: 4,
+    fixtureId: 'fx_oopw_temp',
+    signature: 'solve()',
+    prompt: 'Write a Temp class that stores a Celsius value c and exposes a read-only property f giving the Fahrenheit equivalent (c * 9/5 + 32). The driver reads .f for a couple of temperatures.',
+    starterCode: 'def solve():\n    class Temp:\n        # store celsius; expose f as a computed @property\n        ...\n    a = Temp(100).f\n    b = Temp(0).f\n    return (a, b)',
+    hints: ['Store c in __init__; decorate f with @property so it is read like an attribute.', 'Fahrenheit = c * 9/5 + 32.'],
+    solution: 'def solve():\n    class Temp:\n        def __init__(self, c):\n            self.c = c\n        @property\n        def f(self):\n            return self.c * 9 / 5 + 32\n    a = Temp(100).f\n    b = Temp(0).f\n    return (a, b)',
+    compare: { kind: 'seq' },
+    debrief: '100C is 212F and 0C is 32F → (212.0, 32.0). A @property computes f on access, so it reads like an attribute but is derived from c.',
+    canonicalMethodId: 'property',
+    methods: [{ id: 'property', name: '@property', code: 'class Temp:\n    def __init__(self, c):\n        self.c = c\n    @property\n    def f(self):\n        return self.c * 9 / 5 + 32\na = Temp(100).f\nb = Temp(0).f\nreturn (a, b)', tradeoff: 'A computed property derives f from c on every read.', breaksWhen: 'Nothing here.', isTrap: false }],
   }),
 
 ];

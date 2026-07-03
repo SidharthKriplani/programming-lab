@@ -29,7 +29,9 @@ _Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.**
 **Bank now 192 problems** (data-craft 18, idioms/python-core 28, ...); all 8 worlds; all gates green (0 T1 / 0 T2 / verify 0 / scan 0); schemas regenerated (192, 0 errors).
 **Warmup floor batch:** new `pyLabBatch_warmups.js` — 9 single-method fluency reps (empty dial, no trap) giving the newer worlds an easy on-ramp: distinct-users (data-craft); dot-product, euclidean-distance, vector-mean (ml-scratch); clamp, abs-diff (code-craft); unique-count, sum-of-evens, reverse-string (idioms). All CPython-verified.
 **Bank now 201 problems, all 8 worlds, all gates green.** Ladder now has an easy tier in data-craft/code-craft/ai-ml (was 0). Remaining easy=0: oop-design, python-internals (internals are inherently trap-based).
-Next (Track 2): warmups for oop; wire a Scale-race onto the multi-step pipeline problems; then the placement diagnostic (role/level detection → readiness meter).
+**oop warmups added** (to `pyLabBatch_warmups.js`): Counter, Stack, computed @property — single-method fluency. oop-design easy tier now 3.
+**Bank now 204 problems; every world has an easy on-ramp EXCEPT python-internals** (correct — internals are inherently correctness/judgment gotchas). All 8 worlds; all gates green (0 T1 / 0 T2 / verify 0 / scan 0); schemas 204/0 errors.
+Next (Track 2): the placement diagnostic (a short quiz → role/level detection → lights up the readiness meter — the one marquee feature from the report still unbuilt); wiring a Scale-race onto the multi-step pipeline problems.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)
