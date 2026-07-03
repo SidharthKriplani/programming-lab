@@ -19,6 +19,7 @@ import { FollowUpChain } from '../components/shared/FollowUpChain.jsx';
 import { pyLabFormats } from '../data/pyLabFormats.js';
 import { pyLabFollowups } from '../data/pyLabFollowups.js';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
+import { DebriefBlocks } from '../components/shared/DebriefBlocks.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
@@ -151,7 +152,7 @@ function PyLabRunner({ problem, onBack, onSolved }) {
             <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', borderTop: '1px solid var(--border)', paddingTop: '1.1rem' }}>
               <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Model solution</div>
               <pre style={{ margin: 0, padding: '0.7rem 0.85rem', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{problem.solution}</pre>
-              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.6 }}>{problem.debrief}</div>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem' }}><DebriefBlocks text={problem.debrief} /></div>
               <JudgmentLayer problem={problem} />
               <ScaleRace problem={problem} />
               {fmt.refactor && <RefactorChallenge problem={problem} refactor={fmt.refactor} />}
@@ -192,6 +193,12 @@ export function PyLabBrowser({ onExitRoom }) {
   const progress = getProgress(KEY);
   const total = pyLabProblems.length;
   const solvedCount = Object.keys(progress.solved || {}).length;
+  // Only surface worlds that actually have content (real problems or planned stubs) —
+  // an empty world tab is a dead-end. Worlds reappear automatically once populated.
+  const visibleWorlds = useMemo(() => PYLAB_WORLDS.filter(w =>
+    pyLabProblems.some(p => w.topics.includes(p.topic)) ||
+    pyLabPlanned.some(s => w.topics.includes(s.topic))
+  ), []);
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
   if (tutorial) return <PyTutorial onExit={() => setTutorial(false)} />;
@@ -326,7 +333,7 @@ export function PyLabBrowser({ onExitRoom }) {
       <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
 
       <WorldTabs
-        worlds={PYLAB_WORLDS}
+        worlds={visibleWorlds}
         activeWorldId={activeWorld}
         gateStates={gateStates}
         onTabClick={(worldId) => {
@@ -358,7 +365,7 @@ export function PyLabBrowser({ onExitRoom }) {
             if (!p) return null;
             const icon = type === '3day' ? 'zap' : 'target';
             return (
-              <button key={type} onClick={() => { setActivePath(type); setActiveDay(1); }} className="pal-card-hover" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.9rem', cursor: 'pointer', textAlign: 'left', flex: '1 1 200px', maxWidth: 320 }}>
+              <button key={type} onClick={() => { setActivePath(type); setActiveDay(1); setLevel('all'); }} className="pal-card-hover" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.65rem 0.9rem', cursor: 'pointer', textAlign: 'left', flex: '1 1 200px', maxWidth: 320 }}>
                 <Icon name={icon} size={16} color="var(--accent)" style={{ marginTop: 2, flexShrink: 0 }} />
                 <div>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{p.label}</div>

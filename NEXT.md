@@ -4,20 +4,7 @@ _PL = Programming Lab (SWE-for-data fluency; D-07/D-15). React+Vite+Pyodide SPA.
 
 ---
 
-## ⚠ PUSH FIRST (Mac only)
-
-**0.38.0–0.42.0 are all built locally but not pushed.** Run this before anything else:
-
-```
-cd ~/Documents/Professional/BreakLabs/labs/production-systems-lab && rm -f .git/index.lock .git/HEAD.lock && npm run build && git add -A && git commit -m "PL 0.38-0.42: Icon, Worlds+Gates, ramp1, two-col layout, contrast, learning paths" && git push origin main
-```
-
-**What's in this batch:**
-- **0.38.0** — HQ Icon superset (84+4 icons, GLYPH_TO_ICON) + CompanyLogo (319 mappings) merged in; 6 emoji/glyphs replaced across PythonCell/MockLoop/models.
-- **0.39.0** — Worlds + Gates skeleton: 7-world tab layer (`pyLabWorlds.js`, `worldGates.js`, `WorldTabs.jsx`, `WorldGate.jsx`, `GateQuiz.jsx`), PyLabBrowser fully wired.
-- **0.40.0** — ramp1: `pyLabBatch_ramp1.js` — 5 warmup problems + 4 fixtures (col-mean, filter-rows, filter-notna, groupby-mean, groupby-count-nan), all CPython-verified. 141 problems / 0 T1 / 0 T2 audit clean.
-- **0.41.0** — Two-column solve layout (SQL Lab parity): reveal section moved into RIGHT column; left column (prompt+schema) stays fixed. Text contrast: Graphite theme (`data-skin='platinum'][data-theme='dark'`) boosted (`--text-muted: #9a9aa0→#bbbbc2`, `--text-secondary: #c3c3c8→#dddde2`, `--text-dim: #74747a→#9a9aa0`); debrief text changed from `var(--text-secondary)` to `var(--text)`; fixture preview from `var(--text-muted)` to `var(--text)`.
-- **0.42.0** — Learning paths built and wired: `src/data/pyLabPaths.js` (16 path objects: 7 worlds × 2 tiers + 2 lab-wide). PathSelector (two cards shown when no path active) + day strip (day buttons + title + focus + × to exit) wired into PyLabBrowser. Filter logic: day `problemIds` if populated → day `worlds` topics for lab-wide → world filter fallback. Path resets on world tab switch.
+_Deployment note: 0.38.0–0.42.0 (Icon superset, Worlds+Gates, ramp1, two-column layout, contrast, learning paths) are shipped and live._
 
 ---
 

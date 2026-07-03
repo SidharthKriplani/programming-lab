@@ -10,9 +10,11 @@
 //   per-world — tight focus on one world; days map directly to that world's concepts.
 //   lab-wide  — cross-world track; each day may pull from multiple worlds.
 //
-// STATUS: SKELETON ONLY — problemIds and conceptSlugs are empty everywhere.
-// Fill in after the problem bank has enough coverage (ramp batches 2+).
-// Do NOT import or wire this anywhere until the content is there.
+// STATUS: wired into PyLabBrowser (path selector + day strip). python-core, pandas-numpy
+// and the lab-wide tracks carry curated problemIds; the remaining worlds are populated as
+// their banks fill. When a day has problemIds, the browser filters to exactly those; a
+// lab-wide day with no problemIds falls back to its worlds' topics; a per-world day with
+// none falls back to the world's whole topic set.
 //
 // DATA-FILE SYNTAX: single quotes only; escape apostrophes as \'; no backticks.
 
@@ -26,9 +28,9 @@ export const WORLD_PATHS = {
       label: '3 Days to Intermediate',
       tagline: 'Variables to functions — the floor every screen tests',
       days: [
-        { day: 1, title: 'Day 1 — Data & Control', focus: 'int/float quirks, string ops, list mutation, if/for/while', problemIds: [], conceptSlugs: ['int-float', 'string-ops', 'list-mutation', 'for-loop'] },
-        { day: 2, title: 'Day 2 — Collections & Comprehensions', focus: 'dict, set, tuple, list/dict comprehensions, enumerate/zip', problemIds: [], conceptSlugs: ['dict-ops', 'set-ops', 'comprehensions', 'enumerate-zip'] },
-        { day: 3, title: 'Day 3 — Functions & Scope', focus: 'args/kwargs, default mutable trap, closures, lambda', problemIds: [], conceptSlugs: ['args-kwargs', 'mutable-default', 'closures', 'lambda'] },
+        { day: 1, title: 'Day 1 — Data & Control', focus: 'sorting by key, unpacking, dict merge, first-unique, anagram check', problemIds: ['pylab-idiom-sorted-key', 'pylab-idiom-starred-unpack', 'pylab-idiom-dict-merge', 'pylab-py-anagram', 'pylab-py-first-unique', 'pylab-group-names-by-team'], conceptSlugs: ['string-ops', 'list-mutation', 'sort-key', 'unpacking'] },
+        { day: 2, title: 'Day 2 — Collections & Comprehensions', focus: 'dict/list comprehensions, Counter, zip/enumerate, defaultdict grouping, any/all', problemIds: ['pylab-idiom-dict-comp-index', 'pylab-idiom-nested-vs-flat-comp', 'pylab-idiom-counter-topn', 'pylab-idiom-zip-enumerate', 'pylab-idiom-defaultdict-groupby', 'pylab-idiom-any-all'], conceptSlugs: ['comprehensions', 'counter', 'defaultdict', 'enumerate-zip'] },
+        { day: 3, title: 'Day 3 — Functions & Scope', focus: 'decorators, closures over state, context-manager decorators, reduce, generator expressions', problemIds: ['pylab-idiom-decorator-memoize', 'pylab-idiom-decorator-counter', 'pylab-idiom-contextmanager-decorator', 'pylab-idiom-reduce-running', 'pylab-idiom-gen-expr-stream'], conceptSlugs: ['closures', 'decorators', 'genexpr'] },
       ],
     },
     '7day': {
@@ -36,13 +38,13 @@ export const WORLD_PATHS = {
       label: '7 Days to Advanced',
       tagline: 'From beginner syntax to senior-bar Python',
       days: [
-        { day: 1, title: 'Day 1 — Primitives & Truthiness', focus: 'numbers, strings, booleans, truthiness traps', problemIds: [], conceptSlugs: ['int-float', 'string-ops', 'truthiness'] },
-        { day: 2, title: 'Day 2 — Collections Deep Cut', focus: 'list mutation, dict edge cases, set ops, tuple unpacking', problemIds: [], conceptSlugs: ['list-mutation', 'dict-ops', 'set-ops', 'unpacking'] },
-        { day: 3, title: 'Day 3 — Iteration Patterns', focus: 'for/while, enumerate, zip, comprehensions, generator expressions', problemIds: [], conceptSlugs: ['for-loop', 'enumerate-zip', 'comprehensions', 'genexpr'] },
-        { day: 4, title: 'Day 4 — Functions & Scope', focus: 'args/kwargs, mutable default, closures, scope rules (LEGB)', problemIds: [], conceptSlugs: ['args-kwargs', 'mutable-default', 'closures', 'legb'] },
-        { day: 5, title: 'Day 5 — Sorting, Counter & defaultdict', focus: 'sort vs sorted, key=, Counter, defaultdict, most-common patterns', problemIds: [], conceptSlugs: ['sort-key', 'counter', 'defaultdict'] },
-        { day: 6, title: 'Day 6 — Error Handling & File I/O', focus: 'try/except/finally, context manager, reading/writing files', problemIds: [], conceptSlugs: ['try-except', 'context-manager', 'file-io'] },
-        { day: 7, title: 'Day 7 — Synthesis', focus: 'mixed patterns: write a real solve() using all prior concepts', problemIds: [], conceptSlugs: [] },
+        { day: 1, title: 'Day 1 — Primitives & Truthiness', focus: 'sort keys, any/all short-circuit, anagram, first-unique', problemIds: ['pylab-idiom-sorted-key', 'pylab-idiom-any-all', 'pylab-py-anagram', 'pylab-py-first-unique'], conceptSlugs: ['sort-key', 'truthiness'] },
+        { day: 2, title: 'Day 2 — Collections Deep Cut', focus: 'dict comprehensions, dict merge, unpacking, nested comprehensions, grouping', problemIds: ['pylab-idiom-dict-comp-index', 'pylab-idiom-dict-merge', 'pylab-idiom-starred-unpack', 'pylab-idiom-nested-vs-flat-comp', 'pylab-group-names-by-team'], conceptSlugs: ['dict-ops', 'unpacking', 'comprehensions'] },
+        { day: 3, title: 'Day 3 — Iteration Patterns', focus: 'zip/enumerate, Counter top-n, defaultdict, generator streams, itertools', problemIds: ['pylab-idiom-zip-enumerate', 'pylab-idiom-counter-topn', 'pylab-idiom-defaultdict-groupby', 'pylab-idiom-gen-expr-stream', 'pylab-idiom-itertools-groupby', 'pylab-idiom-itertools-accumulate'], conceptSlugs: ['enumerate-zip', 'counter', 'genexpr', 'itertools'] },
+        { day: 4, title: 'Day 4 — Functions & Scope', focus: 'decorators, closure state, reduce/running-fold', problemIds: ['pylab-idiom-decorator-counter', 'pylab-idiom-decorator-memoize', 'pylab-idiom-reduce-running'], conceptSlugs: ['closures', 'decorators'] },
+        { day: 5, title: 'Day 5 — Sorting, Counter & defaultdict', focus: 'sort key, Counter, defaultdict, top-k-frequent, majority element', problemIds: ['pylab-idiom-sorted-key', 'pylab-idiom-counter-topn', 'pylab-idiom-defaultdict-groupby', 'pylab-py-first-k-frequent', 'pylab-py-majority-element'], conceptSlugs: ['sort-key', 'counter', 'defaultdict'] },
+        { day: 6, title: 'Day 6 — Context Managers & Iteration Protocol', focus: 'context-manager decorator, context-manager class, deque window', problemIds: ['pylab-idiom-contextmanager-decorator', 'pylab-idiom-context-class', 'pylab-idiom-deque-window'], conceptSlugs: ['context-manager', 'iterator-protocol'] },
+        { day: 7, title: 'Day 7 — Synthesis', focus: 'dunder repr/eq, len/getitem, group anagrams — put it together', problemIds: ['pylab-idiom-dunder-repr-eq', 'pylab-idiom-dunder-len-getitem', 'pylab-py-group-anagrams'], conceptSlugs: [] },
       ],
     },
   },
@@ -53,9 +55,9 @@ export const WORLD_PATHS = {
       label: '3 Days to Intermediate',
       tagline: 'Core pandas ops from scratch — DA take-home floor',
       days: [
-        { day: 1, title: 'Day 1 — Series & Single-Col Ops', focus: 'mean/sum/count, boolean filter, NaN handling', problemIds: [], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna'] },
-        { day: 2, title: 'Day 2 — groupby & Aggregation', focus: 'groupby+mean, groupby+NaN groups, multi-agg', problemIds: [], conceptSlugs: ['groupby-mean', 'groupby-count-nan', 'groupby-multi-agg'] },
-        { day: 3, title: 'Day 3 — Merge & Reshape', focus: 'inner merge, left merge+NaN, pivot_table basics', problemIds: [], conceptSlugs: ['simple-merge', 'left-merge', 'pivot-table'] },
+        { day: 1, title: 'Day 1 — Series & Single-Col Ops', focus: 'mean/count, boolean filter, NaN handling, nunique', problemIds: ['pylab-col-mean', 'pylab-filter-rows', 'pylab-filter-notna', 'pylab-groupby-nunique'], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna'] },
+        { day: 2, title: 'Day 2 — groupby & Aggregation', focus: 'groupby+mean, NaN groups, filter-before-aggregate, named agg', problemIds: ['pylab-groupby-mean', 'pylab-groupby-count-nan', 'pylab-filter-before-aggregate', 'pylab-groupby-named-agg', 'pylab-groupby-revenue'], conceptSlugs: ['groupby-mean', 'groupby-count-nan', 'groupby-multi-agg'] },
+        { day: 3, title: 'Day 3 — Merge & Reshape', focus: 'safe merge (no fan-out), left merge, pivot to a table, spread columns', problemIds: ['pylab-attach-price-no-fanout', 'pylab-keep-every-left-row', 'pylab-monthly-category-table', 'pylab-spread-category-columns'], conceptSlugs: ['simple-merge', 'left-merge', 'pivot-table'] },
       ],
     },
     '7day': {
@@ -63,13 +65,13 @@ export const WORLD_PATHS = {
       label: '7 Days to Advanced',
       tagline: 'The 20 patterns in 90% of take-homes — plus the traps',
       days: [
-        { day: 1, title: 'Day 1 — Foundations', focus: 'Series, single-col agg, boolean filter, NaN filter', problemIds: [], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna'] },
-        { day: 2, title: 'Day 2 — groupby Core', focus: 'groupby+mean, NaN group trap, multi-agg', problemIds: [], conceptSlugs: ['groupby-mean', 'groupby-count-nan', 'groupby-multi-agg'] },
-        { day: 3, title: 'Day 3 — Merge Patterns', focus: 'inner merge, duplicate fan-out trap, left merge + NaN', problemIds: [], conceptSlugs: ['simple-merge', 'merge-duplicates', 'left-merge'] },
-        { day: 4, title: 'Day 4 — Reshape & Window', focus: 'pivot_table, melt/stack, rolling window, shift', problemIds: [], conceptSlugs: ['pivot-table', 'melt', 'rolling-window', 'shift'] },
-        { day: 5, title: 'Day 5 — numpy Vectorize', focus: 'broadcasting rules, ufuncs vs apply, where, advanced indexing', problemIds: [], conceptSlugs: ['numpy-broadcast', 'numpy-where', 'numpy-index'] },
-        { day: 6, title: 'Day 6 — Judgment Layer', focus: 'which method + which trap: the dial problems', problemIds: [], conceptSlugs: [] },
-        { day: 7, title: 'Day 7 — Synthesis', focus: 'end-to-end: load → clean → aggregate → answer', problemIds: [], conceptSlugs: [] },
+        { day: 1, title: 'Day 1 — Foundations', focus: 'single-col agg, boolean filter, NaN filter, nunique', problemIds: ['pylab-col-mean', 'pylab-filter-rows', 'pylab-filter-notna', 'pylab-groupby-nunique'], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna'] },
+        { day: 2, title: 'Day 2 — groupby Core', focus: 'groupby+mean, NaN group trap, filter-first, named agg, share of total', problemIds: ['pylab-groupby-mean', 'pylab-groupby-count-nan', 'pylab-filter-before-aggregate', 'pylab-groupby-named-agg', 'pylab-groupby-share-of-total'], conceptSlugs: ['groupby-mean', 'groupby-count-nan', 'groupby-multi-agg'] },
+        { day: 3, title: 'Day 3 — Merge Patterns', focus: 'safe merge, anti-join (no orders), left merge, unmatched-key audit, stack', problemIds: ['pylab-attach-price-no-fanout', 'pylab-users-with-no-orders', 'pylab-keep-every-left-row', 'pylab-audit-unmatched-keys', 'pylab-stack-two-months'], conceptSlugs: ['simple-merge', 'merge-duplicates', 'left-merge'] },
+        { day: 4, title: 'Day 4 — Reshape & Window', focus: 'pivot table, spread/columns, quarters-to-rows, rolling, diff, cumsum', problemIds: ['pylab-monthly-category-table', 'pylab-spread-category-columns', 'pylab-quarters-to-rows', 'pylab-window-rolling-mean', 'pylab-window-diff', 'pylab-window-cumsum'], conceptSlugs: ['pivot-table', 'melt', 'rolling-window', 'shift'] },
+        { day: 5, title: 'Day 5 — numpy Vectorize', focus: 'vectorized ops, min-max normalize, cosine similarity, one-hot, softmax', problemIds: ['pylab-vectorize', 'pylab-minmax-normalize', 'pylab-cosine-similarity', 'pylab-one-hot', 'pylab-softmax'], conceptSlugs: ['numpy-broadcast', 'numpy-where', 'numpy-index'] },
+        { day: 6, title: 'Day 6 — Judgment Layer', focus: 'which method + which trap: filter-first, keep-unknown, group-mean fill, safe CTR, transform-broadcast', problemIds: ['pylab-filter-before-aggregate', 'pylab-region-total-keep-unknown', 'pylab-missing-fillna-group-mean', 'pylab-pd-metrics-safe-ctr', 'pylab-groupby-transform-broadcast'], conceptSlugs: [] },
+        { day: 7, title: 'Day 7 — Synthesis', focus: 'end-to-end: dedup → rate per group → top-n per group', problemIds: ['pylab-pd-dedup-keep-last', 'pylab-pd-metrics-rate-per-group', 'pylab-groupby-topn-per-group'], conceptSlugs: [] },
       ],
     },
   },
@@ -134,9 +136,9 @@ export const WORLD_PATHS = {
       label: '3 Days to Intermediate',
       tagline: 'Classes, inheritance, and the protocols that matter',
       days: [
-        { day: 1, title: 'Day 1 — Class Basics', focus: '__init__, instance vs class attributes, @property', problemIds: [], conceptSlugs: ['class-init', 'class-vs-instance', 'property'] },
-        { day: 2, title: 'Day 2 — Inheritance & MRO', focus: 'super(), MRO (C3), ABC and abstract methods', problemIds: [], conceptSlugs: ['inheritance', 'mro', 'abc'] },
-        { day: 3, title: 'Day 3 — Composition & Protocols', focus: 'composition over inheritance, iterator protocol, context manager', problemIds: [], conceptSlugs: ['composition', 'iterator-protocol', 'context-manager'] },
+        { day: 1, title: 'Day 1 — Class Basics', focus: '__init__, instance vs class attributes, @property', problemIds: ['oop-bank-account', 'oop-running-average', 'oop-computed-property', 'oop-property-validation'], conceptSlugs: ['class-init', 'class-vs-instance', 'property'] },
+        { day: 2, title: 'Day 2 — Dataclasses & Dunder', focus: 'dataclass records, frozen, default factory, __eq__/__hash__, __add__', problemIds: ['oop-dataclass-record', 'oop-frozen-point', 'oop-dataclass-default-factory', 'oop-dunder-eq-hash', 'oop-dunder-add'], conceptSlugs: ['dataclasses', 'dunder-eq-hash'] },
+        { day: 3, title: 'Day 3 — Inheritance, Composition & Protocols', focus: 'override, has-a composition, sort key dunder, classmethod/staticmethod', problemIds: ['oop-inheritance-override', 'oop-composition-has-a', 'oop-dunder-lt-sort', 'oop-classmethod-from-dict', 'oop-staticmethod-util'], conceptSlugs: ['inheritance', 'composition', 'abc'] },
       ],
     },
     '7day': {
@@ -144,13 +146,13 @@ export const WORLD_PATHS = {
       label: '7 Days to Advanced',
       tagline: 'From class basics to design patterns for data systems',
       days: [
-        { day: 1, title: 'Day 1 — Class Mechanics', focus: '__init__, instance/class/static, @property, slots', problemIds: [], conceptSlugs: ['class-init', 'class-vs-instance', 'property', 'slots'] },
-        { day: 2, title: 'Day 2 — Inheritance & MRO', focus: 'super(), MRO, diamond problem, ABC/Protocol', problemIds: [], conceptSlugs: ['inheritance', 'mro', 'abc', 'typing-protocol'] },
-        { day: 3, title: 'Day 3 — Dunder Methods', focus: '__repr__, __eq__/__hash__, __len__, __getitem__', problemIds: [], conceptSlugs: ['dunder-repr', 'dunder-eq-hash', 'dunder-len', 'dunder-getitem'] },
-        { day: 4, title: 'Day 4 — Iterator & Context Protocol', focus: '__iter__/__next__, the context manager, contextlib', problemIds: [], conceptSlugs: ['iterator-protocol', 'context-manager'] },
-        { day: 5, title: 'Day 5 — Composition Patterns', focus: 'composition over inheritance, mixin, decorator pattern', problemIds: [], conceptSlugs: ['composition', 'mixin', 'decorator-pattern'] },
-        { day: 6, title: 'Day 6 — Data Classes & Typing', focus: 'dataclasses, NamedTuple, Pydantic basics, Enum', problemIds: [], conceptSlugs: ['dataclasses', 'namedtuple', 'pydantic', 'enum'] },
-        { day: 7, title: 'Day 7 — Design for Scale', focus: 'registry pattern, strategy, plugin arch — in Python', problemIds: [], conceptSlugs: ['registry-pattern', 'strategy-pattern'] },
+        { day: 1, title: 'Day 1 — Class Mechanics', focus: '__init__, instance/class attrs, @property, validation', problemIds: ['oop-bank-account', 'oop-running-average', 'oop-computed-property', 'oop-property-validation'], conceptSlugs: ['class-init', 'class-vs-instance', 'property'] },
+        { day: 2, title: 'Day 2 — Rate Limiter & State', focus: 'stateful objects: rate limiter over a counter', problemIds: ['oop-rate-limiter-counter'], conceptSlugs: ['class-vs-instance'] },
+        { day: 3, title: 'Day 3 — Dunder Methods', focus: '__eq__/__hash__ contract, __lt__ for sort, __add__', problemIds: ['oop-dunder-eq-hash', 'oop-dunder-lt-sort', 'oop-dunder-add'], conceptSlugs: ['dunder-eq-hash'] },
+        { day: 4, title: 'Day 4 — Dataclasses & Typing', focus: 'dataclass record, frozen, default factory', problemIds: ['oop-dataclass-record', 'oop-frozen-point', 'oop-dataclass-default-factory'], conceptSlugs: ['dataclasses'] },
+        { day: 5, title: 'Day 5 — Composition Patterns', focus: 'composition over inheritance, override', problemIds: ['oop-composition-has-a', 'oop-inheritance-override'], conceptSlugs: ['composition', 'inheritance'] },
+        { day: 6, title: 'Day 6 — Constructors & Utilities', focus: 'classmethod alternate constructor, staticmethod utility', problemIds: ['oop-classmethod-from-dict', 'oop-staticmethod-util'], conceptSlugs: ['classmethod', 'staticmethod'] },
+        { day: 7, title: 'Day 7 — Synthesis', focus: 'combine validation, dunder, dataclass into one design', problemIds: ['oop-property-validation', 'oop-dunder-eq-hash', 'oop-dataclass-default-factory'], conceptSlugs: [] },
       ],
     },
   },
@@ -222,25 +224,25 @@ export const LAB_PATHS = {
     tagline: 'The Python + pandas floor every DA/DS screen tests',
     worlds: ['python-core', 'pandas-numpy'],
     days: [
-      { day: 1, title: 'Day 1 — Python Core Floor', focus: 'Collections, comprehensions, functions — the assumed baseline', worlds: ['python-core'], problemIds: [], conceptSlugs: ['list-mutation', 'dict-ops', 'comprehensions', 'args-kwargs'] },
-      { day: 2, title: 'Day 2 — pandas Foundations', focus: 'Single-col ops, boolean filter, NaN, first groupby', worlds: ['pandas-numpy'], problemIds: [], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna', 'groupby-mean'] },
-      { day: 3, title: 'Day 3 — pandas Aggregation', focus: 'groupby edge cases, multi-agg, inner merge', worlds: ['pandas-numpy'], problemIds: [], conceptSlugs: ['groupby-count-nan', 'groupby-multi-agg', 'simple-merge'] },
+      { day: 1, title: 'Day 1 — Python Core Floor', focus: 'Comprehensions, grouping, zip/enumerate, memoize', worlds: ['python-core'], problemIds: ['pylab-idiom-dict-comp-index', 'pylab-idiom-defaultdict-groupby', 'pylab-idiom-zip-enumerate', 'pylab-idiom-decorator-memoize'], conceptSlugs: ['comprehensions', 'defaultdict'] },
+      { day: 2, title: 'Day 2 — pandas Foundations', focus: 'Single-col ops, boolean filter, NaN, first groupby', worlds: ['pandas-numpy'], problemIds: ['pylab-col-mean', 'pylab-filter-rows', 'pylab-filter-notna', 'pylab-groupby-mean'], conceptSlugs: ['col-mean', 'filter-rows', 'groupby-mean'] },
+      { day: 3, title: 'Day 3 — pandas Aggregation', focus: 'groupby edge cases, named agg, safe merge', worlds: ['pandas-numpy'], problemIds: ['pylab-groupby-count-nan', 'pylab-groupby-named-agg', 'pylab-attach-price-no-fanout'], conceptSlugs: ['groupby-count-nan', 'simple-merge'] },
     ],
   },
 
   '7day': {
     id: 'lab-7day',
     label: '7 Days to Advanced',
-    tagline: 'Full-stack fluency — Python internals to pandas judgment to DSA',
-    worlds: ['python-core', 'python-internals', 'pandas-numpy', 'dsa-patterns'],
+    tagline: 'Full-stack fluency — Python idioms to pandas judgment to DSA',
+    worlds: ['python-core', 'pandas-numpy'],
     days: [
-      { day: 1, title: 'Day 1 — Python Core', focus: 'Collections, comprehensions, functions, closures', worlds: ['python-core'], problemIds: [], conceptSlugs: ['dict-ops', 'comprehensions', 'args-kwargs', 'closures'] },
-      { day: 2, title: 'Day 2 — Python Internals', focus: 'is vs ==, mutable default, late-binding, generators', worlds: ['python-internals'], problemIds: [], conceptSlugs: ['is-vs-eq', 'mutable-default', 'late-binding', 'generators'] },
-      { day: 3, title: 'Day 3 — pandas Foundations', focus: 'Single-col ops, filter, NaN, groupby core', worlds: ['pandas-numpy'], problemIds: [], conceptSlugs: ['col-mean', 'filter-rows', 'filter-notna', 'groupby-mean', 'groupby-count-nan'] },
-      { day: 4, title: 'Day 4 — pandas Advanced', focus: 'Multi-agg, merge patterns, pivot, window', worlds: ['pandas-numpy'], problemIds: [], conceptSlugs: ['groupby-multi-agg', 'merge-duplicates', 'left-merge', 'pivot-table', 'rolling-window'] },
-      { day: 5, title: 'Day 5 — DSA Patterns I', focus: 'Hashing, two-pointer, sliding window', worlds: ['dsa-patterns'], problemIds: [], conceptSlugs: ['hash-frequency', 'two-pointer', 'sliding-fixed', 'sliding-variable'] },
-      { day: 6, title: 'Day 6 — DSA Patterns II', focus: 'Binary search, heap, BFS/DFS', worlds: ['dsa-patterns'], problemIds: [], conceptSlugs: ['binary-search', 'heap-k-largest', 'bfs-level', 'dfs-grid'] },
-      { day: 7, title: 'Day 7 — Judgment & Synthesis', focus: 'Traps across all worlds: which is right and why', worlds: ['python-core', 'pandas-numpy', 'dsa-patterns'], problemIds: [], conceptSlugs: [] },
+      { day: 1, title: 'Day 1 — Python Core', focus: 'Comprehensions, Counter, zip/enumerate, memoize', worlds: ['python-core'], problemIds: ['pylab-idiom-dict-comp-index', 'pylab-idiom-counter-topn', 'pylab-idiom-zip-enumerate', 'pylab-idiom-decorator-memoize'], conceptSlugs: ['comprehensions', 'counter'] },
+      { day: 2, title: 'Day 2 — Closures & Generators', focus: 'Closure state, generator streams, reduce/running-fold', worlds: ['python-core'], problemIds: ['pylab-idiom-decorator-counter', 'pylab-idiom-gen-expr-stream', 'pylab-idiom-reduce-running'], conceptSlugs: ['closures', 'genexpr'] },
+      { day: 3, title: 'Day 3 — pandas Foundations', focus: 'Single-col ops, filter, NaN, groupby core', worlds: ['pandas-numpy'], problemIds: ['pylab-col-mean', 'pylab-filter-rows', 'pylab-filter-notna', 'pylab-groupby-mean', 'pylab-groupby-count-nan'], conceptSlugs: ['col-mean', 'groupby-mean'] },
+      { day: 4, title: 'Day 4 — pandas Advanced', focus: 'Named agg, unmatched-key audit, left merge, pivot, rolling', worlds: ['pandas-numpy'], problemIds: ['pylab-groupby-named-agg', 'pylab-audit-unmatched-keys', 'pylab-keep-every-left-row', 'pylab-monthly-category-table', 'pylab-window-rolling-mean'], conceptSlugs: ['groupby-multi-agg', 'left-merge', 'pivot-table'] },
+      { day: 5, title: 'Day 5 — DSA Patterns I', focus: 'Hashing, two-pointer, sliding window', worlds: ['python-core'], problemIds: ['pylab-py-two-sum', 'pylab-py-group-anagrams', 'pylab-py-pair-sum-sorted', 'pylab-py-max-window-sum', 'pylab-py-min-window-len'], conceptSlugs: ['hash-frequency', 'two-pointer', 'sliding-variable'] },
+      { day: 6, title: 'Day 6 — DSA Patterns II', focus: 'Binary search, heap, intervals', worlds: ['python-core'], problemIds: ['pylab-py-binary-search', 'pylab-py-search-insert', 'pylab-py-k-largest', 'pylab-py-top-k-frequent-heap', 'pylab-py-merge-intervals'], conceptSlugs: ['binary-search', 'heap-k-largest', 'merge-intervals'] },
+      { day: 7, title: 'Day 7 — Judgment & Synthesis', focus: 'Traps across worlds: which is right and why', worlds: ['python-core', 'pandas-numpy'], problemIds: ['pylab-filter-before-aggregate', 'pylab-py-max-water', 'pylab-groupby-share-of-total'], conceptSlugs: [] },
     ],
   },
 

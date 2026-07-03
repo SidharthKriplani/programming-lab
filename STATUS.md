@@ -1,11 +1,13 @@
 # PL — STATUS
 
-_Last updated: 2026-06-25 (session close). **0.38.0–0.42.0 built locally, push pending.** Push first — see NEXT.md for the exact git command._
+_Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.** 0.43.0 (come-alive Track-1) built locally, ready for review._
 
-**Current version: PL 0.42.0 (local, unpushed)**
-**Live on Vercel: PL 0.37.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates NOT yet live)
+**0.43.0 — come-alive Track 1 (D-PL-29), local:** `DebriefBlocks` wired into the PyLab reveal (labeled debrief grammar); `pyLabPaths.js` problemIds populated for python-core/pandas-numpy/oop-design + lab-wide (165 IDs, validated); empty world tabs hidden (render only worlds with real/planned content); path-open resets the level filter. Next: Data-craft world (Track-2 #1).
 
-**What's pending push (0.38.0–0.42.0):**
+**Current version: PL 0.42.0 (live)**
+**Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)
+
+**Shipped in 0.38.0–0.42.0:**
 - **0.38.0** — HQ Icon superset (84+4 icons, GLYPH_TO_ICON) + CompanyLogo (319 company mappings); 6 emoji/glyph occurrences replaced with Icon components.
 - **0.39.0** — Worlds + Gates: 7-world tab layer over PyLabBrowser. Files: `pyLabWorlds.js` (7 worlds + topic mappings), `worldGates.js` (localStorage `pl-world-gates-v1`), `WorldTabs.jsx`, `WorldGate.jsx` (two-path unlock overlay), `GateQuiz.jsx` (MCQ quiz, 80% threshold, graceful fallback when < 3 MCQs). PyLabBrowser fully wired.
 - **0.40.0** — Content ramp batch 1: `pyLabBatch_ramp1.js` — 5 warmup problems (col-mean, filter-rows, filter-notna, groupby-mean, groupby-count-nan) + 4 engineered fixtures. All CPython-verified; 141 problems total / 0 T1 / 0 T2 audit clean.
