@@ -37,6 +37,8 @@ const TOPIC_ROLES = {
   'dsa':             ['SWE', 'MLE', 'AIE', 'DS'],
   'ml-scratch':      ['DS', 'MLE', 'AIE'],
   'ai-eng':          ['AIE', 'MLE', 'DS'],
+  'internals':       ['SWE', 'MLE', 'AIE', 'DS'],
+  'code-craft':      ['SWE', 'MLE', 'AIE', 'DA', 'DS'],
 };
 
 export function rolesOf(p) {

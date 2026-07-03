@@ -109,9 +109,9 @@ export const WORLD_PATHS = {
       label: '3 Days to Intermediate',
       tagline: 'The gotchas that separate mid from senior',
       days: [
-        { day: 1, title: 'Day 1 — Identity & Mutation', focus: 'is vs ==, copy vs reference, mutable default', problemIds: [], conceptSlugs: ['is-vs-eq', 'mutable-default'] },
-        { day: 2, title: 'Day 2 — Closures & Scope', focus: 'LEGB, late-binding, the loop closure trap', problemIds: [], conceptSlugs: ['closures', 'late-binding'] },
-        { day: 3, title: 'Day 3 — Generators & Iterators', focus: 'yield, lazy evaluation, generator vs list RAM cost', problemIds: [], conceptSlugs: ['generators', 'iterator-protocol'] },
+        { day: 1, title: 'Day 1 — Identity & Mutation', focus: 'is vs ==, shallow-vs-deep copy, the mutable default', problemIds: ['int-is-vs-eq', 'int-shallow-vs-deep', 'int-mutable-default'], conceptSlugs: ['is-vs-eq', 'mutable-default'] },
+        { day: 2, title: 'Day 2 — Closures & Scope', focus: 'late-binding, the loop closure trap', problemIds: ['int-late-binding'], conceptSlugs: ['closures', 'late-binding'] },
+        { day: 3, title: 'Day 3 — Generators & the eq/hash contract', focus: 'generator exhaustion, __eq__/__hash__ consistency', problemIds: ['int-generator-exhaustion', 'int-eq-hash-contract'], conceptSlugs: ['generators', 'iterator-protocol'] },
       ],
     },
     '7day': {
@@ -190,9 +190,9 @@ export const WORLD_PATHS = {
       label: '3 Days to Intermediate',
       tagline: 'Testing and typing — the senior floor',
       days: [
-        { day: 1, title: 'Day 1 — Testing Basics', focus: 'assert patterns, edge case discipline, pytest basics', problemIds: [], conceptSlugs: ['assert-patterns', 'edge-cases'] },
-        { day: 2, title: 'Day 2 — Type Hints', focus: 'basic type hints, Optional, Union, List/Dict generics', problemIds: [], conceptSlugs: ['type-hints', 'optional', 'generics'] },
-        { day: 3, title: 'Day 3 — Refactoring', focus: 'extract function, name the concept, single responsibility', problemIds: [], conceptSlugs: ['extract-function', 'srp'] },
+        { day: 1, title: 'Day 1 — Correctness Traps', focus: 'off-by-one, integer division — the bugs code review catches', problemIds: ['cc-off-by-one-sum', 'cc-safe-mean-intdiv'], conceptSlugs: ['assert-patterns', 'edge-cases'] },
+        { day: 2, title: 'Day 2 — Types & Normalisation', focus: 'numeric-vs-lexical, case normalisation', problemIds: ['cc-numeric-vs-lexical', 'cc-case-insensitive-distinct'], conceptSlugs: ['type-hints', 'normalization'] },
+        { day: 3, title: 'Day 3 — Don\'t Mutate Inputs', focus: 'sorted() vs .sort(), side-effect-free functions', problemIds: ['cc-no-mutate-input'], conceptSlugs: ['no-mutate', 'srp'] },
       ],
     },
     '7day': {

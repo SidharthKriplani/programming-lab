@@ -90,7 +90,7 @@ _Worlds: pandas-numpy (mechanics) + data-craft (judgment). The DA/DS/PA take-hom
 - [~] **Data-manipulation medium→advanced top-up** — started (fan-out, chained-indexing, pipeline). More multi-step + a scale race to go.
 - [~] **Data-structures ladder** — started (4 senior traps). Easy/medium reflex tier + more structure-choice traps (set-vs-list membership, deque vs list, heap vs sort) still to fill.
 - [ ] **Data-craft v2** — grow 10 → ~25.
-- [ ] **oop/internals/code-craft** — fill remaining worlds.
+- [x] **python-internals + code-craft worlds** — done (2026-07-03): 6 + 5 problems; **all 8 of 8 worlds now populated** (181 problems total). oop already had 15.
 - [ ] **Placement diagnostic** — once worlds are populated (deferred in D-PL-29).
 
 **Every batch:** verify all solutions + honest methods + traps in CPython first → wire → `audit_py`/`verify_py_methods`/`py_content_scan` all green → rubric-score the batch → update this tracker's counts + checkboxes.
