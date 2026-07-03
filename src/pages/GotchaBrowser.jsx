@@ -1,18 +1,33 @@
 // GotchaBrowser — the DO-rung room: browse Python gotchas, open one to practice.
 // Named export (App lazy-imports it with the named-export pattern).
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { gotchaProblems, CLUSTERS, CLUSTER_ORDER } from '../data/gotchaProblems.js';
 import { GotchaRunner } from './GotchaRunner.jsx';
 import { HowToStrip } from '../components/shared/HowToStrip.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { getProgress } from '../utils/gotchaProgress.js';
 import { isUnlocked } from '../utils/unlock.js';
+import { parseHash, setHash } from '../utils/hashRoute.js';
 
 const GRID_COLS = 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))';
 
-export function GotchaBrowser() {
-  const [activeId, setActiveId] = useState(null);
+export function GotchaBrowser({ initialTarget }) {
+  // Deep link: open the gotcha named in #/gotchas/<id> on first mount.
+  const [activeId, setActiveId] = useState(() =>
+    (initialTarget && gotchaProblems.some(p => p.id === initialTarget)) ? initialTarget : null);
   const progress = getProgress();
+
+  // Reflect the open gotcha into the URL, and follow back/forward.
+  useEffect(() => { setHash('gotchas', activeId || ''); }, [activeId]);
+  useEffect(() => {
+    const onHash = () => {
+      const { view, sub } = parseHash();
+      if (view !== 'gotchas') return;
+      setActiveId((sub && gotchaProblems.some(p => p.id === sub)) ? sub : null);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   const ordered = gotchaProblems
     .slice()

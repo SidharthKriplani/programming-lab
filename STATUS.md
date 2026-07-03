@@ -1,6 +1,22 @@
 # PL — STATUS
 
-_Last updated: 2026-07-03 (session close). **0.38.0–0.42.0 shipped and live.** 0.43.0 (come-alive Track-1) built locally, ready for review._
+_Last updated: 2026-07-03 (session close). PL 0.43.x — the "come-alive" program. Built + verified locally in incremental batches; commit/push commands handed to Sidharth's Mac per batch (approve-first)._
+
+## Where we are now (read this first)
+
+- **264 problems + 23 planned stubs. All 8 worlds populated. All gates green (audit 0 T1 / 0 T2, method-verify 0, content-scan 0).** Schemas regenerated for all 264 (0 errors).
+- **Full solve loop (SQL-Lab parity):** Check (⌘/Ctrl+Enter — runs your solve() and shows YOUR output, no grade) → Submit (manual; grades vs the canonical, records **attempt history**) → **gated two-step reveal**. Structured input tables (DataFrames render as tables; lists/dicts as titled value cards).
+- **Placement diagnostic** ("Find my level" — 9-question ladder quiz → sets role/level, persists to `pl-placement-v1`) + the PyLabReadiness dashboard. This closes the come-alive report's three gaps (learning paths, world coverage, diagnostic).
+- **Difficulty ladder complete** easy→advanced across worlds (python-internals has no easy tier by design — internals ARE gotchas). 9 stretch/systems problems (were 0).
+- **Common-band breadth:** 30 pandas (everyday + joins/groupby/selection) + 30 vanilla-Python (strings/collections/parsing/number) problems; + **12 FAANG-level planned skeletons** (`pyLabPlanned.js`, curriculum "FAANG interview").
+- **Deep linking (D-PL-30):** every room at `#/<view>`; every **PyLab problem** at `#/pylab/<id>`; every **gotcha** at `#/gotchas/<id>`. Shareable, bookmarkable, back/forward aware. `src/utils/hashRoute.js`; wired in App/PyLabBrowser/GotchaBrowser. Follow-up: per-item deep links for foundations/judge/build (rooms addressable, items not yet).
+- **Readability** fixed at the root (`-webkit-font-smoothing: antialiased` was thinning every glyph → subpixel) + near-white Platinum `--surface-2` + near-black text tokens (charcoal reserved for hints only).
+- **Discipline:** every problem CPython-verified before it touched JS; ~120 new problems this session, zero shipped bugs. JSX changes esbuild-validated (real `npm run build` runs on Sidharth's Mac).
+- **PARKED to shift focus to PAL.** Remaining PyLab backlog: `docs/PYLAB-TRACK2-BACKLOG.md` + `NEXT.md` — Scale-race on pipeline problems; author the 12 FAANG skeletons; foundations/judge/build item deep links; oop/internals warmups.
+
+_The chronological session log (per-batch detail) follows below._
+
+---
 
 **0.43.0 — come-alive Track 1 + Data-craft world (D-PL-29), local:**
 - Track 1: `DebriefBlocks` wired into the PyLab reveal (labeled debrief grammar); `pyLabPaths.js` problemIds populated for python-core/pandas-numpy/oop-design + lab-wide (validated); empty world tabs hidden (render only worlds with real/planned content); path-open resets the level filter.

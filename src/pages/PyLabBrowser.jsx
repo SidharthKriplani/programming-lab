@@ -36,6 +36,7 @@ import { getAllGateStates, unlockWorld } from '../utils/worldGates.js';
 import { WorldTabs } from '../components/shared/WorldTabs.jsx';
 import { WorldGate } from '../components/shared/WorldGate.jsx';
 import { GateQuiz } from '../components/shared/GateQuiz.jsx';
+import { parseHash, setHash } from '../utils/hashRoute.js';
 
 const KEY = 'pl-pylab-progress-v1';
 const DIFFS = ['all', 'warmup', 'core', 'stretch'];
@@ -253,8 +254,10 @@ function oneLine(p) {
   return first.length > 130 ? first.slice(0, 128).trim() + '…' : first;
 }
 
-export function PyLabBrowser({ onExitRoom }) {
-  const [activeId, setActiveId] = useState(null);
+export function PyLabBrowser({ onExitRoom, initialTarget }) {
+  // Deep link: open the problem named in #/pylab/<id> on first mount.
+  const [activeId, setActiveId] = useState(() =>
+    (initialTarget && pyLabProblems.some(p => p.id === initialTarget)) ? initialTarget : null);
   const [role, setRole] = useState('all');
   const [level, setLevel] = useState('all');
   const [topic, setTopic] = useState('all');
@@ -278,6 +281,18 @@ export function PyLabBrowser({ onExitRoom }) {
     pyLabProblems.some(p => w.topics.includes(p.topic)) ||
     pyLabPlanned.some(s => w.topics.includes(s.topic))
   ), []);
+
+  // Deep linking: reflect the open problem into the URL, and follow back/forward.
+  useEffect(() => { setHash('pylab', activeId || ''); }, [activeId]);
+  useEffect(() => {
+    const onHash = () => {
+      const { view, sub } = parseHash();
+      if (view !== 'pylab') return;
+      setActiveId((sub && pyLabProblems.some(p => p.id === sub)) ? sub : null);
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
   if (tutorial) return <PyTutorial onExit={() => setTutorial(false)} />;

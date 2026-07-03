@@ -12,7 +12,7 @@ Act as a product + engineering partner, not an assistant. Push back when somethi
 
 ## What PL is (5 lines)
 
-**Programming Lab (PL)** is the SWE-for-data fluency lab — the Python, DSA, and pandas fluency the analytics/ML labs assume you already have (HQ **D-07**; the FLUENCY rung of the Competence Model, **D-15**). React + Vite SPA running real CPython in-browser via **Pyodide**, with a **glass-box** layer that shows the time + memory each run actually costs. localStorage-only (no auth yet). Deployed on Vercel. GitHub repo: `github.com/SidharthKriplani/programming-lab`. Local folder: `labs/production-systems-lab` (slug renamed, folder kept). Current: PL 0.2.0.
+**Programming Lab (PL)** is the SWE-for-data fluency lab — the Python, DSA, and pandas fluency the analytics/ML labs assume you already have (HQ **D-07**; the FLUENCY rung of the Competence Model, **D-15**). React + Vite SPA running real CPython in-browser via **Pyodide**, with a **glass-box** layer that shows the time + memory each run actually costs. localStorage-only (no auth yet). Deployed on Vercel. GitHub repo: `github.com/SidharthKriplani/programming-lab`. Local folder: `labs/production-systems-lab` (slug renamed, folder kept). Current: **PL 0.43.x** — the "come-alive" program done: **264 problems across all 8 worlds**, the Check/Submit/attempts/gated-reveal solve loop, structured input tables, a "Find my level" placement diagnostic, learning paths, and **deep linking** (`#/pylab/<id>`, `#/gotchas/<id>`, `#/<room>`; `src/utils/hashRoute.js`). All four gates green. **PyLab gate is `scripts/audit_py.py` + `verify_py_methods.py` + `py_content_scan.mjs`** (the gotcha bank still uses `audit_problems.py`). Read `STATUS.md` ("Where we are now") first. PyLab is parked to focus on PAL.
 
 ---
 

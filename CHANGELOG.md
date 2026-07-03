@@ -5,6 +5,27 @@ All notable changes to the Production Systems Lab will be documented in this fil
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [PL 0.43.0] - 2026-07-03 — The "come-alive" program (D-PL-29) + deep linking (D-PL-30)
+
+> PyLab went from 141 problems in 2 usable worlds to **264 across all 8**, with a real practice loop, structured inputs, a placement diagnostic, common-band breadth (30 pandas + 30 python), 12 FAANG skeletons, readability fixes, and app-wide deep linking. Every problem CPython-verified before it touched JS; zero shipped bugs. Built + verified locally in batches, handed to Sidharth's Mac (approve-first).
+
+### Added
+- **All 8 worlds populated** — Data Craft (analyst judgment), DSA Patterns (via a topic re-tag of the existing drills), AI/ML Craft (k-NN, precision/recall, sigmoid, train-stat standardization; cosine top-k, recall@k, MRR, chunking, LLM-as-judge), Python Internals, Code Craft — plus deepened pandas/idioms/oop. New batch files `pyLabBatch_{datacraft,ladder1,aiml,internals,advanced,v2,warmups,pandas_everyday,pandas2,python_basics,python_basics2}.js`.
+- **Solve loop (SQL-Lab parity):** Check (⌘/Ctrl+Enter — runs your `solve()` and shows your output; `runPyLabCheck`) vs Submit (grades vs the canonical, records **attempt history** in `problemProgress.js`); a **gated two-step Reveal**; `DebriefBlocks` labeled-debrief grammar wired into the reveal.
+- **Structured inputs** — `pyLabSchemas.js` regenerated for all problems; `PyLabSchema` renders DataFrames as tables and lists/dicts as titled value cards.
+- **Placement diagnostic** — `src/components/shared/PlacementDiagnostic.jsx` ("Find my level" quiz → sets role/level, persists to `pl-placement-v1`).
+- **Learning paths** curated (`pyLabPaths.js` problemIds); **empty world tabs hidden**; **difficulty ladder** filled (first 9 stretch/systems problems, up from 0).
+- **12 FAANG-level planned skeletons** in `pyLabPlanned.js` (curriculum "FAANG interview").
+- **Deep linking** — `src/utils/hashRoute.js`; rooms at `#/<view>`, PyLab problems at `#/pylab/<id>`, gotchas at `#/gotchas/<id>` (back/forward aware).
+- **Docs** — `docs/PYLAB-COME-ALIVE-REPORT.md`, `docs/PYLAB-CONTENT-RUBRIC.md`, `docs/PYLAB-TRACK2-BACKLOG.md`.
+
+### Fixed
+- **Readability** — `-webkit-font-smoothing: antialiased` (thinned every glyph on macOS/Chrome) → subpixel + base weight 450; Platinum `--surface-2` mid-gray (#dcdcdc) → near-white (#eef0f2); text tokens to near-black (charcoal reserved for hints only).
+- **Tab click** no longer forces the correctness level filter; a pre-existing broken trap (`pylab-col-mean`) fixed — `fx_scores` gained a 2nd numeric column so the `df.mean()` Series-trap actually diverges.
+
+### Notes
+- All four gates green throughout (audit 0 T1/T2, method-verify 0, content-scan 0). Stale "push pending" blocks removed from the md spine + root operating memory (everything had shipped).
+
 ## [PL 0.37.0] - 2026-06-24 — PyLab beginner tutorial ladder (the SQLBolt-style on-ramp)
 
 > The welcome mat in front of the PyLab gym: a complete beginner climbs short guided lessons until they can write a passing solve(), then graduates into the bank. Mirrors PAL's SQL Lab tutorial banner; lives entirely inside PyLab (nothing standalone).

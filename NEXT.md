@@ -4,53 +4,22 @@ _PL = Programming Lab (SWE-for-data fluency; D-07/D-15). React+Vite+Pyodide SPA.
 
 ---
 
-_Deployment note: 0.38.0–0.42.0 shipped and live. 0.43.0 (come-alive Track 1 + Data-craft world) built locally — see STATUS.md._
+_Deployment note: PL 0.43.x — the "come-alive" program (D-PL-29) is essentially complete: **264 problems, all 8 worlds, the full Check/Submit/attempts/gated-reveal loop, structured inputs, the placement diagnostic, and deep linking (D-PL-30)**. Built + verified locally in batches, handed to Sidharth's Mac per batch (approve-first). Current state at a glance: STATUS.md → "Where we are now". **PyLab is PARKED to focus on PAL.**_
 
 ---
 
-## ▶ ACTIVE PROGRAM — "Make PyLab come alive" (D-PL-29)
+## ▶ When PyLab resumes — the backlog
 
-The authority for content work is now **`docs/PYLAB-TRACK2-BACKLOG.md`** (the full universe by world × difficulty ladder × role, with checkboxes) + **`docs/PYLAB-CONTENT-RUBRIC.md`** (the bar every problem clears). Track 1 (debrief grammar, paths, hide-empty-worlds) + Data-craft v1 (10 problems) are done locally.
+Content authority: **`docs/PYLAB-TRACK2-BACKLOG.md`** (world × ladder × role, checkboxes) + **`docs/PYLAB-CONTENT-RUBRIC.md`** (the bar every problem clears). Everything in the original come-alive report is done: all 8 worlds populated, learning paths curated, empty worlds hidden, diagnostic built, difficulty ladder complete, 30 pandas + 30 python common-band breadth, 12 FAANG skeletons stubbed, deep linking.
 
-**Immediate next (from the backlog, in order):**
-1. **DSA taxonomy fix** — re-tag the DSA problems living under the `python-core` topic to `dsa` so the empty DSA world lights up (near-zero authoring, high leverage).
-2. **ML-from-scratch + AI-engineering world** — ~10 problems (k-NN, precision/recall, gradient step; cosine-sim retrieval@k, chunking, LLM-as-judge as pure logic over fixtures).
-3. **Fill the senior/advanced tier** — the whole bank has 0 stretch/systems problems; author the first multi-step pipeline + scale-race problems.
-4. **Data-structures reflex ladder** (easy→senior) + **data-manipulation medium→advanced top-up**.
+**Remaining, roughly in priority:**
+1. **Author the 12 FAANG skeletons** into real gated problems (`pyLabPlanned.js` curriculum "FAANG interview" → a new `pyLabBatch_faang.js`): LRU cache, median-of-stream, top-K buckets, LIS, num-islands, coin-change, word-break, longest-substring, merge_asof, top-N-per-group-ties, sessionize, rolling-per-group. Verify-first; note these sit ABOVE the easy→med charter (D-PL-07) — an intentional exception.
+2. **Wire the Scale-race** onto the multi-step pipeline / stretch problems so the glass-box cost view pays off (ScaleRace already renders in the reveal; give the pipeline problems bench-worthy method variants).
+3. **Per-item deep links** for foundations modules / judge / build (rooms are addressable via `#/<view>`; items are not yet — extend the `src/utils/hashRoute.js` pattern already used by PyLab + Gotchas). See D-PL-30.
+4. **oop + python-internals warmups** (their easy tier is thin/absent) + continued depth per the backlog buckets.
+5. **Grow ambiguity / refactor / follow-up coverage** (`pyLabFormats.js`, `pyLabFollowups.js`) toward ~40–50% of the bank.
 
-The pandas ramp-6-10 batch below is folded into backlog Bucket 2 (still valid seeds).
-
----
-
-## ⏸ RESUME HERE — Content batch 2 (ramp 6-10)
-
-**Context:** pandas/numpy world concept ladder — batch 1 (ramp 1-5) done. Batch 2 = the next 5 concepts. Same rules: one new concept per problem, CPython-verify all solutions+traps before transcribing, run audit gate (0 T1), then batch 3.
-
-**Batch 2 (ramp 6-10):**
-6. **groupby + multi-agg** — `df.groupby('dept', as_index=False).agg({'score': 'mean', 'salary': 'sum'})`. New concept: multiple aggregations in one groupby. Trap: `agg('mean')` vs `agg({'col': 'mean'})` returns different shapes.
-7. **simple inner merge** — `pd.merge(left, right, on='key')`. New concept: first join. Trap: assumes key is unique — silent row multiplication if it isn't.
-8. **merge with duplicate keys (fan-out trap)** — same `merge(on='key')` but `right` has duplicate keys → 4 rows from 2×2 fan-out. The trap IS the concept: show the cardinality blow-up.
-9. **left merge + missing values** — `merge(how='left')`. New concept: `how='left'` keeps all left rows; unmatched right = NaN. Trap: inner merge silently drops them.
-10. **pivot_table** — `df.pivot_table(index='dept', columns='role', values='score', aggfunc='mean')`. New concept: reshape (rows→column headers). Trap: `pivot` vs `pivot_table` (pivot fails on duplicates).
-
-**Per-problem schema (full depth):** `id, title, topic, level, fixtureId, prompt, beforeWriting, starterCode, solution, compare, methods[] (≥2, one isTrap), mcqs[] (≥1), hints[] (tiered), glassBox, dial`
-
-**Fixtures needed:**
-- For 6: `fx_dept_salary` — dept+score+salary (eng×3, pm×2, designed so multi-agg gives different results per col)
-- For 7: `fx_scores` + `fx_dept` — two small dfs, unique keys, clean merge
-- For 8: `fx_scores` + `fx_dept_dup` — dept has duplicate key rows so merge fans out
-- For 9: same left + a right with one unmatched key
-- For 10: `fx_dept_role_scores` — dept×role×score (designed so pivot_table has clear non-NaN cells)
-
-**Build steps:** author → CPython-verify solutions+traps (diverge confirmed) → run `node scripts/_extract_pylab.mjs out.json && python3 scripts/audit_py.py out.json` → 0 T1 → add to `pyLabBatch_ramp2.js` → wire into `pyLabProblems.js` + `pyLabFixtures.js` → audit clean → push.
-
----
-
-## Batch 3+ and skeleton bank
-
-**After batch 2:** scaffold 400–600 problem stubs across all worlds — title, topic, level, fixtureId, starterCode, solution, compare; empty depth fields (methods[], mcqs[], hints[]). Audit catches missing required fields (T1), warns on empty depth (T2). Bank exists; depth fills in over time, one batch at a time.
-
-**Also:** as the bank grows, fill in `problemIds` arrays in `src/data/pyLabPaths.js` so the learning paths actually filter to curated problems instead of falling back to topic-matching. Target: batch 3+ fills in at least the pandas/numpy 3-day path's `problemIds`.
+**Every content batch:** author → CPython-verify solutions + honest methods + traps (traps must run AND diverge) → `node scripts/_extract_pylab.mjs out.json && python3 scripts/audit_py.py out.json && python3 scripts/verify_py_methods.py out.json && node scripts/py_content_scan.mjs out.json` (all 0) → regenerate `pyLabSchemas.js` → wire → hand Sidharth the commit.
 
 ---
 

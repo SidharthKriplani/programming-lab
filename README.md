@@ -12,10 +12,11 @@ Not a LeetCode clone. Every problem is a loop: **predict the output → run it f
 
 ## Banks
 
-- **Python Gotchas** (live) — 23 traps that survive code review and fail in production: mutable defaults, aliasing, late binding, `is` vs `==`, generator exhaustion, `O(n)` membership, floating-point, and more. Each one doubles as a shareable post.
-- **pandas / numpy** · **DSA by pattern** · **Python idioms** — next.
+- **PyLab** (live) — the judgment gym: **264 problems across 8 worlds** (Python Core · pandas & numpy · DSA Patterns · Python Internals · OOP & Design · Data Craft · Code Craft · AI/ML Craft), easy → advanced. Each problem is `solve()`→output graded by a typed comparator, with a runs-but-wrong trap, a glass-box time/memory readout, and a judgment layer. Loop: **Check** (run your code) → **Submit** (grade + attempt history) → **gated reveal**. A "Find my level" placement diagnostic + curated learning paths route you through it.
+- **Python Gotchas** (live) — 23 traps that survive code review and fail in production: mutable defaults, aliasing, late binding, `is` vs `==`, generator exhaustion, `O(n)` membership, floating-point, and more. Each doubles as a shareable post.
+- Also live: **Foundations** (KNOW, driven models), **Mini-Projects** (BUILD), **Spot-the-Flaw** + **Trap Museum** (JUDGE), and a beginner **tutorial ladder**.
 
-The four navigation frames map to the BreakLabs Competence Model: **KNOW → DO → BUILD → JUDGE.** PL's first surface is the **DO** (fluency) rung.
+The four navigation frames map to the BreakLabs Competence Model: **KNOW → DO → BUILD → JUDGE.** Every surface is deep-linkable — `#/pylab/<problem>`, `#/gotchas/<id>`, `#/<room>`.
 
 ## Stack
 

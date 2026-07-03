@@ -13,9 +13,11 @@ PyLab already derives a seniority level per problem (`pyLabMeta.levelOf`); the l
 | **Senior** | judgment | core/stretch | many valid methods → the right call + the runs-but-wrong trap + a dial |
 | **Advanced** | systems | stretch | scale, craft, multi-step pipelines; the O(...) cost is the lesson |
 
-**The gap (2026-07-03):** every world is missing the top of the ladder — **stretch = 0 and systems = 0 across the whole bank.** Filling senior/advanced is as important as filling the empty worlds. Ceiling stays easy→medium DSA (D-PL-07); "advanced" here means depth of judgment/craft/scale, not contest algorithms.
+> **UPDATE (end of 2026-07-03):** this section below was the ORIGINAL snapshot that motivated the program. It is now largely resolved — **264 problems, all 8 worlds populated, the difficulty ladder filled (9 stretch/systems problems, up from 0).** For the current numbers see `STATUS.md` → "Where we are now". The original snapshot is kept for context; the checklist further down is up to date.
 
-## Coverage snapshot (2026-07-03) — 151 problems
+**The gap (original, 2026-07-03):** every world was missing the top of the ladder — stretch = 0 and systems = 0 across the whole bank — and 4 worlds were empty. Filling senior/advanced was as important as filling the empty worlds. Ceiling stays easy→medium DSA (D-PL-07); "advanced" means depth of judgment/craft/scale, not contest algorithms. _(Resolved: all worlds populated; first 9 stretch/systems problems shipped.)_
+
+## Coverage snapshot (ORIGINAL — 151 problems; superseded, see STATUS for current)
 
 | World | total | easy(flu) | med(cor) | senior(jud) | adv(sys) | status |
 |---|---|---|---|---|---|---|
@@ -26,6 +28,8 @@ PyLab already derives a seniority level per problem (`pyLabMeta.levelOf`); the l
 | dsa-patterns | 0 | — | — | — | — | **empty world** (DSA content currently mislabeled under python-core) |
 | python-internals | 0 | — | — | — | — | **empty world** |
 | code-craft | 0 | — | — | — | — | **empty world** |
+
+_All the above are now resolved — see the checklist at the bottom of this doc and `STATUS.md`._
 
 Two structural notes: (1) DSA problems (`two-sum`, `sliding-window`, `binary-search`, heap, intervals…) physically live under the `python-core` topic — a **taxonomy fix** (re-tag to `dsa`) would light up the DSA world without new authoring. (2) ML-from-scratch numerics already exist under `numpy-vectorize` (rmse, cosine-sim, softmax, one-hot).
 

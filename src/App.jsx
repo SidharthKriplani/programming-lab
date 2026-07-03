@@ -8,6 +8,7 @@ import { getSkin, cycleSkin } from './utils/skin.js';
 import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
+import { parseHash, setHash } from './utils/hashRoute.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
@@ -49,12 +50,20 @@ function Home({ onNavigate }) {
 }
 
 export default function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(() => parseHash().view);
   const [navOpen, setNavOpen] = useState(false);
   const [skin, setSkinState] = useState(getSkin());
 
-  const navigate = (v) => { setView(v); setNavOpen(false); };
+  const navigate = (v) => { setView(v); setHash(v); setNavOpen(false); };
   const onCycleSkin = () => setSkinState(cycleSkin());
+
+  // Deep linking: reflect back/forward + external links into the view. PyLab/Gotchas read
+  // the sub-path (problem id) themselves; here we only track the top-level view.
+  useEffect(() => {
+    const onHash = () => setView(parseHash().view);
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   // global shortcut: "p" jumps to PyLab — guarded so it never fires while typing,
   // including in the CodeMirror contenteditable (the exact class of bug PAL hit).
@@ -63,7 +72,7 @@ export default function App() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const t = e.target;
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
-      if (e.key === 'p' || e.key === 'P') { e.preventDefault(); setView('pylab'); setNavOpen(false); }
+      if (e.key === 'p' || e.key === 'P') { e.preventDefault(); setView('pylab'); setHash('pylab'); setNavOpen(false); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -77,7 +86,7 @@ export default function App() {
         <div className="app-main-wrapper">
           <main className="app-main">
             <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 260 }}><span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>loading…</span></div>}>
-              <PyLabBrowser onExitRoom={() => navigate('home')} />
+              <PyLabBrowser onExitRoom={() => navigate('home')} initialTarget={parseHash().sub} />
             </Suspense>
           </main>
         </div>
@@ -104,7 +113,7 @@ export default function App() {
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em' }}>loading…</span>
             </div>
           }>
-            {view === 'gotchas' ? <GotchaBrowser />
+            {view === 'gotchas' ? <GotchaBrowser initialTarget={parseHash().sub} />
               : view === 'progress' ? <ProgressPage onNavigate={navigate} />
               : view === 'foundations' ? <FoundationsBrowser />
               : view === 'know' ? <KnowBrowser />
