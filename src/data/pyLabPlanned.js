@@ -53,6 +53,21 @@ export const pyLabCurriculum = [
 ];
 
 export const pyLabPlanned = [
+  // ── FAANG interview level — SKELETONS ONLY (authoring pass later; these are the hard tier
+  //    that sits above PyLab's easy->medium charter, kept as placeholders per Sidharth) ──
+  { id: 'plan-faang-lru-cache', title: 'LRU cache', topic: 'oop', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'O(1) get/put with OrderedDict.move_to_end (or dict + doubly-linked list); eviction order + the update-is-a-use trap.' },
+  { id: 'plan-faang-median-stream', title: 'Median of a data stream', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'two heaps (max-heap low / min-heap high) kept balanced; the rebalance and even/odd-count trap.' },
+  { id: 'plan-faang-topk-buckets', title: 'Top-K frequent in O(n)', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'bucket sort by frequency instead of heap/sort; the tie-order and k-bounds trap.' },
+  { id: 'plan-faang-lis', title: 'Longest increasing subsequence', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'patience sorting with bisect (O(n log n)); the subsequence-vs-substring and equal-elements trap.' },
+  { id: 'plan-faang-num-islands', title: 'Number of islands', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'DFS/BFS flood fill over a grid; the visited-set vs in-place-mark and diagonal-neighbour trap.' },
+  { id: 'plan-faang-coin-change', title: 'Coin change (min coins)', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'bottom-up DP over amounts; the unreachable-amount (inf) and greedy-fails trap.' },
+  { id: 'plan-faang-word-break', title: 'Word break', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'DP / memoized recursion over prefixes with a word set; the exponential-without-memo trap.' },
+  { id: 'plan-faang-longest-substring', title: 'Longest substring without repeats', topic: 'dsa', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'sliding window + last-seen index map; the move-left-past-old-index trap.' },
+  { id: 'plan-faang-merge-asof', title: 'As-of join (merge_asof)', topic: 'pandas-merge', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'time-ordered nearest-prior join (prices to trades); the must-be-sorted and direction (backward/forward) trap.' },
+  { id: 'plan-faang-topn-per-group-ties', title: 'Top-N per group with ties', topic: 'pandas-groupby', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'rank(method="dense") within group then filter; nlargest drops ties — the tie-handling trap.' },
+  { id: 'plan-faang-sessionize', title: 'Sessionize an event log', topic: 'pandas-window', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'per-user 30-min inactivity gap -> session ids via groupby diff + cumsum; the global-diff-across-users trap.' },
+  { id: 'plan-faang-rolling-per-group', title: 'Rolling metric per group', topic: 'pandas-window', level: 'systems', curriculum: 'FAANG interview', status: 'planned', seed: 'groupby().rolling() then reset the extra index level; the leak-across-group-boundaries trap.' },
+
   // ── NumPy & Stats — the thin Stats half ──
   { id: 'plan-stats-percentile', title: 'Percentile distribution', topic: 'numpy-vectorize', level: 'correctness', curriculum: 'NumPy & Stats', status: 'planned', seed: 'np.percentile / quantile cuts; the interpolation trap (linear vs nearest) and NaN handling.' },
   { id: 'plan-stats-weighted-avg', title: 'Weighted average', topic: 'numpy-vectorize', level: 'correctness', curriculum: 'NumPy & Stats', status: 'planned', seed: 'sum(w*x)/sum(w); the mean-of-ratios vs weighted-mean trap, like safe-ctr but weighted.' },
