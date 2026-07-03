@@ -36,7 +36,10 @@ Pandas now: groupby 24, merge 10, reshape 8, window/everyday 24. **Bank 219 prob
 **Common-band breadth — Python basics A (15):** new `pyLabBatch_python_basics.js` — string manip (word-count, count-vowels, title-case, char-frequency, reverse-words, count-whole-word, acronym), dict/list transforms (group-by-length, sum-by-category, flatten-unique, common-elements), parse/number (parse k=v, FizzBuzz, digit-sum, longest-run). 4 warmups + 11 core traps. All CPython-verified (fixed 3 coincidental non-diverging traps: len-ratio, no-15-at-n=5, total==run).
 **FAANG skeletons:** 12 planned stubs added to `pyLabPlanned.js` (curriculum "FAANG interview", level systems) — LRU cache, median-of-stream, top-K buckets, LIS, num-islands, coin-change, word-break, longest-substring, merge_asof, top-N-per-group-ties, sessionize, rolling-per-group. Display-only "coming soon" cards; NOT in the bank (gates untouched). Authoring pass later.
 **Bank now 234 problems + 23 planned stubs; all gates green.**
-Goal tracking toward 30 pandas + 30 python: pandas 15/30 (everyday done), python 15/30 (basics A done). **Next: pandas batch 2 (+15) and python basics B (+15).** Then placement diagnostic.
+**Pandas batch 2 (+15):** new `pyLabBatch_pandas2.js` — outer join, composite-key join, map-vs-replace lookup, within-group z-score (transform), groupby.filter (groups vs rows), cumcount, first-per-group, between (inclusive), isin, np.where boundary tier, clip (cap vs drop), dense rank, pct-of-total, fillna, column-select. 4 warmups + 11 core traps. CPython-verified (fixed a numpy-import miss in one fixture).
+**GOAL: pandas 30/30 DONE.** Pandas coverage: groupby 28, merge 13, reshape 8, window/everyday 32.
+**Bank now 249 problems + 23 planned stubs; all gates green (0 T1 / 0 T2 / verify 0 / scan 0).**
+Goal tracking: **pandas 30/30 ✓; python 15/30** (basics A done). **Next: python basics B (+15)** to complete 30/30. Then placement diagnostic.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)

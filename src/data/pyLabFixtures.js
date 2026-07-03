@@ -24,6 +24,7 @@ import { fixtures as _fV2 } from './pyLabBatch_v2.js';
 import { fixtures as _fWarmups } from './pyLabBatch_warmups.js';
 import { fixtures as _fPandasEveryday } from './pyLabBatch_pandas_everyday.js';
 import { fixtures as _fPythonBasics } from './pyLabBatch_python_basics.js';
+import { fixtures as _fPandas2 } from './pyLabBatch_pandas2.js';
 
 const _seedFixtures = {
   'fx_sales': {
@@ -44,6 +45,6 @@ const _seedFixtures = {
 };
 
 // Merge the seed fixtures + every migrated batch (pandas, then python/idioms/oop later).
-export const pyLabFixtures = { ..._seedFixtures, ..._fRamp1, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms, ..._fDataCraft, ..._fLadder1, ..._fAiml, ..._fInternals, ..._fAdvanced, ..._fV2, ..._fWarmups, ..._fPandasEveryday, ..._fPythonBasics };
+export const pyLabFixtures = { ..._seedFixtures, ..._fRamp1, ..._fGroupby, ..._fMergeReshape, ..._fWindowMissing, ..._fMisc, ..._fOop, ..._fDrills1, ..._fDrills3, ..._fDrills2, ..._fIdioms, ..._fDataCraft, ..._fLadder1, ..._fAiml, ..._fInternals, ..._fAdvanced, ..._fV2, ..._fWarmups, ..._fPandasEveryday, ..._fPythonBasics, ..._fPandas2 };
 
 export default pyLabFixtures;
