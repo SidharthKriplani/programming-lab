@@ -39,7 +39,12 @@ Pandas now: groupby 24, merge 10, reshape 8, window/everyday 24. **Bank 219 prob
 **Pandas batch 2 (+15):** new `pyLabBatch_pandas2.js` — outer join, composite-key join, map-vs-replace lookup, within-group z-score (transform), groupby.filter (groups vs rows), cumcount, first-per-group, between (inclusive), isin, np.where boundary tier, clip (cap vs drop), dense rank, pct-of-total, fillna, column-select. 4 warmups + 11 core traps. CPython-verified (fixed a numpy-import miss in one fixture).
 **GOAL: pandas 30/30 DONE.** Pandas coverage: groupby 28, merge 13, reshape 8, window/everyday 32.
 **Bank now 249 problems + 23 planned stubs; all gates green (0 T1 / 0 T2 / verify 0 / scan 0).**
-Goal tracking: **pandas 30/30 ✓; python 15/30** (basics A done). **Next: python basics B (+15)** to complete 30/30. Then placement diagnostic.
+**Python basics B (+15):** new `pyLabBatch_python_basics2.js` — caesar shift (wrap), longest word (key=len), anagram-by-counts, dict max-key / sort-by-value (key=d.get), chunk, rotate-right, transpose (zip*), primes-up-to (1-is-not-prime edge), Fibonacci list, set-bit count, mode, clamp-list + remove-vowels/count-char warmups. 3 warmups + 12 core traps. All CPython-verified.
+**GOAL COMPLETE: 30 pandas + 30 python breadth done, + 12 FAANG skeletons.** basic-python (idioms topic) now 60; pandas 81.
+**Bank now 264 problems + 23 planned stubs; all gates green (0 T1 / 0 T2 / verify 0 / scan 0).**
+**Placement diagnostic (the last marquee feature) — DONE:** `src/components/shared/PlacementDiagnostic.jsx` — a "Find my level" button (by the readiness panel) opens a 9-question concept quiz (3 fluency / 3 correctness / 3 judgment, no Pyodide). Placement = the first ladder rung the learner does NOT clear (2-of-3 to advance; clear all → systems). On finish it sets the role + level filter and persists to localStorage `pl-placement-v1` (`savePlacement`/`getPlacement`). Wired into PyLabBrowser (state `diagnostic`, launcher, onPlace → setRole/setLevel). Both JSX bundle clean (esbuild); data gates untouched.
+**Bank: 264 problems + 23 planned stubs; all gates green.** This closes the come-alive program\'s marquee items — the report\'s three gaps (learning paths, world coverage, diagnostic) are all resolved.
+**PARKED (focus shifting to PAL):** remaining PyLab backlog — Scale-race on the pipeline problems; author the 12 FAANG skeletons into real gated problems; more warmups for oop/internals; role-scoped content reweighting. All tracked in `docs/PYLAB-TRACK2-BACKLOG.md` + `NEXT.md`.
 
 **Current version: PL 0.42.0 (live)**
 **Live on Vercel: PL 0.42.0** (programming-lab.vercel.app — tutorial ladder, two-pane solve, Graphite, Worlds+Gates, learning paths all live)

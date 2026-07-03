@@ -26,6 +26,7 @@ import { getProgress, markSeen, markSolved, addAttempt, getAttempts } from '../u
 import { dueIds, reviewSR } from '../utils/pyLabSR.js';
 import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
 import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
+import { PlacementDiagnostic } from '../components/shared/PlacementDiagnostic.jsx';
 import { MockLoop } from '../components/shared/MockLoop.jsx';
 import { PyTutorial } from './PyTutorial.jsx';
 import { pyTutMeta } from '../data/pyTutorial.js';
@@ -261,6 +262,7 @@ export function PyLabBrowser({ onExitRoom }) {
   const [reviewMode, setReviewMode] = useState(false);
   const [mock, setMock] = useState(false);
   const [tutorial, setTutorial] = useState(false);
+  const [diagnostic, setDiagnostic] = useState(false);
   const [activeWorld, setActiveWorld] = useState(null);   // null = all worlds
   const [gateOpen, setGateOpen] = useState(null);         // worldId being gate-shown
   const [quizOpen, setQuizOpen] = useState(null);         // worldId being quizzed
@@ -279,6 +281,9 @@ export function PyLabBrowser({ onExitRoom }) {
 
   if (mock) return <MockLoop onExit={() => setMock(false)} />;
   if (tutorial) return <PyTutorial onExit={() => setTutorial(false)} />;
+  if (diagnostic) return <PlacementDiagnostic
+    onPlace={(r, l) => { if (r) setRole(r); setLevel(l); setActivePath(null); setDiagnostic(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+    onExit={() => setDiagnostic(false)} />;
 
   if (quizOpen) {
     const world = PYLAB_WORLDS.find(w => w.id === quizOpen);
@@ -407,6 +412,13 @@ export function PyLabBrowser({ onExitRoom }) {
         </div>
       )}
 
+      {!reviewMode && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.5rem' }}>
+          <button onClick={() => setDiagnostic(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.8rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}>
+            <Icon name="target" size={14} color="var(--accent)" /> Find my level
+          </button>
+        </div>
+      )}
       <PyLabReadiness role={role} problems={pyLabProblems} solved={progress.solved} onPickLevel={setLevel} />
 
       <WorldTabs
