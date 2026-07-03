@@ -435,6 +435,84 @@ export async function runPyLab(userCode, solutionCode, fixtureSetup, args, compa
 }
 
 /**
+ * runPyLabCheck — the "Check" action (Cmd/Ctrl+Enter). Runs the user's solve() against the
+ * fixture and returns THEIR output for inspection — no grading, no compare against the
+ * canonical (that is Submit's job). Shows the learner what their code actually produces
+ * (the SQL-Lab "Run" affordance) without leaking the expected answer. DataFrames/Series
+ * render via to_string, arrays via array2string, everything else via repr.
+ * Returns: { output, stdout, error, timeMs, peakKb }.
+ */
+export async function runPyLabCheck(userCode, fixtureSetup, args) {
+  if (!pyodideInstance) throw new Error('Python not loaded yet');
+  pyodideInstance.globals.set('__pl_user', userCode);
+  pyodideInstance.globals.set('__pl_fixture', fixtureSetup || '');
+  pyodideInstance.globals.set('__pl_args_json', JSON.stringify(args || []));
+
+  const harness = [
+    'import io, json, time, tracemalloc, traceback, contextlib',
+    'import pandas as pd',
+    'import numpy as np',
+    '__args = json.loads(__pl_args_json)',
+    '__out = io.StringIO()',
+    '__err = None',
+    '__disp = ""',
+    '__ms = 0.0',
+    '__peak = 0',
+    'tracemalloc.start()',
+    '__t0 = time.perf_counter()',
+    'try:',
+    '    __u_ns = {}',
+    '    exec(__pl_fixture, __u_ns)',
+    '    with contextlib.redirect_stdout(__out):',
+    '        exec(__pl_user, __u_ns)',
+    '        if "solve" not in __u_ns:',
+    '            raise NameError("define a function called solve(...)")',
+    '        __got = __u_ns["solve"](*[__u_ns[a] for a in __args])',
+    '    if isinstance(__got, (pd.DataFrame, pd.Series)):',
+    '        __disp = __got.to_string()',
+    '    elif isinstance(__got, np.ndarray):',
+    '        __disp = np.array2string(__got, precision=6, separator=", ")',
+    '    else:',
+    '        __disp = repr(__got)',
+    '    if len(__disp) > 4000:',
+    '        __disp = __disp[:4000] + "\\n… (truncated)"',
+    'except Exception:',
+    '    __err = traceback.format_exc()',
+    'finally:',
+    '    __ms = (time.perf_counter() - __t0) * 1000.0',
+    '    __cur, __peak = tracemalloc.get_traced_memory()',
+    '    tracemalloc.stop()',
+    'json.dumps({',
+    '    "output": __disp,',
+    '    "stdout": __out.getvalue(),',
+    '    "error": __err,',
+    '    "timeMs": round(__ms, 3),',
+    '    "peakKb": round(__peak / 1024.0, 1),',
+    '})',
+  ].join('\n');
+
+  try {
+    const raw = await pyodideInstance.runPythonAsync(harness);
+    const parsed = JSON.parse(raw);
+    return {
+      output: parsed.output || '',
+      stdout: (parsed.stdout || '').replace(/\n$/, ''),
+      error: parsed.error || null,
+      timeMs: parsed.timeMs ?? 0,
+      peakKb: parsed.peakKb ?? 0,
+    };
+  } catch (err) {
+    return { output: '', stdout: '', error: String(err.message || err), timeMs: 0, peakKb: 0 };
+  } finally {
+    try {
+      pyodideInstance.globals.delete('__pl_user');
+      pyodideInstance.globals.delete('__pl_fixture');
+      pyodideInstance.globals.delete('__pl_args_json');
+    } catch { /* ignore */ }
+  }
+}
+
+/**
  * runPyLabBench — the Scale-it race (PYLAB-VISION §3). Runs ONE method body against its
  * fixture scaled up by `factor` (DataFrames/Series concat-replicated, lists/arrays tiled),
  * timed + memory-traced. The race UI calls this per method at a small and a large factor to

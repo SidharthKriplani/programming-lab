@@ -55,6 +55,7 @@ export function PythonCell({
   onCodeChange,
   completions = [],
   onSubmit,
+  hideRun = false,
 }) {
   const [status, setStatus]   = useState('idle'); // idle | loading | running | done | error
   const [progress, setProgress] = useState('');
@@ -199,16 +200,18 @@ export function PythonCell({
           {isRunning && progress && (
             <span style={{ fontSize: '11px', color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>{progress}</span>
           )}
-          <button
-            className="btn-run"
-            onClick={handleRun}
-            disabled={isRunning}
-            style={{ fontSize: '12px', padding: '5px 14px' }}
-          >
-            {isRunning
-              ? <><span className="animate-spin" style={{ display: 'inline-block' }}>⟳</span> Running…</>
-              : '▶ Run'}
-          </button>
+          {!hideRun && (
+            <button
+              className="btn-run"
+              onClick={handleRun}
+              disabled={isRunning}
+              style={{ fontSize: '12px', padding: '5px 14px' }}
+            >
+              {isRunning
+                ? <><span className="animate-spin" style={{ display: 'inline-block' }}>⟳</span> Running…</>
+                : '▶ Run'}
+            </button>
+          )}
         </div>
       </div>
 

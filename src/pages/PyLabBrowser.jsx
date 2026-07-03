@@ -21,8 +21,8 @@ import { pyLabFollowups } from '../data/pyLabFollowups.js';
 import { ForwardPointerCard } from '../components/shared/ForwardPointerCard.jsx';
 import { DebriefBlocks } from '../components/shared/DebriefBlocks.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
-import { loadPython, loadPackages, runPyLab } from '../components/ide/pyodideRuntime.js';
-import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
+import { loadPython, loadPackages, runPyLab, runPyLabCheck } from '../components/ide/pyodideRuntime.js';
+import { getProgress, markSeen, markSolved, addAttempt, getAttempts } from '../utils/problemProgress.js';
 import { dueIds, reviewSR } from '../utils/pyLabSR.js';
 import { ROLES, ROLE_ORDER, LEVELS, LEVEL_ORDER, levelOf, matchesRoleLevel } from '../data/pyLabMeta.js';
 import { PyLabReadiness } from '../components/shared/PyLabReadiness.jsx';
@@ -45,13 +45,28 @@ function Chip({ label, color }) {
   return <span className="pl-chip" style={{ color, borderColor: color, background: 'transparent' }}>{label}</span>;
 }
 
+// Neutral secondary button (Check / Reveal / Keep-trying) — no dependency on a CSS class.
+const secBtn = { display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text)', cursor: 'pointer', fontSize: '0.84rem', fontWeight: 600 };
+
+function relTime(ts) {
+  const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+  if (s < 60) return 'just now';
+  const m = Math.floor(s / 60); if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60); if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24); return d + 'd ago';
+}
+
 // ── Solve view ──────────────────────────────────────────────────────────────
 function PyLabRunner({ problem, onBack, onSolved }) {
   const [code, setCode] = useState(problem.starterCode);
   const [submitting, setSubmitting] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [progress, setProgress] = useState('');
   const [result, setResult] = useState(null);
+  const [checkResult, setCheckResult] = useState(null);
   const [revealed, setRevealed] = useState(false);
+  const [confirmReveal, setConfirmReveal] = useState(false);
+  const [attempts, setAttempts] = useState(() => getAttempts(KEY, problem.id));
 
   const fx = pyLabFixtures[problem.fixtureId];
   const fmt = pyLabFormats[problem.id] || {};
@@ -71,21 +86,37 @@ function PyLabRunner({ problem, onBack, onSolved }) {
 
   useEffect(() => {
     markSeen(KEY, problem.id);
-    setCode(problem.starterCode); setResult(null); setRevealed(false);
+    setCode(problem.starterCode); setResult(null); setCheckResult(null);
+    setRevealed(false); setConfirmReveal(false); setAttempts(getAttempts(KEY, problem.id));
   }, [problem.id]);
 
-  async function submit() {
-    setSubmitting(true); setResult(null);
-    try {
-      await loadPython(m => setProgress(m));
-      await loadPackages(['pandas', 'numpy'], m => setProgress(m));
-    } catch (e) {
-      setSubmitting(false);
-      setResult({ pass: false, error: 'Failed to load runtime: ' + e.message }); return;
-    }
+  async function ensureRuntime() {
+    await loadPython(m => setProgress(m));
+    await loadPackages(['pandas', 'numpy'], m => setProgress(m));
     setProgress('');
+  }
+
+  // Check — run the user's solve() on the fixture and show THEIR output. No grading.
+  async function check() {
+    if (checking || submitting) return;
+    setChecking(true); setCheckResult(null);
+    try { await ensureRuntime(); }
+    catch (e) { setChecking(false); setCheckResult({ error: 'Failed to load runtime: ' + e.message }); return; }
+    const res = await runPyLabCheck(code, fx.setup, fx.args);
+    setCheckResult(res); setChecking(false);
+  }
+
+  // Submit — grade against the target (compare to the canonical output), record the attempt.
+  async function submit() {
+    if (submitting || checking) return;
+    setSubmitting(true); setResult(null);
+    try { await ensureRuntime(); }
+    catch (e) { setSubmitting(false); setResult({ pass: false, error: 'Failed to load runtime: ' + e.message }); return; }
     const res = await runPyLab(code, problem.solution, fx.setup, fx.args, problem.compare);
     setResult(res); setSubmitting(false);
+    if (!res.error) {
+      setAttempts(addAttempt(KEY, problem.id, { pass: res.pass, ms: res.timeMs, peakKb: res.peakKb }));
+    }
     if (res.pass) { markSolved(KEY, problem.id); reviewSR(problem.id, true); onSolved && onSolved(problem.id); }
   }
 
@@ -124,13 +155,32 @@ function PyLabRunner({ problem, onBack, onSolved }) {
 
         {/* RIGHT — editor + submit + result + reveal (all contained, SQL Lab parity) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-          <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox onCodeChange={setCode} height={editorH} completions={completions} onSubmit={submit} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-            <button onClick={submit} disabled={submitting} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-              <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Checking…') : 'Submit'}
+          <PythonCell initialCode={problem.starterCode} label={problem.signature || 'solution.py'} glassBox hideRun onCodeChange={setCode} height={editorH} completions={completions} onSubmit={check} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <button onClick={check} disabled={checking || submitting} style={secBtn}>
+              {checking ? (progress || 'Running…') : 'Check'}
             </button>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>⌘/Ctrl+Enter to submit · ▶ Run for a scratch look</span>
+            <button onClick={submit} disabled={submitting || checking} className="pal-btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+              <Icon name="check" size={14} color="currentColor" /> {submitting ? (progress || 'Grading…') : 'Submit'}
+            </button>
+            <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>Check (⌘/Ctrl+Enter) runs your code · Submit grades it against the target</span>
           </div>
+
+          {checkResult && (
+            <div className="pal-reveal-in" style={{ border: '1px solid var(--border)', background: 'var(--surface-2)', borderRadius: 'var(--radius)', padding: '0.7rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Your output</div>
+              {checkResult.error ? (
+                <pre className="py-output py-error" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{checkResult.error}</pre>
+              ) : (
+                <>
+                  {checkResult.stdout && <pre className="py-output" style={{ margin: 0, whiteSpace: 'pre-wrap', color: 'var(--text-muted)' }}>{checkResult.stdout}</pre>}
+                  <pre style={{ margin: 0, padding: '0.5rem 0.7rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text)', whiteSpace: 'pre', overflowX: 'auto', lineHeight: 1.5 }}>{checkResult.output || '(no return value — did you return from solve?)'}</pre>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>⏱ {checkResult.timeMs} ms · 🧠 {checkResult.peakKb} KB peak · this is what your code produced — Submit to grade it</span>
+                </>
+              )}
+            </div>
+          )}
+
           {result && (
             <div className={`pal-reveal-in ${result.pass ? 'pal-success-ring' : ''}`} style={{ border: '1px solid ' + (result.pass ? 'var(--green-border)' : 'var(--red-border)'), background: result.pass ? 'var(--green-bg)' : 'var(--red-bg)', borderRadius: 'var(--radius)', padding: '0.7rem 0.9rem' }}>
               {result.error ? (
@@ -140,13 +190,40 @@ function PyLabRunner({ problem, onBack, onSolved }) {
                 </>
               ) : (
                 <div style={{ fontSize: '0.9rem', color: result.pass ? 'var(--green-text)' : 'var(--red-text)', fontWeight: 600 }}>
-                  {result.pass ? 'Correct — output matches.' : 'Runs, but the output is not right: ' + result.message}
+                  {result.pass ? 'Correct — your output matches the target.' : 'Runs, but not right yet: ' + result.message}
                 </div>
               )}
             </div>
           )}
-          {!revealed && (
-            <button onClick={() => { setRevealed(true); markSolved(KEY, problem.id); if (result && !result.pass) reviewSR(problem.id, false); }} className="pal-btn-primary" style={{ alignSelf: 'flex-start' }}>Reveal solution</button>
+
+          {attempts.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+              <span style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)' }}>Previous attempts · {attempts.length}</span>
+              <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                {attempts.slice().reverse().map((a, i) => (
+                  <span key={i} title={new Date(a.ts).toLocaleString()} style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', padding: '2px 8px', borderRadius: 999, border: '1px solid ' + (a.pass ? 'var(--green-border)' : 'var(--red-border)'), color: a.pass ? 'var(--green-text)' : 'var(--red-text)', background: a.pass ? 'var(--green-bg)' : 'var(--red-bg)' }}>
+                    {a.pass ? 'pass' : 'miss'} · {relTime(a.ts)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!revealed && !confirmReveal && (
+            <button onClick={() => setConfirmReveal(true)} style={{ ...secBtn, alignSelf: 'flex-start' }}>Reveal solution</button>
+          )}
+          {!revealed && confirmReveal && (
+            <div className="pal-reveal-in" style={{ border: '1px solid var(--yellow-border)', background: 'var(--yellow-bg)', borderRadius: 'var(--radius-sm)', padding: '0.7rem 0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', alignSelf: 'flex-start', maxWidth: 460 }}>
+              <span style={{ fontSize: '0.85rem', color: 'var(--text)', lineHeight: 1.5 }}>
+                {attempts.length === 0
+                  ? 'You have not submitted yet. The trap is the lesson — you will learn far more by trying (and even missing) first.'
+                  : 'Sure? Seeing the answer ends the puzzle. One more attempt often gets it.'}
+              </span>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button onClick={() => { setRevealed(true); setConfirmReveal(false); }} className="pal-btn-primary" style={{ fontSize: '0.82rem' }}>Reveal anyway</button>
+                <button onClick={() => setConfirmReveal(false)} style={{ ...secBtn, fontSize: '0.82rem' }}>Keep trying</button>
+              </div>
+            </div>
           )}
           {revealed && (
             <div className="pal-reveal-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', borderTop: '1px solid var(--border)', paddingTop: '1.1rem' }}>
@@ -214,7 +291,7 @@ export function PyLabBrowser({ onExitRoom }) {
           unlockWorld(quizOpen, 'quiz', defaultLevel);
           setGateStates(getAllGateStates());
           setActiveWorld(quizOpen);
-          setLevel(defaultLevel);
+          setLevel('all');
           setQuizOpen(null);
         }}
         onFail={() => { setQuizOpen(null); setGateOpen(quizOpen); }}
@@ -232,7 +309,7 @@ export function PyLabBrowser({ onExitRoom }) {
           unlockWorld(gateOpen, 'self', 'correctness');
           setGateStates(getAllGateStates());
           setActiveWorld(gateOpen);
-          setLevel('correctness');
+          setLevel('all');
           setGateOpen(null);
         }}
         onStartQuiz={() => { const id = gateOpen; setGateOpen(null); setQuizOpen(id); }}
@@ -350,7 +427,7 @@ export function PyLabBrowser({ onExitRoom }) {
             setTopic('all');
             setActivePath(null);
             setActiveDay(1);
-            if (state.defaultLevel && state.defaultLevel !== 'all') setLevel(state.defaultLevel);
+            setLevel('all');   // entering a world shows everything; the learner picks a level filter
           } else {
             setGateOpen(worldId);
           }

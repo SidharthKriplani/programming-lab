@@ -46,3 +46,33 @@ export function getCounts(key) {
   const s = read(key);
   return { seen: Object.keys(s.seen).length, solved: Object.keys(s.solved).length };
 }
+
+// ── Attempt history (the SQL-Lab "previous attempts" feature) ────────────────
+// Stored separately so the progress object stays small. Shape per key:
+//   { [problemId]: [{ ts, pass, ms, peakKb }] }  (most recent last, capped)
+const ATTEMPTS_SUFFIX = ':attempts';
+
+function readAttempts(key) {
+  try {
+    const raw = localStorage.getItem(key + ATTEMPTS_SUFFIX);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function getAttempts(key, id) {
+  const all = readAttempts(key);
+  return (all[id] || []);
+}
+
+// Record a Submit attempt (graded). Keeps the last 25 per problem.
+export function addAttempt(key, id, { pass, ms = 0, peakKb = 0 } = {}) {
+  if (!id) return [];
+  const all = readAttempts(key);
+  const list = all[id] || [];
+  list.push({ ts: Date.now(), pass: !!pass, ms, peakKb });
+  all[id] = list.slice(-25);
+  try { localStorage.setItem(key + ATTEMPTS_SUFFIX, JSON.stringify(all)); } catch { /* ignore */ }
+  return all[id];
+}

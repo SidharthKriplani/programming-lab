@@ -39,16 +39,27 @@ function InputCard({ inp }) {
       </div>
     );
   }
-  // non-DataFrame inputs — one compact line
-  let detail = '';
-  if (inp.kind === 'series') detail = 'Series · ' + inp.dtype + ' · ' + inp.rows + ' · [' + (inp.sample || []).join(', ') + ']';
-  else if (inp.kind === 'ndarray') detail = 'ndarray · ' + inp.dtype + ' · shape ' + JSON.stringify(inp.shape) + ' · [' + (inp.sample || []).join(', ') + ']';
-  else if (inp.kind === 'list') detail = 'list · len ' + inp.length + ' · [' + (inp.sample || []).join(', ') + ']';
-  else if (inp.kind === 'dict') detail = 'dict · len ' + inp.length + ' · {' + (inp.keys || []).join(', ') + '}';
-  else detail = String(inp.repr);
+  // non-DataFrame inputs — a structured value card (header + value chips), not a cramped line.
+  const chips = (vals) => (
+    <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+      {(vals || []).map((v, i) => (
+        <span key={i} style={{ ...mono, fontSize: '0.72rem', padding: '2px 7px', borderRadius: 6, border: '1px solid var(--border)', background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>{String(v)}</span>
+      ))}
+    </div>
+  );
+  let meta = '';
+  let body = null;
+  if (inp.kind === 'series') { meta = 'Series · ' + inp.dtype + ' · ' + inp.rows + ' values'; body = chips(inp.sample); }
+  else if (inp.kind === 'ndarray') { meta = 'ndarray · ' + inp.dtype + ' · shape ' + JSON.stringify(inp.shape); body = chips(inp.sample); }
+  else if (inp.kind === 'list') { meta = 'list · ' + inp.length + ' items'; body = chips(inp.sample); }
+  else if (inp.kind === 'dict') { meta = 'dict · ' + inp.length + ' keys'; body = chips(inp.keys); }
+  else { meta = 'value'; body = <span style={{ ...mono, fontSize: '0.92rem', color: 'var(--text)' }}>{String(inp.repr)}</span>; }
   return (
-    <div style={{ ...mono, fontSize: '0.76rem', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface)', padding: '0.45rem 0.6rem' }}>
-      <strong style={{ color: 'var(--text)' }}>{inp.name}</strong> · {detail}
+    <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface)', overflow: 'hidden' }}>
+      <div style={{ ...mono, fontSize: '0.74rem', color: 'var(--text-secondary)', padding: '0.4rem 0.6rem', borderBottom: '1px solid var(--border)', background: 'var(--surface-2)' }}>
+        <strong style={{ color: 'var(--text)' }}>{inp.name}</strong> · {meta}
+      </div>
+      <div style={{ padding: '0.45rem 0.6rem' }}>{body}</div>
     </div>
   );
 }
