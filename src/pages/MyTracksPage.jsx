@@ -8,6 +8,7 @@ import {
 } from '../utils/tracks.js';
 import { NoteEditor } from '../components/tracks/NoteEditor.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
+import { BRIDGE_TRACKS } from '../data/roadmapPlanned.js';
 
 const TYPE_LABEL = { pylab: 'PyLab', gotcha: 'Gotcha', know: 'Know', note: 'Note' };
 const TYPE_HASH = { pylab: '#/pylab/', gotcha: '#/gotchas/' };
@@ -177,6 +178,33 @@ export function MyTracksPage() {
               {tracks.length === 0 ? 'Create a track to get started.' : 'Select a track.'}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Bridge tracks — the guided transition tracks, skeleton in place */}
+      <div style={{ marginTop: '1.4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.6rem' }}>
+          <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Bridge tracks · coming soon</span>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>guided transition spines — they land here, next to your own tracks</span>
+        </div>
+        <div className="mo-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: '0.7rem' }}>
+          {BRIDGE_TRACKS.map(t => (
+            <div key={t.id} style={{ background: 'var(--surface-2)', border: '1px dashed var(--border)', borderRadius: 10, padding: '0.9rem 1rem', opacity: 0.85 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text)' }}>{t.title}</span>
+                <span style={{ marginLeft: 'auto', fontSize: '0.52rem', fontWeight: 800, letterSpacing: '0.08em', color: 'var(--yellow-text)', border: '1px solid var(--yellow-border)', background: 'var(--yellow-bg)', borderRadius: 999, padding: '1px 7px', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>PLANNED</span>
+              </div>
+              <p style={{ margin: '0 0 0.55rem', fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{t.promise}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.22rem' }}>
+                {t.spine.map((s, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+                    <span style={{ fontSize: '0.56rem', fontFamily: 'var(--font-mono)', color: 'var(--text-dim)', flexShrink: 0 }}>{i + 1}</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

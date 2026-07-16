@@ -12,6 +12,7 @@ import { parseHash, setHash } from './utils/hashRoute.js';
 import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/auth.js';
 import { upsertLeaderboardRow } from './utils/leaderboard.js';
 import { DailyRep } from './components/shared/DailyRep.jsx';
+import { FOUNDATION_TALLY } from './data/foundationsRooms.js';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
@@ -25,7 +26,6 @@ const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').t
 const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
 const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ default: m.Leaderboard })));
 const MyTracksPage = lazy(() => import('./pages/MyTracksPage.jsx').then(m => ({ default: m.MyTracksPage })));
-const RoadmapPage = lazy(() => import('./pages/RoadmapPage.jsx').then(m => ({ default: m.RoadmapPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -49,9 +49,9 @@ function Home({ onNavigate }) {
       {/* Daily Rep — one runnable problem a day (family Daily Drill, PL edition) */}
       <DailyRep />
 
-      {/* What's coming — the visible skeleton (Systems floor, Async, Notebook→Service) */}
+      {/* The skeleton lives in-place: Foundations rooms are browsable now */}
       <button
-        onClick={() => onNavigate('roadmap')}
+        onClick={() => onNavigate('foundations')}
         className="pal-card-enter pal-card-hover"
         style={{
           display: 'block', width: '100%', maxWidth: 560, textAlign: 'left', cursor: 'pointer',
@@ -61,14 +61,14 @@ function Home({ onNavigate }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.1em', color: 'var(--accent)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
-            ◌ Roadmap · the skeleton is up
+            ◌ Foundations · the full map is up
           </span>
         </div>
         <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem' }}>
-          Systems Floor · Async & Concurrency · Notebook → Service
+          {FOUNDATION_TALLY.rooms} rooms · {FOUNDATION_TALLY.modules} modules — trunk & branches
         </div>
         <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
-          16 new modules announced + Interview QnA rolling out across every Know module. See everything that's coming →
+          Python → The Machine → DSA → NumPy & pandas → Concurrency → Shipping Python, plus Competitive Programming, The Metal, and Tensors & Autograd. Browse the skeleton →
         </div>
       </button>
 
@@ -170,7 +170,6 @@ export default function App() {
               : view === 'judge' ? <JudgeBrowser />
               : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
-              : view === 'roadmap' ? <RoadmapPage onNavigate={navigate} />
               : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}

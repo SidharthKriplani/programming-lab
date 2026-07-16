@@ -9,6 +9,7 @@ import { companyFor } from '../data/pyLabCompanies.js';
 import { CompanyLogo } from '../components/shared/CompanyLogo.jsx';
 import { pyLabSchemas } from '../data/pyLabSchemas.js';
 import { pyLabPlanned } from '../data/pyLabPlanned.js';
+import { FORMATS_PLANNED, N2S_CAMPAIGN } from '../data/roadmapPlanned.js';
 import { PyLabSchema } from '../components/shared/PyLabSchema.jsx';
 import { PythonCell } from '../components/ide/PythonCell.jsx';
 import { JudgmentLayer } from '../components/shared/JudgmentLayer.jsx';
@@ -584,6 +585,42 @@ export function PyLabBrowser({ onExitRoom, initialTarget }) {
                   <Chip label={PYLAB_TOPICS[s.topic] || s.topic} color="var(--text-muted)" />
                   <Chip label={LEVELS[s.level] ? LEVELS[s.level].label : s.level} color="var(--text-muted)" />
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* The campaign + new engine formats — skeleton in place, not on a side page */}
+      {!reviewMode && (
+        <div style={{ marginTop: '1.8rem', borderTop: '1px dashed var(--border)', paddingTop: '1.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.55rem' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>{N2S_CAMPAIGN.title} · the campaign</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>linear unlock · coming soon</span>
+          </div>
+          <p style={{ margin: '0 0 0.6rem', fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55, maxWidth: '68ch' }}>{N2S_CAMPAIGN.premise}</p>
+          <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1.4rem' }}>
+            {N2S_CAMPAIGN.stages.map(st => (
+              <span key={st.n} style={{ fontSize: '0.7rem', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px dashed var(--border)', borderRadius: 999, padding: '0.18rem 0.65rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent)' }}>S{st.n}</span> {st.title}
+              </span>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.55rem' }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>New problem formats · the engine roadmap</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>{FORMATS_PLANNED.length}</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(270px, 100%), 1fr))', gap: '0.6rem' }}>
+            {FORMATS_PLANNED.map(f => (
+              <div key={f.id} style={{ background: 'var(--surface-2)', border: '1px dashed var(--border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem 0.85rem', opacity: 0.82 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.3rem' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>{f.label}</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '0.52rem', fontWeight: 800, letterSpacing: '0.08em', color: 'var(--yellow-text)', border: '1px solid var(--yellow-border)', background: 'var(--yellow-bg)', borderRadius: 999, padding: '1px 6px', fontFamily: 'var(--font-mono)', flexShrink: 0 }}>PLANNED</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-dim)' }}>first: </span>{f.firstExemplar}
+                </p>
               </div>
             ))}
           </div>
