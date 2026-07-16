@@ -269,3 +269,15 @@ New tally: **13 rooms · 43 clusters · 167 seed modules** (verified programmati
 2. **CppTrace** (`src/data/cppTraces.js`) — pythontutor-for-C++ WITHOUT faking a runtime: every trace is compiled with g++ -fsanitize=address,undefined, RUN, and transcribed as recorded truth; the browser steps a recording, predict-then-step at each state. House rule extended: no trace ships without its verification line (compiler + flags + date + observed output). Pilot trace `cpp-stack-heap` is IN and verified (g++ 13.3.0, output 7, sanitizer-clean); the remaining five are stub objects with verified: null (NOT renderable until their compiler receipt exists) - A3 session fills them.
 
 Also on the shelf from the same discussion: per-module "open in Python Tutor" deep links for rooms 1-2 (zero-build garnish, at authoring time).
+
+---
+
+## 13. Amendment D-PL-26 — the language-surface closure (FINAL; the map freezes here)
+
+2026-07-16 22:55 IST (Thursday). Owner-approved final batch after a language-coverage re-audit (D-PL-25 checked interview canon; this pass checked the LANGUAGE surfaces of Python and C++ end-to-end). Ten additions, tally now **13 rooms · 43 clusters · 177 seed modules** (verified, 0 dupes); Climb threads updated in step (111 steps, ids machine-verified).
+
+- **Python (5):** `pf-comprehensions` (loops-as-expressions + scoping) · `pf-slicing` (start/stop/step; list slices allocate) · `pf-sort-key` (sorted/key=/lambda - the functional trio) · `pf-match` (structural pattern matching) · `sp-files` (the open() contract, modes/encoding/pathlib).
+- **C++ reading-first (5):** `cpp-smart-ptr` (unique_ptr/shared_ptr - RAII's modern face; the worst D-PL-25 miss) · `cpp-virtual` (vtable dispatch) · `cpp-iterators` (range-for desugared + invalidation) · `cpp-lambdas` ([&] vs [=] captures) · `cpp-linker` (compile-vs-link; undefined reference).
+- **Excluded permanently, with reasons:** metaclasses, descriptor protocol in depth, contextvars, C++ exception machinery, operator-overload authoring, multiple/virtual inheritance depth - encyclopedia beyond the floor and the loop. "Exhaustive" = everything that matters for the target learner, and that claim is now made deliberately.
+
+**THE FREEZE:** the map (rooms, clusters, seed modules) is now FROZEN. No amendment mechanism remains - not owner-invoked, not audit-invoked. Anything discovered during authoring is added AS AUTHORED CONTENT inside its room's session (a module authored beyond the seed list is welcome; a planned-and-unauthored addition is not). The next spec section, if any, documents authored rooms - not territory.

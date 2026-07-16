@@ -65,7 +65,10 @@ export const FOUNDATION_ROOMS = [
           { id: 'pf-legb',        title: 'LEGB: how a name resolves',     model: 'Reference a name from nested scopes; highlight which scope (Local/Enclosing/Global/Built-in) satisfies it.', widget: 'stepper' },
           { id: 'pf-late-binding', title: 'The late-binding closure',      model: 'Build lambdas in a loop; call them after; watch every one return the final i. Add default-arg capture to fix it live.', widget: 'live' },
           { id: 'pf-args',        title: '*args / **kwargs unpacking',     model: 'Drag arguments into positional / *args / keyword / **kwargs slots; see how Python binds them.', widget: 'sim' },
+          { id: 'pf-sort-key',   title: 'sorted, key=, and the lambda',   model: 'Sort the same records by different key= lambdas; watch the decorate-sort pattern reorder live - the functional trio behind every top-N screen question.', widget: 'live' },
+          { id: 'pf-comprehensions', title: 'Comprehensions: loops as expressions', model: 'Transform a loop into list/set/dict comprehensions and a genexp step by step; watch scoping isolate the loop variable - and where a comprehension stops being readable.', widget: 'live' },
           { id: 'pf-generators',  title: 'Generators are lazy and one-shot', model: 'Step next() one value at a time; show nothing computes until asked; contrast memory with the list version.', widget: 'live' },
+          { id: 'pf-match',      title: 'match: structural pattern matching', model: 'Feed shapes to match/case arms; watch destructuring bind names per arm and the guard clause filter - the modern control flow interviews now show.', widget: 'live' },
         ],
       },
       {
@@ -75,6 +78,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'pf-dunders',     title: 'Dunders: how objects answer the language', model: 'Define __len__/__bool__/__eq__ on a toy class; call len()/if/== and watch which dunder fires.', widget: 'live' },
           { id: 'pf-truthiness',  title: 'How if obj: decides truth',      model: 'Flip __bool__ then __len__ then neither; watch the truth-test fall through the protocol.', widget: 'live' },
           { id: 'pf-iteration',   title: 'The iteration protocol',         model: 'Drive __iter__/__next__ by hand; show what a for-loop actually calls under the hood.', widget: 'stepper' },
+          { id: 'pf-slicing',    title: 'Slicing: start, stop, step, and the copy', model: 'Drag start/stop/step handles on a sequence; watch a[::-1] reverse and every slice allocate a NEW list (vs the numpy view, room 4) - __getitem__ with a slice object.', widget: 'sim' },
           { id: 'pf-is-vs-eq',    title: 'is vs == and the caches that lie', model: 'Compare small ints / short strings vs large ones; watch identity flip while equality holds.', widget: 'live' },
           { id: 'pf-bytes-str',   title: 'bytes vs str: the encoding boundary', model: 'Encode one string through utf-8 and latin-1; flip the decode codec and watch mojibake appear; the UnicodeDecodeError finally has a model.', widget: 'live' },
         ],
@@ -265,6 +269,7 @@ export const FOUNDATION_ROOMS = [
         modules: [
           { id: 'sp-exceptions', title: 'Exceptions & the traceback',    model: 'Raise inside nested calls; read the traceback as the call stack unwinding; catch at the right layer.', widget: 'live' },
           { id: 'sp-serialize',  title: 'Serialization: json vs pickle',  model: 'Round-trip a nested config; watch json lose the dates and pickle keep the object graph.', widget: 'live' },
+          { id: 'sp-files',      title: 'Files & paths: the open() contract',  model: 'Open the same file in r/rb/w/a modes with and without an encoding; watch the with block guarantee the close, and pathlib compose paths that survive the OS switch.', widget: 'live' },
           { id: 'sp-cache',      title: 'Caching with lru_cache',        model: 'Wrap an expensive call; call twice; the glass-box proves the second call is free.', widget: 'live' },
         ],
       },
@@ -500,6 +505,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'cpp-pointers',  title: 'Pointers vs references',           model: 'Predict what each of *p, &x, and a reference parameter does to the caller\'s value; reveal against the annotated trace.', widget: 'stepper' },
           { id: 'cpp-raii',      title: 'RAII: the destructor is the cleanup', model: 'Step a scope exit; watch destructors fire in reverse order — including on the exception path — and compare with Python\'s with block.', widget: 'stepper' },
           { id: 'cpp-ownership', title: 'Ownership & move semantics',       model: 'Trace a vector passed by value, by reference, and moved; watch which copies allocate and which just steal the pointer.', widget: 'stepper' },
+          { id: 'cpp-smart-ptr', title: 'Smart pointers: RAII for the heap',  model: 'Trace unique_ptr owning, moving, and auto-deleting; then shared_ptr\'s refcount tick to zero - why modern C++ almost never writes delete.', widget: 'stepper' },
         ],
       },
       {
@@ -509,6 +515,8 @@ export const FOUNDATION_ROOMS = [
           { id: 'cpp-values',    title: 'Copies by default: the anti-Python', model: 'The same assignment in both languages side by side: Python binds a name, C++ copies the object — predict which mutations are visible where.', widget: 'stepper' },
           { id: 'cpp-vector',    title: 'What std::vector actually is',     model: 'Step push_back through capacity doubling — pointer, size, capacity — and recognize the dynamic array every entrance screen makes you build.', widget: 'stepper' },
           { id: 'cpp-unordered', title: 'What std::unordered_map actually is', model: 'Drop keys into buckets with chaining; reuse room 2\'s hash model; watch load factor trigger a rehash.', widget: 'sim' },
+          { id: 'cpp-virtual',   title: 'virtual: dispatch decided at runtime', model: 'Call the same method through a base pointer with and without virtual; step the vtable lookup that picks the override - and what that indirection costs.', widget: 'stepper' },
+          { id: 'cpp-iterators', title: 'Iterators & range-for',           model: 'Desugar for (auto& x : v) into begin()/end()/++ steps; watch an insert invalidate the iterator mid-loop - the crash Python never showed you.', widget: 'stepper' },
         ],
       },
       {
@@ -520,7 +528,9 @@ export const FOUNDATION_ROOMS = [
           { id: 'cpp-read-kernel', title: 'Read a real kernel',             model: 'An annotated walk through a small real C++ loop from a numeric library; map every line back to the Python call that hides it.', widget: 'concept' },
           { id: 'cpp-const',     title: 'const: the promise in the signature', model: 'Read const T&, const methods, and constexpr in real signatures; predict what each forbids the callee from doing - the contract-reading skill.', widget: 'concept' },
           { id: 'cpp-templates', title: 'Templates: code stamped at compile time', model: 'Watch vector<int> and vector<double> stamp two real functions from one template - and why the error wall names a type you never wrote.', widget: 'concept' },
+          { id: 'cpp-lambdas',   title: 'Lambdas: [&] vs [=] and what gets captured', model: 'Read the same lambda with reference and value captures; predict which sees the mutation and which dangles after scope exit - modern C++\'s most-read syntax.', widget: 'concept' },
           { id: 'cpp-ub',        title: 'Undefined behaviour: the contract you broke', model: 'Predict-then-reveal on real UB snippets - signed overflow, dangling reference, out-of-bounds - and what the sanitizer vs the optimizer each did to them.', widget: 'concept' },
+          { id: 'cpp-linker',    title: 'The compile-link model: why undefined reference', model: 'Step two translation units through compile then link; watch a missing definition survive compilation and explode at link - reading the toolchain\'s other error wall.', widget: 'stepper' },
         ],
       },
     ],
