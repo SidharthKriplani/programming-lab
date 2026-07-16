@@ -33,7 +33,7 @@ BRANCHES  6 Competitive Programming        (amends the easy->med ceiling)
 
 7 rooms · 24 clusters · 73 seed modules in the skeleton (`FOUNDATION_TALLY`). The seed is representative, not exhaustive — the rooms grow as authored.
 
-> **SUPERSEDED 2026-07-16 (D-PL-22, §9 below):** the map is now **9 rooms · 30 clusters · 97 seed modules** — Concurrency & Parallelism joins the trunk at 5, The Metal joins the branches at 8. §§2-3 below describe the original 7; §9 is the delta and the current authority for the full set.
+> **SUPERSEDED 2026-07-16 (D-PL-22 §9, then D-PL-23 §10 below):** the map is now **11 rooms · 36 clusters · 121 seed modules** — Concurrency & Parallelism joins the trunk at 5, The Metal at 8, The OS Floor at 10, C++: The Second Language at 11. §§2-3 below describe the original 7; §§9-10 are the deltas and the current authority for the full set.
 
 ---
 
@@ -188,3 +188,34 @@ BRANCHES  7 Competitive Programming        (was 6)
 **Build order impact.** §7's table gains two phases: **F5b — Room 5 Concurrency** (after F5 Shipping Python; mostly `live`, cheap on the existing glass-box) and **F6b — Room 8 The Metal** (after F6 CP; the two `live` clusters first, the GPU `sim` cluster last). Trunk-first rule unchanged.
 
 **Charter note.** Room 8 extends the D-PL-21 amendment pattern (recorded, not smuggled): below-Python substrate is above the old charter's Python-fluency line. Room 5 needs no amendment — concurrency is in-charter floor. If the branches starve the trunk, the branches pause; unchanged.
+
+---
+
+## 10. Amendment D-PL-23 — the interview-loop audit (2 more rooms, 11 total)
+
+2026-07-16 (Thursday), same session as D-PL-22. Triggered by an explicit audit question: **"from an interview perspective, is the map properly scoped?"** — checked against the systems-depth program's actual quarter arc (Q1 C++ + memory · Q2 hardware/GPU/quantization · Q3 OS + concurrency · Q4 OSS/DSA ramp) and the target loop (ML infra / inference / performance roles).
+
+**The audit found four real gaps and three thin spots. All closed as skeletons:**
+
+```
+TRUNK 1-6 unchanged.
+BRANCHES  7 Competitive Programming
+          8 The Metal                 (extended: +4 modules)
+          9 Tensors & Autograd
+         10 The OS Floor              <- NEW (D-PL-23)
+         11 C++: The Second Language  <- NEW (D-PL-23)
+```
+
+New tally: **11 rooms · 36 clusters · 121 seed modules** (re-verified programmatically; supersedes §9's 97).
+
+**Room 10 — The OS Floor** `the-os-floor` (branch). The Q3-quarter gap: virtual memory, scheduling, and I/O had ZERO presence while every senior systems screen assumes them. Three clusters mirroring OSTEP's pillars: Processes & Scheduling (context switch, scheduler policies, the syscall boundary) · Virtual Memory (page tables, the page-fault disk cliff, what OOM actually means) · I/O & The Wire (buffered I/O measured live, blocking sockets, epoll — the mechanism under room 5's event loop). Kernel-side mechanics are honest steppers; what Pyodide can measure (buffering) runs live.
+
+**Room 11 — C++: The Second Language** `cpp-second-language` (branch). The bilingual gap: the fast layer under numpy/PyTorch is C++, systems-depth loops test *reading* it, and PL had zero presence. **Reading-first by design** — no C++ runtime in the browser, so every module is predict-then-reveal over real snippets, never a fake executor. Memory & Ownership (stack/heap, pointers vs references, RAII, move) · Value Semantics (copies-by-default as the anti-Python; what std::vector and std::unordered_map actually are — the two containers every entrance screen asks you to build) · Reading C++ (signatures, compiler/ASan output, an annotated real kernel). Taught by contrast with the Python model rooms 1-2 install.
+
+**The Metal extended** (Q2-quarter alignment): `mt-blocking` (cache tiling, measured), `mt-quantize` (int8 quantization — the inference-engineering trade), `mt-simd` (the mechanism under vectorization), `mt-roofline` (bandwidth-vs-compute — the one chart every perf conversation lands on). **Concurrency extended** (Q3): `cc-memory-model` (why a data race is UB, not just nondeterminism).
+
+**DO-side stubs added** (pyLabPlanned, 9 stubs, 2 new categories): APIs & services (`plan-api-*`: status-code contracts, idempotency, pagination, schema versioning — the memo's pillar 6, previously promised and absent) and Tooling judgment (`plan-tool-*`: bisect, rebase disaster, dependency pinning, Docker model, read-the-profile — pillar 9, judgment-drill format).
+
+**Deliberately NOT added, with reasons:** distributed-systems design (MSL owns ML system design; GSL owns serving-in-context — the ownership seam holds); writing-C++-graded-in-browser (impossible in Pyodide, and faking it violates the honest-widget rule); OS deep internals like filesystems/drivers (below the interview floor for these roles); anything Year-2-speculative (the program itself refuses to plan that far — the lab shadows the program, not the fog).
+
+**Seam rule for room 11:** PL teaches C++ *reading and models*; actual compiled C++ grading stays outside PL (the private entrance-exam ledger and, later, capstone repos — different surface, different owner).

@@ -75,6 +75,19 @@ export const pyLabCurriculum = [
     { title: 'stage 4: tests around the pipeline', status: 'planned', plannedId: 'plan-n2s-stage4' },
     { title: 'stage 5: a mock inference endpoint', status: 'planned', plannedId: 'plan-n2s-stage5' },
   ] },
+  { category: 'APIs & services (the AIE surface)', items: [
+    { title: 'HTTP semantics: status codes as contracts', status: 'planned', plannedId: 'plan-api-semantics' },
+    { title: 'idempotency: safe to retry', status: 'planned', plannedId: 'plan-api-idempotency' },
+    { title: 'pagination without dropping rows', status: 'planned', plannedId: 'plan-api-pagination' },
+    { title: 'serialization & schema versioning', status: 'planned', plannedId: 'plan-api-versioning' },
+  ] },
+  { category: 'Tooling judgment (drills, not runnable)', items: [
+    { title: 'git: bisect the regression', status: 'planned', plannedId: 'plan-tool-bisect' },
+    { title: 'git: the rebase disaster', status: 'planned', plannedId: 'plan-tool-rebase' },
+    { title: 'dependency hell: pin, cap, or float', status: 'planned', plannedId: 'plan-tool-deps' },
+    { title: 'the Docker mental model', status: 'planned', plannedId: 'plan-tool-docker' },
+    { title: 'read the profile before you optimize', status: 'planned', plannedId: 'plan-tool-profile' },
+  ] },
   { category: 'Interview Patterns', items: [
     { title: 'explain your approach before coding', status: 'covered', evidence: 'Ambiguity drill + beforeWriting' },
     { title: 'catch silent bugs (merge inflation, unsorted pct_change)', status: 'covered', evidence: 'trap system + Trap Museum (100 traps)' },
@@ -138,6 +151,23 @@ export const pyLabPlanned = [
   { id: 'plan-n2s-stage3', title: 'N→S stage 3: package structure + config', topic: 'code-craft', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'multi-file layout (io / transforms / model / config); imports must resolve; the circular-import and config-sprawl traps.' },
   { id: 'plan-n2s-stage4', title: 'N→S stage 4: tests around the pipeline', topic: 'code-craft', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'write pytest-style tests (fixtures, edge rows, a regression case) that catch three planted bugs; the happy-path-only trap.' },
   { id: 'plan-n2s-stage5', title: 'N→S stage 5: a mock inference endpoint', topic: 'ai-eng', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'implement handle(request)->response over the pipeline: validation, error codes, idempotent retries; tests simulate requests; the 500-for-bad-input trap.' },
+
+  // ── APIs & services — SKELETONS (D-PL-23). The memo\'s pillar 6, finally stubbed:
+  //    the HTTP/service floor the AIE role assumes. Graded by tests that simulate
+  //    requests — no network needed. ──
+  { id: 'plan-api-semantics', title: 'Status codes as contracts', topic: 'ai-eng', level: 'judgment', curriculum: 'APIs & services', status: 'planned', seed: 'given handler behaviours, pick 200/201/400/404/409/422/500 and defend it; the 200-with-error-body and 500-for-bad-input traps.' },
+  { id: 'plan-api-idempotency', title: 'Idempotency: safe to retry', topic: 'ai-eng', level: 'systems', curriculum: 'APIs & services', status: 'planned', seed: 'implement a create-payment handler with an idempotency key; tests replay the same request twice and assert exactly-one effect; the retry-double-charge trap.' },
+  { id: 'plan-api-pagination', title: 'Pagination without dropping rows', topic: 'ai-eng', level: 'systems', curriculum: 'APIs & services', status: 'planned', seed: 'offset vs cursor pagination over a mutating collection; tests insert mid-iteration and assert no row is skipped or doubled; the offset-drift trap.' },
+  { id: 'plan-api-versioning', title: 'Serialization & schema versioning', topic: 'code-craft', level: 'systems', curriculum: 'APIs & services', status: 'planned', seed: 'evolve a payload schema (add field, rename field) while old readers keep working; tests run old + new readers against both versions; the silent-field-drop trap.' },
+
+  // ── Tooling judgment — SKELETONS (D-PL-23). The memo\'s pillar 9: judgment-drill
+  //    format (scenario -> pick + defend), NOT runnable — Pyodide has no git/docker.
+  //    Belongs to the judge world; stubbed here so the map is one list. ──
+  { id: 'plan-tool-bisect', title: 'git bisect: find the breaking commit', topic: 'code-craft', level: 'judgment', curriculum: 'Tooling judgment', status: 'planned', seed: 'a regression appeared between v1.4 and v1.9 (200 commits); pick the strategy that finds it in ~8 steps; the read-every-diff trap.' },
+  { id: 'plan-tool-rebase', title: 'The rebase disaster', topic: 'code-craft', level: 'judgment', curriculum: 'Tooling judgment', status: 'planned', seed: 'a force-push rewrote shared history; choose the recovery (reflog vs revert vs re-clone) and what to never do next; the force-push-to-shared trap.' },
+  { id: 'plan-tool-deps', title: 'Dependency hell: pin, cap, or float', topic: 'code-craft', level: 'judgment', curriculum: 'Tooling judgment', status: 'planned', seed: 'an app and a library disagree on pinning strategy; decide per artifact type; the pin-everything-in-a-library trap.' },
+  { id: 'plan-tool-docker', title: 'The Docker mental model', topic: 'code-craft', level: 'judgment', curriculum: 'Tooling judgment', status: 'planned', seed: 'image vs container vs volume vs layer cache; predict which change busts the cache; the COPY-before-install trap.' },
+  { id: 'plan-tool-profile', title: 'Read the profile before you optimize', topic: 'internals', level: 'systems', curriculum: 'Tooling judgment', status: 'planned', seed: 'given a cProfile/flamegraph dump, name the actual bottleneck and the first fix; the optimize-the-inner-loop-that-isn\'t-hot trap.' },
 ];
 
 export default pyLabPlanned;

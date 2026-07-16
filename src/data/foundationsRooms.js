@@ -311,6 +311,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'cc-locks',      title: 'Locks — and the deadlock',       model: 'Add a lock and fix the race; then take two locks in opposite orders and watch both workers freeze forever.', widget: 'stepper' },
           { id: 'cc-semaphore',  title: 'Semaphores: at most N at once',  model: 'Fire 20 tasks through a semaphore of 3; watch the concurrency cap hold and the queue drain in waves.', widget: 'sim' },
           { id: 'cc-backpressure', title: 'Backpressure: when producers outrun consumers', model: 'Unbound the queue and watch memory climb; bound it and watch the producer block instead — the trade made visible.', widget: 'sim' },
+          { id: 'cc-memory-model', title: 'Why a data race is not just a wrong number', model: 'Step two threads through reordered reads/writes; watch an \'impossible\' result appear — the memory-model reason races are undefined behaviour, not merely nondeterministic.', widget: 'stepper' },
         ],
       },
     ],
@@ -385,6 +386,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'mt-cache',      title: 'Cache lines: why traversal order matters', model: 'Walk the same matrix row-major then column-major; the glass-box wall-clock diverges on identical work — the cache line is the reason.', widget: 'live' },
           { id: 'mt-strides',    title: 'Strides & contiguity',           model: 'Transpose an array — free, only strides change; then .copy() and watch memory actually move; check .flags to see which is which.', widget: 'live' },
           { id: 'mt-boxed',      title: 'What a Python object costs',     model: 'Compare a list of a million ints against the numpy int32 buffer; tracemalloc shows the boxed-object tax live.', widget: 'live' },
+          { id: 'mt-blocking',   title: 'Cache blocking: tiling a matmul', model: 'Slide the tile size on a blocked matrix multiply; watch the measured time dip where the tile fits cache and climb on either side.', widget: 'live' },
         ],
       },
       {
@@ -394,15 +396,103 @@ export const FOUNDATION_ROOMS = [
           { id: 'mt-float',      title: 'IEEE-754: why 0.1 + 0.2 != 0.3', model: 'Inspect the actual bits of a float; drag the mantissa; watch which decimals are representable and which silently round.', widget: 'live' },
           { id: 'mt-precision',  title: 'float64 -> float32 -> float16',  model: 'Accumulate a long sum at each precision; watch the error grow as bits shrink — and where fp16 falls off a cliff.', widget: 'live' },
           { id: 'mt-overflow',   title: 'Overflow & dtype wrap-around',   model: 'Increment an int8 past 127; watch it wrap negative with no error — the silent bug class dtype limits create.', widget: 'live' },
+          { id: 'mt-quantize',   title: 'Quantization: int8 for free(ish)', model: 'Quantize a float32 weight array to int8; slide the scale; watch memory drop 4x while the round-trip error histogram grows — the trade inference engineers tune.', widget: 'live' },
         ],
       },
       {
         id: 'the-accelerator',
         label: 'The Accelerator',
         modules: [
+          { id: 'mt-simd',       title: 'SIMD: the parallelism inside one core', model: 'Same loop, scalar vs vector lanes; step how one instruction processes 8 values; the numpy speedup finally has a mechanism, not just a name.', widget: 'stepper' },
           { id: 'mt-gpu-model',  title: 'The GPU mental model: thousands of slow workers', model: 'Slide task parallelism; watch a few fast cores beat the GPU on serial work and lose by 100x on parallel work.', widget: 'sim' },
           { id: 'mt-transfer',   title: 'The transfer tax: host <-> device', model: 'Slide the compute-per-byte ratio; watch the PCIe copy dominate small kernels — why you batch work onto the device and keep it there.', widget: 'sim' },
           { id: 'mt-batching',   title: 'Batching: feeding the beast',     model: 'Slide batch size; watch GPU utilization climb, then latency pay for it — the throughput/latency trade every inference engineer tunes.', widget: 'sim' },
+          { id: 'mt-roofline',   title: 'The roofline: bandwidth-bound or compute-bound', model: 'Drag a kernel\'s arithmetic intensity along the roofline; watch it pin against the memory-bandwidth slope or the compute ceiling — the one chart that explains every perf conversation.', widget: 'sim' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'the-os-floor',
+    track: 'branch',
+    order: 10,
+    title: 'The OS Floor',
+    subtitle: 'Processes, virtual memory, and I/O — the layer production actually breaks on.',
+    accent: 'var(--teal)',
+    status: 'planned',
+    charterNote: 'The OS companion to rooms 5 and 8 (D-PL-23). OSTEP\'s three pillars projected into models: what Pyodide can measure runs live; kernel-side mechanics are honest steppers, never faked.',
+    identity: 'Every senior systems screen assumes it: what a process IS, why the scheduler preempts you, what a page fault costs, where a socket read blocks. The room that turns \'the OS is magic\' into \'the OS is a scheduler, a page table, and a file descriptor.\'',
+    grounding: 'OSTEP (virtualization / concurrency / persistence) · CS:APP ch. 8-10 · plan-tool-* DO stubs',
+    clusters: [
+      {
+        id: 'processes-and-scheduling',
+        label: 'Processes & Scheduling',
+        modules: [
+          { id: 'os-process',    title: 'A process is a saved machine',    model: 'Step a context switch: registers out, page table swapped, registers in; watch two processes each believe they own the CPU.', widget: 'stepper' },
+          { id: 'os-scheduler',  title: 'The scheduler: who runs next',    model: 'Drag job lengths under FIFO vs shortest-first vs round-robin; watch average wait time and the starvation case flip between policies.', widget: 'sim' },
+          { id: 'os-syscall',    title: 'The syscall boundary',            model: 'Step a read() from user mode into the kernel and back; watch why crossing costs microseconds and why batching syscalls matters.', widget: 'stepper' },
+        ],
+      },
+      {
+        id: 'virtual-memory',
+        label: 'Virtual Memory',
+        modules: [
+          { id: 'os-pages',      title: 'Virtual memory: the address lie', model: 'Translate a virtual address through a page table; watch two processes use the same address for different memory.', widget: 'stepper' },
+          { id: 'os-page-fault', title: 'The page fault & the disk cliff', model: 'Touch a page that is not resident; watch the fault, the disk fetch, and the 100,000x latency cliff the working-set concept exists to avoid.', widget: 'sim' },
+          { id: 'os-oom',        title: 'What \'out of memory\' actually means', model: 'Grow allocations past RAM; watch swap absorb, thrash, then the OOM killer choose a victim — why your training job died at 3am.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'io-and-the-wire',
+        label: 'I/O & The Wire',
+        modules: [
+          { id: 'os-buffering',  title: 'Buffered vs unbuffered I/O',      model: 'Write a million lines with and without buffering; the measured gap is the syscall boundary, counted.', widget: 'live' },
+          { id: 'os-sockets',    title: 'A socket is a file that blocks',  model: 'Step a request through connect/send/recv; watch where the caller blocks and what a timeout actually interrupts.', widget: 'stepper' },
+          { id: 'os-epoll',      title: 'epoll: how one thread serves 10k connections', model: 'Register many slow sockets with a readiness loop; watch one thread service them all — the mechanism under room 5\'s event loop.', widget: 'sim' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'cpp-second-language',
+    track: 'branch',
+    order: 11,
+    title: 'C++: The Second Language',
+    subtitle: 'Reading the language the fast layer is written in.',
+    accent: 'var(--red)',
+    status: 'planned',
+    charterNote: 'Reading-first by design (D-PL-23): no C++ runtime in the browser, so every module is predict-then-reveal over real snippets — honest steppers and annotated reads, never a fake executor. The bilingual floor for anyone whose stack bottoms out in numpy/PyTorch C++.',
+    identity: 'The interview reality for systems-depth ML roles: the fast layer is C++, and \'can you READ it\' comes before \'can you write it.\' Ownership, lifetimes, and value semantics — taught by contrast with the Python model rooms 1-2 installed.',
+    grounding: 'learncpp.com (mechanics) · CS:APP ch. 2 · Compiler Explorer habit · CLRS ch. 11 (the hash map every screen asks for)',
+    clusters: [
+      {
+        id: 'memory-and-ownership',
+        label: 'Memory & Ownership',
+        modules: [
+          { id: 'cpp-stack-heap', title: 'Stack vs heap, for real this time', model: 'Predict where each variable lives in a snippet; step frames pushing and popping while heap blocks outlive them — the model Python hides and C++ hands you.', widget: 'stepper' },
+          { id: 'cpp-pointers',  title: 'Pointers vs references',           model: 'Predict what each of *p, &x, and a reference parameter does to the caller\'s value; reveal against the annotated trace.', widget: 'stepper' },
+          { id: 'cpp-raii',      title: 'RAII: the destructor is the cleanup', model: 'Step a scope exit; watch destructors fire in reverse order — including on the exception path — and compare with Python\'s with block.', widget: 'stepper' },
+          { id: 'cpp-ownership', title: 'Ownership & move semantics',       model: 'Trace a vector passed by value, by reference, and moved; watch which copies allocate and which just steal the pointer.', widget: 'stepper' },
+        ],
+      },
+      {
+        id: 'value-semantics',
+        label: 'Value Semantics',
+        modules: [
+          { id: 'cpp-values',    title: 'Copies by default: the anti-Python', model: 'The same assignment in both languages side by side: Python binds a name, C++ copies the object — predict which mutations are visible where.', widget: 'stepper' },
+          { id: 'cpp-vector',    title: 'What std::vector actually is',     model: 'Step push_back through capacity doubling — pointer, size, capacity — and recognize the dynamic array every entrance screen makes you build.', widget: 'stepper' },
+          { id: 'cpp-unordered', title: 'What std::unordered_map actually is', model: 'Drop keys into buckets with chaining; reuse room 2\'s hash model; watch load factor trigger a rehash.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'reading-cpp',
+        label: 'Reading C++',
+        modules: [
+          { id: 'cpp-read-signature', title: 'Reading a real signature',    model: 'Decode const T&, T&&, and auto in signatures lifted from real library code; predict what each promises the caller before the reveal.', widget: 'concept' },
+          { id: 'cpp-read-error', title: 'Reading the compiler & the sanitizer', model: 'Given a template error wall and an ASan heap-overflow report, locate the actual bug line — the skill that makes the toolchain a teacher.', widget: 'concept' },
+          { id: 'cpp-read-kernel', title: 'Read a real kernel',             model: 'An annotated walk through a small real C++ loop from a numeric library; map every line back to the Python call that hides it.', widget: 'concept' },
         ],
       },
     ],
