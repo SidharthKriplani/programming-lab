@@ -30,6 +30,7 @@ const StartHere = lazy(() => import('./pages/StartHere.jsx').then(m => ({ defaul
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage.jsx').then(m => ({ default: m.ResourcesPage })));
 const CheatsheetPage = lazy(() => import('./pages/CheatsheetPage.jsx').then(m => ({ default: m.CheatsheetPage })));
 const InterviewQnAPage = lazy(() => import('./pages/InterviewQnAPage.jsx').then(m => ({ default: m.InterviewQnAPage })));
+const ClimbRunner = lazy(() => import('./pages/ClimbRunner.jsx').then(m => ({ default: m.ClimbRunner })));
 
 function Home({ onNavigate }) {
   return (
@@ -178,6 +179,7 @@ export default function App() {
               : view === 'resources' ? <ResourcesPage />
               : view === 'cheatsheet' ? <CheatsheetPage />
               : view === 'qna' ? <InterviewQnAPage />
+              : view === 'climb' ? <ClimbRunner roomId={parseHash().sub} onExit={() => navigate('foundations')} />
               : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}

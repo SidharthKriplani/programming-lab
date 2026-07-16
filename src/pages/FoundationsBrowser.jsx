@@ -8,6 +8,8 @@ import {
   FOUNDATION_TRACKS, TRUNK_ROOMS, BRANCH_ROOMS, FOUNDATION_TALLY,
   clusterModules, backingFor,
 } from '../data/foundationsRooms.js';
+import { THREAD_BY_ROOM } from '../data/lessonThreads.js';
+import { setHash } from '../utils/hashRoute.js';
 import { knowModules } from '../data/knowModules.js';
 import { KnowRunner } from './KnowBrowser.jsx';
 import { INTERACTIVE_MODULES } from '../components/foundations/interactiveModules.js';
@@ -221,6 +223,26 @@ function RoomDetail({ room, onBack }) {
       )}
       {room.grounding && (
         <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>grounded in: {room.grounding}</div>
+      )}
+
+      {THREAD_BY_ROOM[room.id] && THREAD_BY_ROOM[room.id].status === 'ready' && (
+        <button
+          onClick={() => setHash('climb', room.id)}
+          className="pal-card-hover"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '0.6rem', textAlign: 'left', cursor: 'pointer',
+            background: 'var(--surface)', border: '1px solid var(--accent-border)', borderRadius: 12, padding: '0.8rem 1rem',
+          }}
+        >
+          <Icon name="play" size={16} color="var(--accent)" />
+          <span style={{ flex: 1 }}>
+            <span style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: 'var(--text)' }}>Climb this room</span>
+            <span style={{ display: 'block', fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: 2 }}>
+              The guided ladder: read → drive the model → graded your-turn. {THREAD_BY_ROOM[room.id].steps.length} steps.
+            </span>
+          </span>
+          <Icon name="arrow-right" size={14} color="var(--text-dim)" />
+        </button>
       )}
 
       {room.clusters.map(cluster => {
