@@ -346,6 +346,14 @@ export function KnowBrowser() {
         steps={['Predict the output', 'Run the demo', 'Read how it works']}
       />
 
+      {/* Interview QnA rollout — visible announcement (panel itself lives inside each module) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', margin: '0.9rem 0 1.4rem', padding: '0.6rem 0.9rem', background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 10 }}>
+        <span style={{ fontSize: '0.62rem', fontWeight: 800, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', color: 'var(--accent)', textTransform: 'uppercase' }}>🎤 Coming soon</span>
+        <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
+          Every module below is getting a completion-gated <strong style={{ color: 'var(--text)' }}>Interview QnA</strong> ladder — open any module to see its waiting slot.
+        </span>
+      </div>
+
       {/* Cluster groups */}
       {groups.map(group => (
         <section key={group.key} style={{ marginBottom: '2rem' }}>

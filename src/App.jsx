@@ -25,6 +25,7 @@ const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').t
 const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
 const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ default: m.Leaderboard })));
 const MyTracksPage = lazy(() => import('./pages/MyTracksPage.jsx').then(m => ({ default: m.MyTracksPage })));
+const RoadmapPage = lazy(() => import('./pages/RoadmapPage.jsx').then(m => ({ default: m.RoadmapPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -47,6 +48,29 @@ function Home({ onNavigate }) {
       </button>
       {/* Daily Rep — one runnable problem a day (family Daily Drill, PL edition) */}
       <DailyRep />
+
+      {/* What's coming — the visible skeleton (Systems floor, Async, Notebook→Service) */}
+      <button
+        onClick={() => onNavigate('roadmap')}
+        className="pal-card-enter pal-card-hover"
+        style={{
+          display: 'block', width: '100%', maxWidth: 560, textAlign: 'left', cursor: 'pointer',
+          marginTop: '1rem', padding: '1rem 1.2rem', borderRadius: 14,
+          background: 'var(--surface)', border: '1px solid var(--accent-border)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.6rem', fontWeight: 800, letterSpacing: '0.1em', color: 'var(--accent)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
+            ◌ Roadmap · the skeleton is up
+          </span>
+        </div>
+        <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text)', marginBottom: '0.25rem' }}>
+          Systems Floor · Async & Concurrency · Notebook → Service
+        </div>
+        <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
+          16 new modules announced + Interview QnA rolling out across every Know module. See everything that's coming →
+        </div>
+      </button>
 
       <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.8rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
         <span>· no install</span>
@@ -146,6 +170,7 @@ export default function App() {
               : view === 'judge' ? <JudgeBrowser />
               : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
+              : view === 'roadmap' ? <RoadmapPage onNavigate={navigate} />
               : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}

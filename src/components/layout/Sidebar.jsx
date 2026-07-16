@@ -73,6 +73,7 @@ const TRACK = [
   { label: 'Home', view: 'home', icon: 'layout' },
   { label: 'Progress', view: 'progress', icon: 'bar-chart' },
   { label: 'My Tracks', view: 'tracks', icon: 'file-text' },
+  { label: 'Roadmap', view: 'roadmap', icon: 'layers' },
   { label: 'Leaderboard', view: 'leaderboard', icon: 'star' },
 ];
 
