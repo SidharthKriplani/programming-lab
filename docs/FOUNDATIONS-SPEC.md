@@ -224,7 +224,7 @@ New tally: **11 rooms · 36 clusters · 121 seed modules** (re-verified programm
 
 ## 11. Amendment D-PL-24 — the IITK-checklist audit (2 more rooms, 13 total; the LAST map amendment before authoring)
 
-2026-07-16 21:10 IST (Thursday). Triggered by Sidharth: cross-check the map against IIT-Kanpur's CSE core **as a checklist, not a benchmark** (PLAN.md §9/§10 of the private program explicitly reject IITK-equivalence and name automata/compilers/full-theory as breadth traps — the checklist only asks "did D-PL-23 miss anything structural?").
+2026-07-17 (Friday). Triggered by Sidharth: cross-check the map against IIT-Kanpur's CSE core **as a checklist, not a benchmark** (PLAN.md §9/§10 of the private program explicitly reject IITK-equivalence and name automata/compilers/full-theory as breadth traps — the checklist only asks "did D-PL-23 miss anything structural?").
 
 **It missed two things. Both are serving-path substrate, both now skeletons:**
 
@@ -247,3 +247,25 @@ New tally: **13 rooms · 43 clusters · 143 seed modules** (re-verified programm
 **Stale-note correction (recordkeeping):** the §Close line "the registry is unimported; no build impact" is SUPERSEDED — `FoundationsBrowser.jsx` is routed (App.jsx + Sidebar), reads this registry, and 21 driven interactive models are wired via `components/foundations/interactiveModules.js`. New rooms auto-appear in the app on registration. Found same session: `interactiveModules.js` still keyed the pre-D-PL-22 id `sp-async` — orphaning the AsyncTimeline model after the rename to `cc-event-loop`; fixed with this amendment.
 
 **SUNSET CLAUSE (binding):** this is the **last** map amendment until F-phase authoring ships at least one full room's driven content. The map is now months ahead of the product; the next PL Foundations session authors modules, it does not draw territory. Any proposal to amend the map before then gets refused with a pointer to this line.
+
+---
+
+## 12. Amendment D-PL-25 — the exhaustiveness audit + the two authored formats (owner-invoked)
+
+2026-07-16 22:20 IST (Thursday). Sunset-clause note: §11 barred further map amendments; the OWNER explicitly requested an exhaustiveness audit ("think like IITK faculty, a product builder, an interviewer signing off on extreme prep"), so this is an owner-invoked exception, recorded — and the clause now HARDENS: after D-PL-25, map changes require an authored room shipped, no exceptions, owner requests included (redirect to authoring).
+
+**Triple-lens audit verdict: rooms exhaustive, module layer had 21 real holes. All closed:**
+
+- **Faculty lens (canon per room):** R1 `pf-bytes-str` (the encoding boundary) · R2 `mc-str-concat` (quadratic +=) · R3 `dsa-backtrack`, `dsa-greedy`, `dsa-monotonic` (NeetCode-canon patterns that were absent — backtracking alone is a third of medium screens) · R4 `pd-merge` (row-explosion joins), `pd-missing` (NaN semantics), `pd-datetime` (tz/DST) · R5 `cc-executor` · R6 `sp-env` · R7 `cp-modular` · R8 `mt-branch` (sorted-array branch-prediction classic).
+- **Interviewer lens (would I sign off?):** R9 `ta-nograd`, `ta-inplace`, `ta-device` (the three tensor-mechanics bugs every ML screen probes) · R10 `os-signals` (graceful shutdown), `os-fd` (too-many-open-files) · R11 `cpp-const`, `cpp-templates`, `cpp-ub` (the reading-C++ interview canon) · R12 `wr-timeouts` (retry storm — asked in every serving loop), `wr-lb` · R13 `se-nplus1`, `se-pagination`. Verdict AFTER closure: sign-off-able as a KNOW-frame for data/MLE/senior-Python loops, given the recorded seams (ML design -> MSL, GenAI serving -> GSL, SQL drills -> SQL Lab, compiled C++ -> outside PL).
+- **Product lens:** exhaustiveness is journeys, not just modules — the remaining journey gaps are PARITY surfaces, not map: diagnostic/placement, spaced review, cheatsheet, QnA bank, company tracks (wave list in CLAUDE.md). No map change needed for them.
+- **Checked, still rejected:** regex (library skill -> DO drills, not a Foundations model) · trie/string-algos (above the DSA floor; CP ladder covers on demand) · DNS/streaming (Wire bottom-half / GSL seam) · comprehension micro-syntax (assumed floor).
+
+New tally: **13 rooms · 43 clusters · 167 seed modules** (verified programmatically, 0 duplicate ids).
+
+**The two authored-format skeletons (the D-PL-25 build plan):**
+
+1. **Climb mode** (`src/data/lessonThreads.js`) — the learnpython.org/SQLBolt format PL already proved in PyTutorial, scaled to rooms: read (<=120 words) -> drive the model -> graded YOUR TURN (runCheck) -> next. Room 1's thread is fully sequenced (18 steps, 5 graded stubs); trunk rooms follow room-by-room. Authoring sessions: A1 = Room 1 content to CONTENT-STANDARD (this also completes F1 and retires the KNOW stub), A2 = The Machine, then one room per session.
+2. **CppTrace** (`src/data/cppTraces.js`) — pythontutor-for-C++ WITHOUT faking a runtime: every trace is compiled with g++ -fsanitize=address,undefined, RUN, and transcribed as recorded truth; the browser steps a recording, predict-then-step at each state. House rule extended: no trace ships without its verification line (compiler + flags + date + observed output). Pilot trace `cpp-stack-heap` is IN and verified (g++ 13.3.0, output 7, sanitizer-clean); A3 session fills the remaining five room-11 steppers.
+
+Also on the shelf from the same discussion: per-module "open in Python Tutor" deep links for rooms 1-2 (zero-build garnish, at authoring time).
