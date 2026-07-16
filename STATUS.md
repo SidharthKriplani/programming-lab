@@ -1,5 +1,7 @@
 # PL — STATUS
 
+> **16 Jul 2026:** PL is PAUSED for content (FOUNDATIONS-SPEC.md §14 = resume authority). Two cross-lab parity items landed while paused: NoteEditor brought level with the family (selection/undo/sub-bullets/timestamps — verbatim PAL adoption) + global PageHighlighter. Commit command handed to Sidharth. Details: LINEAGE tail.
+
 _Last updated: 2026-07-03 (session close). PL 0.44.x — leaderboard (shared PAL identity) on top of the "come-alive" program. Built + verified locally in incremental batches; commit/push commands handed to Sidharth's Mac per batch (approve-first)._
 
 ## Where we are now (read this first)

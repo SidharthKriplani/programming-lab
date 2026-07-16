@@ -1,5 +1,13 @@
 # PL — NEXT (build queue)
 
+---
+
+## ⚠ FIRST — 16 Jul close (PL still paused)
+
+Push pending (approve-first): src/App.jsx, src/components/PageHighlighter.jsx, src/utils/localHighlights.js, src/components/tracks/NoteEditor.jsx, src/index.css. On deploy, verify notes (⇤⇥, undo, timestamps) + highlights. Content resume list: FOUNDATIONS-SPEC.md §14 — unchanged.
+
+---
+
 _PL = Programming Lab (SWE-for-data fluency; D-07/D-15). React+Vite+Pyodide SPA. Repo: `github.com/SidharthKriplani/programming-lab`. Local: `labs/production-systems-lab`. Always read this + `STATUS.md` + `CLAUDE.md` before any session._
 
 ---
