@@ -9,6 +9,7 @@ import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
 import { gotchaProblems } from './data/gotchaProblems.js';
 import { parseHash, setHash } from './utils/hashRoute.js';
+import { PageHighlighter } from './components/PageHighlighter.jsx';
 import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/auth.js';
 import { upsertLeaderboardRow } from './utils/leaderboard.js';
 import { DailyRep } from './components/shared/DailyRep.jsx';
@@ -161,7 +162,10 @@ export default function App() {
           <span style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--text)' }}>Programming Lab</span>
         </div>
 
-        <main className="app-main">
+        {/* In-place marker-pen highlights over the whole content surface (2026-07-16) */}
+        <PageHighlighter getContainer={() => document.getElementById('pl-main')} pageKey={'v:' + view} />
+
+        <main id="pl-main" className="app-main">
           <Suspense fallback={
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 260, gap: '0.75rem' }}>
               <BrandMark variant="monogram" size={40} />
