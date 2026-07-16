@@ -1,5 +1,8 @@
 # FOUNDATIONS HANDOFF — how PAL teaches (the KNOW frame), and why PL needs an interactive lab
 
+> **2026-07-17 — SUPERSEDED FOR STATE.** This handoff is the original WHY. Current state, standing rules, and the resume list live in `FOUNDATIONS-SPEC.md` §14 (THE PAUSE STATE).
+
+
 _Authored 2026-06-23 by the PAL session, as a mentor note to the Programming Lab (PL) build. The first handoff (`SQL-LAB-HANDOFF.md`) covered the **DO frame** — fluency banks where you write code and get graded. This one covers the **KNOW frame** — the Foundation rooms, where PAL **teaches a concept interactively** before you ever practice it. PL's current build (Python Gotchas, Drills, Idioms, OOP, pandas/numpy) is all DO. **You're missing KNOW, and KNOW is where the best programming teaching actually lives. This doc is a push to build it.**_
 
 ---

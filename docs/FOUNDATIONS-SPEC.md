@@ -281,3 +281,33 @@ Also on the shelf from the same discussion: per-module "open in Python Tutor" de
 - **Excluded permanently, with reasons:** metaclasses, descriptor protocol in depth, contextvars, C++ exception machinery, operator-overload authoring, multiple/virtual inheritance depth - encyclopedia beyond the floor and the loop. "Exhaustive" = everything that matters for the target learner, and that claim is now made deliberately.
 
 **THE FREEZE:** the map (rooms, clusters, seed modules) is now FROZEN. No amendment mechanism remains - not owner-invoked, not audit-invoked. Anything discovered during authoring is added AS AUTHORED CONTENT inside its room's session (a module authored beyond the seed list is welcome; a planned-and-unauthored addition is not). The next spec section, if any, documents authored rooms - not territory.
+
+---
+
+## 14. THE PAUSE STATE — read this first on resume (2026-07-17)
+
+2026-07-17 02:05 IST (Friday). PL is deliberately paused. This section is the resume point; everything above it is history.
+
+### What exists and is TRUE right now
+
+- **Map (FROZEN by §13, no amendment mechanism):** 13 rooms · 43 clusters · 177 seed modules in `src/data/foundationsRooms.js`. Trunk 1-6, branches 7-13. Tallies computed, not hand-counted.
+- **Climb threads (`src/data/lessonThreads.js`):** ALL 7 authored and status `ready` — rooms 1-6 + the room-11 reading thread. 109 steps, 25 graded yourTurns, 0 stubs. Concurrency (room 5) is reads-only BY DESIGN: a browser runtime cannot run honest OS threads, so grading them would violate the honest-widget rule (noted in the file header). Rendered by `src/pages/ClimbRunner.jsx` (view `climb`, hash sub = room id); the "Climb this room" button appears automatically on any room whose thread is `ready`.
+- **CppTraces (`src/data/cppTraces.js`):** all 6 authored, each with a compiler receipt IN the trace object (g++ 13.3.0 -fsanitize=address,undefined; outputs transcribed verbatim). Rendered by `src/pages/CppTraceRunner.jsx`, wired into room 11's module cards via FoundationsBrowser (trace-backed modules render as driven ReadyCards).
+- **Driven models:** 21 in `components/foundations/interactiveModules.js` (StateTrace/ArrayTrace templates + bespoke widgets). Key fixed this arc: `cc-event-loop` (was orphaned as `sp-async`).
+- **PREP surfaces:** `plQnaBank.js` (45 questions, 10 rooms, ids PERMANENT — never renumber) + `InterviewQnAPage.jsx` (room/difficulty filters, reveal-gated, seen-marker `pl-qna-seen-v1`). `plCheatsheet.js` (73 cards, 9 groups) + `CheatsheetPage.jsx` REBUILT as a true cheatsheet: READ mode = dense always-visible reference rows; QUIZ mode = single-open accordion. The flip-card deck was the wrong format (design lesson: name the surface's VERB first — scan vs answer vs drive).
+- **Chrome:** StartHere (3 entry paths), ResourcesPage (grounding shelf; PL-replicating tools deliberately excluded — no Python Tutor / VisuAlgo links, position recorded), PREP frame in Sidebar between DO and BUILD.
+
+### Standing rules earned the hard way (violate = regression)
+
+1. **hashRoute VIEWS whitelist**: every new App view MUST be added to `src/utils/hashRoute.js` VIEWS or nav bounces to home (bit us twice).
+2. **Verification discipline**: no graded check ships without the CPython harness pass (solution passes / canonical mistake fails TARGETED / starter fails), re-run on the AS-SHIPPED JS strings extracted via node. No CppTrace ships without its compiler receipt line.
+3. **House syntax**: single quotes, \' escapes, NO template literals; content backticks inside strings are fine.
+4. **Progress keys in use**: pl-know-progress-v1, pl-pylab-progress-v1, pl-climb-progress-v1, pl-qna-seen-v1, pl-pytut-progress-v1 — never rename.
+
+### On resume, in rough value order (none blocking)
+
+1. Branch threads: CP (7), The Metal (8), Tensors (9), OS Floor (10), Wire (12), Storage (13) — same authoring pipeline; per §13 any new module discovered lands AS AUTHORED CONTENT in-session, never as a planned stub.
+2. Remaining parity surfaces: Company Tracks, About, Review/spaced-rep, diagnostic/placement.
+3. Live-module authoring inside rooms (the KnowRunner predict->reveal write-ups the WidgetRunner note promises).
+4. QnA/cheatsheet growth (ids frozen, append-only).
+
