@@ -1,5 +1,7 @@
 # PL — NEXT (build queue)
 
+> **17 Jul FINAL:** outline ☰ drawer + reposition via family patch; content still PAUSED (§14). Same tracks-sync column-type audit applies as PAL.
+
 ---
 
 ## ⚠ FIRST — 16 Jul close (PL still paused)

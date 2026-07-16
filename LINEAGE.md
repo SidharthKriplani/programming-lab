@@ -33,3 +33,38 @@ _Narrative history of Programming Lab. One line per meaningful turn._
 ### Cross-lab UI parity wave — PL touched while PAUSED (16 Jul 2026)
 
 PL content remains **paused** (FOUNDATIONS-SPEC.md §14 is still the resume authority — this session was NOT a resume). Two cross-lab parity items landed: (1) **notes family parity** — PL's NoteEditor was a verbatim PAL-family port that had received none of the feature waves; diff confirmed byte-parity with PAL-pre-patch, so PAL's fully-patched editor was adopted verbatim (2-line PL header preserved): whisper placeholder, block-range selection, range formatting, full undo/redo, always-split paste, sub-bullets (Tab/⇤⇥), per-block edit timestamps, Created·Edited header; index.css got the placeholder + .nb-edited hover CSS. (2) **PageHighlighter** (components/ + utils/localHighlights.js, `pl_page_highlights_v1`) at App root over #pl-main, pageKey "v:"+view (pylab early-return branch deliberately not covered). RULE recorded at BreakLabs/CLAUDE.md: the NoteEditor family is FOUR files now; when PL drifts, diff against PAL and adopt verbatim.
+
+
+---
+
+### Late-night editor wave 2 — slash v3, arrow nav, mobile pass (17 Jul 2026)
+
+Same-night reopening after Sidharth's live testing. (1) **SlashMenu v3**: the menu was a
+transparent ghost (v2 used T.surface — translucent rgba in GSL) and keyboard selection
+walked below the fold with no scroll-follow. Now: portal to body, position:fixed anchored
+to the block (re-measured on scroll/resize, rAF-throttled), SOLID T.bg background + blur,
+overscroll-contain (touchpad inside the menu scrolls the MENU), flips above near the
+viewport bottom, selected item scrollIntoView; "Sub-bullet ↳" added to slash + turn-into
+menus; ⇥⇤ toolbar buttons moved next to the •/1. list buttons (they were scrolled off the
+right edge — "couldn't find the sub bullet thing"). (2) **One-press arrow navigation**:
+↑/↓ used to cross blocks only from the ABSOLUTE start/end (two presses per hop); now they
+leave from the first/last VISUAL line (soft-wrap aware via a hidden caret-mirror
+measurement), and ←/→ at a block edge cross into the neighbor. (3) **Mobile pass (≤700px)**:
++/⠿ gutter hidden (40px reclaimed; hover-era furniture), toolbar swipes with scrollbar
+hidden, header meta collapses to the Edited time, Export hidden, body padding tightened.
+Hooks: nb-toolbar/nb-body-pad/nb-meta-full/nb-meta-compact/nb-export + index.css block.
+
+PL remains content-PAUSED (FOUNDATIONS-SPEC.md §14) — this was cross-lab editor parity
+riding the family patch, not a resume.
+
+
+---
+
+### Post-close micro-waves (17 Jul 2026, late)
+
+Mobile: outline ☰ button + slide-in drawer (rail is desktop-only ≥1180; phones had no
+outline) — first shipped hidden UNDER the Rate/feedback chip (z400 vs z60, same corner),
+repositioned bottom:136 z:450. SERVICE WORKERS root-caused as the universal staleness
+villain (hard refresh bypasses HTTP cache, not SW Cache Storage; the tell: live slash
+menu missing the Sub-bullet entry present in a Ready deploy).
+PL: no SW (keep it that way). Editor received drawer + reposition via family patch. Content still PAUSED (§14).
