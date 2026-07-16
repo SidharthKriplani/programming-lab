@@ -12,7 +12,7 @@ const PATHS = [
     title: 'New to Python',
     who: 'You can read code but have written very little.',
     route: 'pylab',
-    cta: 'Start the guided tutorial (inside PyLab)',
+    cta: 'Start the guided tutorial',
     steps: [
       'PyLab opens with a lesson ladder: read a little, run a little, pass the check.',
       'Graduate into the gym: short graded exercises, instant feedback.',
@@ -70,7 +70,7 @@ function PathCard({ p, onNavigate }) {
           <li key={i} style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s}</li>
         ))}
       </ol>
-      <button onClick={() => onNavigate(p.route)} className='pal-btn-primary' style={{ alignSelf: 'flex-start', marginTop: '0.2rem', display: 'inline-flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
+      <button onClick={() => onNavigate(p.route)} className='pal-btn-primary' style={{ alignSelf: 'flex-start', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
         {p.cta}
         <Icon name='arrow-right' size={13} color='currentColor' />
       </button>

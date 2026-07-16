@@ -11,7 +11,6 @@ const SHELF = [
     label: 'Python & the machine under it',
     rooms: 'Rooms 1-2',
     items: [
-      { name: 'Python Tutor', url: 'https://pythontutor.com/', why: 'Step any snippet frame by frame — the visualization style PL\'s own state traces are built on.' },
       { name: 'The official Python tutorial', url: 'https://docs.python.org/3/tutorial/', why: 'The canonical tour; read targeted sections, not linearly.' },
       { name: 'roadmap.sh / python', url: 'https://roadmap.sh/python', why: 'The map of what exists — useful for seeing where you are, not for learning from.' },
       { name: 'Fluent Python (Ramalho)', url: 'https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/', why: 'The data model, deeply — the book behind rooms 1-2 once the basics stick.' },
@@ -24,7 +23,6 @@ const SHELF = [
     rooms: 'Rooms 3, 7',
     items: [
       { name: 'NeetCode 150', url: 'https://neetcode.io/practice', why: 'The pattern-organized problem list; PL\'s DSA room teaches the patterns, this is where you drill them at volume.' },
-      { name: 'VisuAlgo', url: 'https://visualgo.net/', why: 'Animated structures and algorithms — the reference visual language for the DSA steppers.' },
       { name: 'USACO Guide', url: 'https://usaco.guide/', why: 'The structured ladder past interview-medium — the CP branch\'s spine.' },
       { name: 'Competitive Programmer\'s Handbook (Laaksonen)', url: 'https://cses.fi/book/book.pdf', why: 'Free, dense, canonical — the CP branch\'s book.' },
       { name: 'CP-Algorithms', url: 'https://cp-algorithms.com/', why: 'The encyclopedia entry for every algorithm the CP branch names.' },
@@ -86,9 +84,9 @@ export function ResourcesPage() {
           <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, color: 'var(--text)' }}>Resources</h1>
         </div>
         <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: '62ch', lineHeight: 1.55 }}>
-          The shelf behind the rooms. Short by design — every entry is the grounding source a
-          Foundations room is actually built on, with the one reason it earns the slot. PL installs
-          the model; these are where you go deeper.
+          The shelf behind the rooms — books, official docs, and drill banks that go deeper than a
+          browser lab should. Deliberately short: only the sources the rooms are actually built on.
+          Interactive visualizations are not out-linked — PL\'s own driven models are that layer.
         </p>
       </div>
 
