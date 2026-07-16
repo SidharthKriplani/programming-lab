@@ -72,12 +72,18 @@ export const CPP_TRACES = [
         heap: [{ addr: '0x1000', label: 'int', value: '7', freed: true }] },
     ],
   },
-  // A3 authoring session fills these (schema above; every one compiler-verified first):
-  // { id: 'cpp-pointers', ... }   *p / &x / reference param - what changes for the caller
-  // { id: 'cpp-raii', ... }       destructors fire in reverse scope order, incl. exception path
-  // { id: 'cpp-ownership', ... }  by-value copy vs by-ref vs move - which allocations happen
-  // { id: 'cpp-values', ... }     the same assignment in Python (binds) vs C++ (copies), side by side
-  // { id: 'cpp-vector', ... }     push_back through a capacity doubling - ptr/size/capacity
+  // A3 authoring session fills these five. status 'planned' + verified: null means
+  // NOT RENDERABLE - the browser must never step an unverified trace (house rule).
+  { id: 'cpp-pointers',  title: 'Pointers vs references', status: 'planned', verified: null, code: [], steps: [],
+    intent: '*p, &x, and a reference parameter - which one changes the caller\'s value, traced.' },
+  { id: 'cpp-raii',      title: 'RAII: the destructor is the cleanup', status: 'planned', verified: null, code: [], steps: [],
+    intent: 'Destructors fire in reverse scope order - including on the exception path - vs Python\'s with.' },
+  { id: 'cpp-ownership', title: 'Ownership & move semantics', status: 'planned', verified: null, code: [], steps: [],
+    intent: 'A vector passed by value, by reference, and moved - which copies allocate, which steal the pointer.' },
+  { id: 'cpp-values',    title: 'Copies by default: the anti-Python', status: 'planned', verified: null, code: [], steps: [],
+    intent: 'The same assignment side by side: Python binds a name, C++ copies the object - predict visible mutations.' },
+  { id: 'cpp-vector',    title: 'What std::vector actually is', status: 'planned', verified: null, code: [], steps: [],
+    intent: 'push_back through a capacity doubling - pointer/size/capacity - the myvec every entrance screen builds.' },
 ];
 
 export const CPP_TRACE_IDS = CPP_TRACES.map(t => t.id);
