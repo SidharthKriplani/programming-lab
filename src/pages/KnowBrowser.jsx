@@ -15,6 +15,8 @@ import { HowToStrip } from '../components/shared/HowToStrip.jsx';
 import { Icon } from '../components/shared/Icon.jsx';
 import { getProgress, markSeen, markSolved } from '../utils/problemProgress.js';
 import { INTERACTIVE_MODULES } from '../components/foundations/interactiveModules.js';
+import { QnAPanel } from '../components/shared/QnAPanel.jsx';
+import { AddTrackBtn } from '../components/tracks/AddTrackBtn.jsx';
 
 const KNOW_KEY = 'pl-know-progress-v1';
 const GRID_COLS = 'repeat(auto-fill, minmax(min(380px, 100%), 1fr))';
@@ -301,12 +303,21 @@ export function KnowBrowser() {
     const module = ordered[idx];
     const next = ordered[(idx + 1) % ordered.length];
     return (
-      <KnowRunner
-        key={module.id}
-        module={module}
-        onBack={() => setActiveId(null)}
-        onNext={() => { setActiveId(next.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-      />
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', maxWidth: 900 }}>
+          <AddTrackBtn itemType="know" itemId={module.id} label={module.title} itemMeta={{ topic: module.cluster }} />
+        </div>
+        <KnowRunner
+          key={module.id}
+          module={module}
+          onBack={() => setActiveId(null)}
+          onNext={() => { setActiveId(next.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        />
+        {/* Family template: completion-gated Interview QnA (skeleton — bank fills later) */}
+        <div style={{ maxWidth: 900 }}>
+          <QnAPanel moduleId={module.id} completed={!!progress.solved[module.id]} />
+        </div>
+      </div>
     );
   }
 

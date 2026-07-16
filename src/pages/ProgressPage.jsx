@@ -4,6 +4,7 @@
 import { BANKS, FRAMES, FRAME_ORDER } from '../data/banks.js';
 import { getCounts } from '../utils/problemProgress.js';
 import { Icon } from '../components/shared/Icon.jsx';
+import { getRatings } from '../utils/ratings.js';
 
 function statusOf(solved, total) {
   if (total === 0) return { label: 'Soon', color: 'var(--text-dim)' };
@@ -85,6 +86,39 @@ export function ProgressPage({ onNavigate }) {
           </section>
         );
       })}
+
+      {/* ── Your ratings — the family Elo (fed by the Daily Rep; more surfaces later) ── */}
+      {(() => {
+        const r = getRatings();
+        if (!r.attempts) return (
+          <section style={{ marginTop: '1.6rem' }}>
+            <h2 style={{ margin: '0 0 0.5rem', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Your ratings</h2>
+            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              No rated attempts yet — solve the Daily Rep on Home; the first Submit of each day's problem is the rated attempt.
+            </p>
+          </section>
+        );
+        const weakest = r.domains[0];
+        return (
+          <section style={{ marginTop: '1.6rem' }}>
+            <h2 style={{ margin: '0 0 0.5rem', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              Your ratings · overall <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>{r.overall}</span> · {r.attempts} rated
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              {r.domains.map(d => (
+                <div key={d.dom} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text)', width: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexShrink: 0 }}>{d.dom}</span>
+                  <div style={{ flex: 1, height: 5, background: 'var(--surface-2)', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ width: `${Math.max(4, Math.min(100, ((d.rating - 800) / 900) * 100))}%`, height: '100%', background: d === weakest && r.domains.length > 1 ? 'var(--red, #dc2626)' : 'var(--accent)', borderRadius: 99, transition: 'width 0.4s ease' }} />
+                  </div>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 700, color: 'var(--text)', width: 42, textAlign: 'right', flexShrink: 0 }}>{d.rating}</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: 'var(--text-dim)', width: 28, flexShrink: 0 }}>×{d.attempts}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      })()}
     </div>
   );
 }

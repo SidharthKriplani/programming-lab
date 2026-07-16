@@ -24,6 +24,7 @@ const PyLabBrowser = lazy(() => import('./pages/PyLabBrowser.jsx').then(m => ({ 
 const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').then(m => ({ default: m.FoundationsBrowser })));
 const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
 const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ default: m.Leaderboard })));
+const MyTracksPage = lazy(() => import('./pages/MyTracksPage.jsx').then(m => ({ default: m.MyTracksPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -145,6 +146,7 @@ export default function App() {
               : view === 'judge' ? <JudgeBrowser />
               : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
+              : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}
           </Suspense>

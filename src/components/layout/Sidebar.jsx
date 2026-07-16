@@ -72,6 +72,7 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 const TRACK = [
   { label: 'Home', view: 'home', icon: 'layout' },
   { label: 'Progress', view: 'progress', icon: 'bar-chart' },
+  { label: 'My Tracks', view: 'tracks', icon: 'file-text' },
   { label: 'Leaderboard', view: 'leaderboard', icon: 'star' },
 ];
 
