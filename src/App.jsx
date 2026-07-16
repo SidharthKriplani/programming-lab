@@ -28,6 +28,8 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ de
 const MyTracksPage = lazy(() => import('./pages/MyTracksPage.jsx').then(m => ({ default: m.MyTracksPage })));
 const StartHere = lazy(() => import('./pages/StartHere.jsx').then(m => ({ default: m.StartHere })));
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage.jsx').then(m => ({ default: m.ResourcesPage })));
+const CheatsheetPage = lazy(() => import('./pages/CheatsheetPage.jsx').then(m => ({ default: m.CheatsheetPage })));
+const InterviewQnAPage = lazy(() => import('./pages/InterviewQnAPage.jsx').then(m => ({ default: m.InterviewQnAPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -174,6 +176,8 @@ export default function App() {
               : view === 'build' ? <BuildBrowser />
               : view === 'start' ? <StartHere onNavigate={navigate} />
               : view === 'resources' ? <ResourcesPage />
+              : view === 'cheatsheet' ? <CheatsheetPage />
+              : view === 'qna' ? <InterviewQnAPage />
               : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}
