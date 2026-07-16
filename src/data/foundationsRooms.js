@@ -19,6 +19,11 @@
 //     'stepper' = step-through state machine (frames, buckets, graph traversal).
 //     'concept' = explainer-only (no execution; conceptual-in-browser topics).
 // PL's edge over PAL: prefer 'live' wherever the concept runs — PAL can only 'sim'.
+//
+// KNOW/DO SEAM (D-PL-22): pyLabPlanned.js\'s plan-sys-* / plan-async-* / plan-n2s-*
+// stubs are the DO companions (graded runnable exercises) to rooms 5 (Concurrency
+// & Parallelism), 6 (Shipping Python), and 8 (The Metal) here. Same topics on both
+// surfaces is BY DESIGN — KNOW installs the model, DO drills it — not duplication.
 
 export const FOUNDATION_TRACKS = {
   trunk:  { label: 'The Trunk',  sub: 'The SWE-for-data floor — sequential, everyone climbs it' },
@@ -218,7 +223,7 @@ export const FOUNDATION_ROOMS = [
   {
     id: 'shipping-python',
     track: 'trunk',
-    order: 5,
+    order: 6,
     title: 'Shipping Python',
     subtitle: 'Notebook -> production: the SWE in SWE-for-data.',
     accent: 'var(--purple)',
@@ -254,23 +259,71 @@ export const FOUNDATION_ROOMS = [
         ],
       },
       {
-        id: 'concurrency-and-repro',
-        label: 'Concurrency & Reproducibility',
+        id: 'from-notebook-to-service',
+        label: 'Notebook -> Service',
         modules: [
-          { id: 'sp-async',      title: 'async/await & the event loop',  model: 'Timeline where await yields control; watch ten simulated calls interleave instead of blocking serially.', widget: 'sim' },
+          { id: 'sp-structure',  title: 'Cells -> functions -> modules', model: 'Take a linear notebook; watch it refactor into named functions with explicit inputs; the hidden-state bug disappears.', widget: 'stepper' },
+          { id: 'sp-config',     title: 'Config out of the code',        model: 'Hoist magic numbers into a config object; change one value; watch every consumer update without an edit.', widget: 'live' },
+          { id: 'sp-logging',    title: 'Logging: print that survives production', model: 'Swap prints for leveled logging; flip the level; watch DEBUG vanish and ERROR stay.', widget: 'live' },
+          { id: 'sp-service',    title: 'The request/response boundary', model: 'Wrap the pipeline behind a handler; feed a request; trace validate -> compute -> respond, and where the 4xx vs 5xx split lives.', widget: 'sim' },
           { id: 'sp-repro',      title: 'Seed everything',               model: 'Seed only Python\'s RNG, then numpy, then the framework; watch which \'seeded\' run still differs.', widget: 'concept' },
         ],
       },
     ],
   },
 
+  {
+    id: 'concurrency-foundations',
+    track: 'trunk',
+    order: 5,
+    title: 'Concurrency & Parallelism',
+    subtitle: 'One interpreter, many tasks — the GIL, the event loop, and the races.',
+    accent: 'var(--blue-text)',
+    status: 'planned',
+    identity: 'The substrate room the AIE floor demands: every LLM app is async, every data pipeline hits the GIL, every interview asks the difference. Promoted from a single buried module (the old sp-async) to a full trunk room — D-PL-22.',
+    grounding: 'Fluent Python (concurrency chapters) · asyncio docs (the event-loop model) · Amdahl\'s law · plan-async-* DO stubs (pyLabPlanned.js)',
+    clusters: [
+      {
+        id: 'one-interpreter',
+        label: 'The GIL & Threads',
+        modules: [
+          { id: 'cc-gil',        title: 'The GIL: one bytecode at a time', model: 'Race a CPU-bound loop on 1 vs 4 threads; watch wall-clock barely move; the glass-box shows why threads did not help.', widget: 'live' },
+          { id: 'cc-io-vs-cpu',  title: 'I/O-bound vs CPU-bound',          model: 'Same 4 threads, but the work is waiting instead of computing; watch the speedup appear — the GIL releases on I/O.', widget: 'live' },
+          { id: 'cc-processes',  title: 'Processes: real parallelism, real cost', model: 'Slide the task size; watch process startup + serialization overhead eat the win on small work and pay off on big work.', widget: 'sim' },
+          { id: 'cc-amdahl',     title: 'Amdahl\'s law, felt',             model: 'One slider for the parallel fraction, one for workers; watch the speedup ceiling flatten no matter how many workers you add.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'the-event-loop',
+        label: 'The Event Loop',
+        modules: [
+          { id: 'cc-event-loop', title: 'async/await & the event loop',   model: 'Timeline where await yields control; watch ten simulated calls interleave instead of blocking serially.', widget: 'sim' },
+          { id: 'cc-await-order', title: 'What runs when',                 model: 'Predict the print order of gathered coroutines; run it; step the loop to see exactly where each task yields.', widget: 'live' },
+          { id: 'cc-blocking',   title: 'The blocking call that freezes the loop', model: 'Drop one synchronous sleep into async code; watch every other task stall behind it; swap in the async version and unfreeze.', widget: 'live' },
+          { id: 'cc-timeout',    title: 'Timeouts & cancellation',        model: 'Wrap an await in a timeout; watch cancellation propagate into the task and the cleanup still run.', widget: 'live' },
+        ],
+      },
+      {
+        id: 'shared-state',
+        label: 'Races & Coordination',
+        modules: [
+          { id: 'cc-race',       title: 'The race condition',             model: 'Two workers increment one shared counter; step the interleaving; watch updates vanish between read and write.', widget: 'stepper' },
+          { id: 'cc-locks',      title: 'Locks — and the deadlock',       model: 'Add a lock and fix the race; then take two locks in opposite orders and watch both workers freeze forever.', widget: 'stepper' },
+          { id: 'cc-semaphore',  title: 'Semaphores: at most N at once',  model: 'Fire 20 tasks through a semaphore of 3; watch the concurrency cap hold and the queue drain in waves.', widget: 'sim' },
+          { id: 'cc-backpressure', title: 'Backpressure: when producers outrun consumers', model: 'Unbound the queue and watch memory climb; bound it and watch the producer block instead — the trade made visible.', widget: 'sim' },
+        ],
+      },
+    ],
+  },
+
   // ──────────────────────────── BRANCHES ────────────────────────────
-  // SCOPE NOTE: branches 6 and 7 exceed PL\'s charter (D-PL-07 easy->med; the
-  // \'ML internals = MSL\'s lane\' line). Adopted as a conscious amendment — D-PL-21.
+  // SCOPE NOTE: the branches exceed PL\'s charter (D-PL-07 easy->med; the
+  // \'ML internals = MSL\'s lane\' line). Adopted as conscious amendments —
+  // D-PL-21 (rooms 7 and 9), D-PL-22 (room 8, The Metal).
   {
     id: 'competitive-programming',
     track: 'branch',
-    order: 6,
+    order: 7,
     title: 'Competitive Programming',
     subtitle: 'Picks up where the DSA floor ends — the USACO Gold/Platinum ladder.',
     accent: 'var(--red)',
@@ -314,9 +367,51 @@ export const FOUNDATION_ROOMS = [
   },
 
   {
+    id: 'the-metal',
+    track: 'branch',
+    order: 8,
+    title: 'The Metal',
+    subtitle: 'What the hardware does with your code — cache, floats, and the GPU.',
+    accent: 'var(--yellow)',
+    status: 'planned',
+    charterNote: 'The substrate branch (D-PL-22). Below-Python mechanics projected into runnable Python — cache effects and float bits run live in Pyodide; the GPU is modeled, never faked as executable.',
+    identity: 'The Machine\'s depth sequel: room 2 shows what Python costs, this room shows WHY the hardware charges it. The systems-depth vertical — memory layout, number representation, the accelerator mental model — that separates a library operator from an engineer who can reason under the abstraction.',
+    grounding: 'CS:APP (memory hierarchy, data representation) · High Performance Python · PMPP (the GPU execution model) · plan-sys-* DO stubs (pyLabPlanned.js)',
+    clusters: [
+      {
+        id: 'memory-layout',
+        label: 'Memory Layout',
+        modules: [
+          { id: 'mt-cache',      title: 'Cache lines: why traversal order matters', model: 'Walk the same matrix row-major then column-major; the glass-box wall-clock diverges on identical work — the cache line is the reason.', widget: 'live' },
+          { id: 'mt-strides',    title: 'Strides & contiguity',           model: 'Transpose an array — free, only strides change; then .copy() and watch memory actually move; check .flags to see which is which.', widget: 'live' },
+          { id: 'mt-boxed',      title: 'What a Python object costs',     model: 'Compare a list of a million ints against the numpy int32 buffer; tracemalloc shows the boxed-object tax live.', widget: 'live' },
+        ],
+      },
+      {
+        id: 'numbers',
+        label: 'Numbers',
+        modules: [
+          { id: 'mt-float',      title: 'IEEE-754: why 0.1 + 0.2 != 0.3', model: 'Inspect the actual bits of a float; drag the mantissa; watch which decimals are representable and which silently round.', widget: 'live' },
+          { id: 'mt-precision',  title: 'float64 -> float32 -> float16',  model: 'Accumulate a long sum at each precision; watch the error grow as bits shrink — and where fp16 falls off a cliff.', widget: 'live' },
+          { id: 'mt-overflow',   title: 'Overflow & dtype wrap-around',   model: 'Increment an int8 past 127; watch it wrap negative with no error — the silent bug class dtype limits create.', widget: 'live' },
+        ],
+      },
+      {
+        id: 'the-accelerator',
+        label: 'The Accelerator',
+        modules: [
+          { id: 'mt-gpu-model',  title: 'The GPU mental model: thousands of slow workers', model: 'Slide task parallelism; watch a few fast cores beat the GPU on serial work and lose by 100x on parallel work.', widget: 'sim' },
+          { id: 'mt-transfer',   title: 'The transfer tax: host <-> device', model: 'Slide the compute-per-byte ratio; watch the PCIe copy dominate small kernels — why you batch work onto the device and keep it there.', widget: 'sim' },
+          { id: 'mt-batching',   title: 'Batching: feeding the beast',     model: 'Slide batch size; watch GPU utilization climb, then latency pay for it — the throughput/latency trade every inference engineer tunes.', widget: 'sim' },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'tensors-autograd',
     track: 'branch',
-    order: 7,
+    order: 9,
     title: 'Tensors & Autograd',
     subtitle: 'PyTorch / TensorFlow mechanics — how the array library thinks.',
     accent: 'var(--accent)',
@@ -352,9 +447,10 @@ export const FOUNDATION_ROOMS = [
   },
 ];
 
-// Convenience selectors (mirror banks.js usage).
-export const TRUNK_ROOMS  = FOUNDATION_ROOMS.filter(r => r.track === 'trunk');
-export const BRANCH_ROOMS = FOUNDATION_ROOMS.filter(r => r.track === 'branch');
+// Convenience selectors (mirror banks.js usage). Sorted by order so display
+// never depends on physical array position (D-PL-22 inserted rooms mid-list).
+export const TRUNK_ROOMS  = FOUNDATION_ROOMS.filter(r => r.track === 'trunk').sort((a, b) => a.order - b.order);
+export const BRANCH_ROOMS = FOUNDATION_ROOMS.filter(r => r.track === 'branch').sort((a, b) => a.order - b.order);
 
 // Skeleton tallies (for STATUS / the future Progress dashboard).
 export const FOUNDATION_TALLY = {

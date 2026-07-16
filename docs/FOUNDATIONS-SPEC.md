@@ -33,6 +33,8 @@ BRANCHES  6 Competitive Programming        (amends the easy->med ceiling)
 
 7 rooms · 24 clusters · 73 seed modules in the skeleton (`FOUNDATION_TALLY`). The seed is representative, not exhaustive — the rooms grow as authored.
 
+> **SUPERSEDED 2026-07-16 (D-PL-22, §9 below):** the map is now **9 rooms · 30 clusters · 97 seed modules** — Concurrency & Parallelism joins the trunk at 5, The Metal joins the branches at 8. §§2-3 below describe the original 7; §9 is the delta and the current authority for the full set.
+
 ---
 
 ## 2. The trunk
@@ -154,3 +156,35 @@ Each phase is its own build session with its own spine close (PROTOCOL). Gates: 
 ## Close / handoff
 
 This spec + `src/data/foundationsRooms.js` are the **skeleton** — architecture and seed modules, status `planned`, nothing wired into the app yet (the registry is unimported; no build impact). The build consumes it room-by-room per §7. Authority for any KNOW-frame change. Decision: **D-PL-21**. Mirrors: handoff <-> `FOUNDATIONS-HANDOFF.md`; scope <-> D-07 / D-15; runner <-> D-PL-17.
+
+---
+
+## 9. Amendment D-PL-22 — the substrate expansion (2 new rooms, 9 total)
+
+2026-07-16 19:42 IST (Thursday)
+
+**What changed.** The 7-room map above is amended to **9 rooms · 30 clusters · 97 seed modules** (`FOUNDATION_TALLY`, re-verified programmatically). Two additions, one restructure:
+
+```
+TRUNK  1 Python Foundations
+       2 The Machine
+       3 Data Structures & Algorithms
+       4 NumPy & pandas
+       5 Concurrency & Parallelism        <- NEW (D-PL-22)
+       6 Shipping Python                   (was 5; still the trunk capstone)
+BRANCHES  7 Competitive Programming        (was 6)
+          8 The Metal                      <- NEW (D-PL-22)
+          9 Tensors & Autograd             (was 7)
+```
+
+**Room 5 — Concurrency & Parallelism** `concurrency-foundations` (trunk). Promoted from a single buried module (the old `sp-async`, now `cc-event-loop`) to a 3-cluster room: The GIL & Threads (GIL race, I/O-vs-CPU, processes, Amdahl felt) · The Event Loop (async/await timeline, await order, the blocking call that freezes the loop, timeouts & cancellation) · Races & Coordination (the race condition, locks & deadlock, semaphores, backpressure). **Why trunk, not branch:** every LLM app is async, every data pipeline hits the GIL, every mid-level screen asks the difference — this is floor, not specialization. Pyodide runs real threads-vs-GIL races and real asyncio, so most of it is `live`.
+
+**Room 8 — The Metal** `the-metal` (branch). The Machine's depth sequel — room 2 shows what Python *costs*, room 8 shows *why the hardware charges it*: Memory Layout (cache lines via row-vs-column traversal race, strides & contiguity, the boxed-object tax) · Numbers (IEEE-754 bits, fp64→fp16 precision cliff, dtype wrap-around) · The Accelerator (the GPU mental model, the host↔device transfer tax, batching & the throughput/latency trade). Cache and float modules run `live` in Pyodide; the GPU cluster is honest `sim` — modeled, never faked as executable. **This is the systems-depth vertical** — the room that serves the ML-infra/inference/perf-engineering direction — kept as a branch because it is depth beyond the SWE-for-data floor.
+
+**Shipping Python restructure.** Its `concurrency-and-repro` cluster is dissolved: `sp-async` moved to room 5; the cluster is replaced by **Notebook -> Service** (cells→functions→modules, config out of the code, logging, the request/response boundary, seed-everything) — making room 6 the true notebook→production capstone and the KNOW companion to the `plan-n2s-*` DO stubs.
+
+**The KNOW/DO reconciliation (this closes an open gap).** `pyLabPlanned.js`'s wave-1 stub categories map onto rooms, by design, not by accident: `plan-async-*` ↔ room 5 · `plan-n2s-*` ↔ room 6's Notebook→Service cluster · `plan-sys-*` ↔ room 8 (cache/floats) + room 2 (Big-O bench, generator memory — already covered there). Same topic on both surfaces is the standing KNOW→DO seam (KNOW installs the model, DO drills it), now stated in both files' headers. There is ONE Foundations map — this one; `pyLabPlanned` stubs are its DO shadows.
+
+**Build order impact.** §7's table gains two phases: **F5b — Room 5 Concurrency** (after F5 Shipping Python; mostly `live`, cheap on the existing glass-box) and **F6b — Room 8 The Metal** (after F6 CP; the two `live` clusters first, the GPU `sim` cluster last). Trunk-first rule unchanged.
+
+**Charter note.** Room 8 extends the D-PL-21 amendment pattern (recorded, not smuggled): below-Python substrate is above the old charter's Python-fluency line. Room 5 needs no amendment — concurrency is in-charter floor. If the branches starve the trunk, the branches pause; unchanged.
