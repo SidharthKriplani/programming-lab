@@ -47,7 +47,7 @@ export const INTERACTIVE_MODULES = {
   'mc-vectorized': VectorizedRaceModel,  // Room 2 · cost-felt (live numpy)
   'np-broadcast': BroadcastModel,        // Room 4 · numpy
   'pd-align': IndexAlignModel,           // Room 4 · pandas (live)
-  'sp-async': AsyncTimelineModel,        // Room 5 · concurrency
+  'cc-event-loop': AsyncTimelineModel,   // Room 5 (Concurrency) · the-event-loop — id renamed from sp-async in D-PL-22; fixed D-PL-24
   'cp-dp-shapes': UniquePathsModel,      // Room 6 · dynamic programming
   'ta-backward': AutogradModel,          // Room 7 · autograd
 };

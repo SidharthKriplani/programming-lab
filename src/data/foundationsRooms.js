@@ -24,6 +24,7 @@
 // stubs are the DO companions (graded runnable exercises) to rooms 5 (Concurrency
 // & Parallelism), 6 (Shipping Python), and 8 (The Metal) here. Same topics on both
 // surfaces is BY DESIGN — KNOW installs the model, DO drills it — not duplication.
+// D-PL-24 extends the seam: plan-api-* ↔ room 12 (The Wire); the SQL Lab DO bank ↔ room 13 (Storage Engines).
 
 export const FOUNDATION_TRACKS = {
   trunk:  { label: 'The Trunk',  sub: 'The SWE-for-data floor — sequential, everyone climbs it' },
@@ -179,6 +180,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'dsa-bfs-dfs',    title: 'BFS / DFS on graphs',           model: 'Traverse a small graph; watch the frontier (queue) vs the stack drive the visit order.', widget: 'stepper' },
           { id: 'dsa-topk',       title: 'Top-K with a heap',             model: 'Stream values through a size-K heap; watch it evict to keep the K largest.', widget: 'stepper' },
           { id: 'dsa-intervals',  title: 'Intervals: merge & overlap',    model: 'Drag intervals on a timeline; watch overlaps merge after a sort.', widget: 'sim' },
+          { id: 'dsa-bits',       title: 'Bits: the integer as a toolbox', model: 'Toggle individual bits of an int; watch masks, shifts, and two\'s-complement negation transform the same 8 cells - the pattern behind every bit-trick screen question.', widget: 'sim' },
         ],
       },
     ],
@@ -341,6 +343,14 @@ export const FOUNDATION_ROOMS = [
         ],
       },
       {
+        id: 'recurrences-and-proofs',
+        label: 'Recurrences & Proofs',
+        modules: [
+          { id: 'cp-recurrence', title: 'Solving recurrences: the Master theorem, felt', model: 'Set a, b, and f(n) on T(n) = aT(n/b) + f(n); watch the recursion tree total its levels and land in one of the three cases.', widget: 'sim' },
+          { id: 'cp-amortized',  title: 'Amortized analysis: the doubling array', model: 'Append into a doubling array; watch per-op cost spike at each resize while the running average flattens to O(1) - the analysis behind myvec\'s growth policy.', widget: 'sim' },
+        ],
+      },
+      {
         id: 'dynamic-programming',
         label: 'Dynamic Programming',
         modules: [
@@ -408,6 +418,7 @@ export const FOUNDATION_ROOMS = [
           { id: 'mt-transfer',   title: 'The transfer tax: host <-> device', model: 'Slide the compute-per-byte ratio; watch the PCIe copy dominate small kernels — why you batch work onto the device and keep it there.', widget: 'sim' },
           { id: 'mt-batching',   title: 'Batching: feeding the beast',     model: 'Slide batch size; watch GPU utilization climb, then latency pay for it — the throughput/latency trade every inference engineer tunes.', widget: 'sim' },
           { id: 'mt-roofline',   title: 'The roofline: bandwidth-bound or compute-bound', model: 'Drag a kernel\'s arithmetic intensity along the roofline; watch it pin against the memory-bandwidth slope or the compute ceiling — the one chart that explains every perf conversation.', widget: 'sim' },
+          { id: 'mt-compiler',   title: 'What -O2 did to your loop',       model: 'The same C loop through the optimizer\'s passes - inline, unroll, autovectorize - against real godbolt output. The model (not the course) behind why identical source runs 10x apart.', widget: 'concept' },
         ],
       },
     ],
@@ -531,6 +542,91 @@ export const FOUNDATION_ROOMS = [
         label: 'Shapes in Practice',
         modules: [
           { id: 'ta-shape-err',  title: 'The shape-mismatch error',      model: 'Feed mismatched shapes to a matmul; read the error; reshape/permute/view to fix it live.', widget: 'live' },
+        ],
+      },
+    ],
+  },
+
+  // ─────────────── D-PL-24 BRANCHES (the serving-path substrate) ───────────────
+  {
+    id: 'the-wire',
+    track: 'branch',
+    order: 12,
+    title: 'The Wire',
+    subtitle: 'The network under every API call - latency, TCP/HTTP, bytes on the wire.',
+    accent: 'var(--accent)',
+    status: 'planned',
+    charterNote: 'D-PL-24. The serving-path TOP half only: latency, connections, HTTP semantics, serialization. Routing/link-layer (the bottom half) deliberately excluded - no target loop asks it. KNOW twin of the plan-api-* DO stubs.',
+    identity: 'Every capstone that serves and every senior loop that asks \'what happens when you call the API\' runs on this room. Distance costs, connections cost, bytes cost - all three made measurable.',
+    grounding: 'The Dean/Norvig latency table - High Performance Browser Networking (Grigorik) - HTTP semantics (RFC 9110, read selectively)',
+    clusters: [
+      {
+        id: 'the-cost-of-distance',
+        label: 'The Cost of Distance',
+        modules: [
+          { id: 'wr-latency',    title: 'Latency numbers every engineer knows', model: 'Slide from L1 cache to same-rack to cross-continent on a log scale; watch the nanosecond-to-millisecond cliff that explains why the network is never free.', widget: 'sim' },
+          { id: 'wr-rtt',        title: 'Round trips dominate',            model: 'Fetch 50 items as 50 sequential calls, then 5 batched pages, then 1 bulk call; the timeline shows RTT x count crushing payload size - the N+1 problem, felt.', widget: 'sim' },
+          { id: 'wr-bw-latency', title: 'Bandwidth is not latency',        model: 'Slide each independently; watch a fat slow pipe lose to a thin fast one on small payloads and win on bulk - why CDNs and batching solve different problems.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'tcp-and-http',
+        label: 'TCP & HTTP',
+        modules: [
+          { id: 'wr-handshake',  title: 'What a connection costs',         model: 'Step the TCP handshake plus TLS; count round trips before byte one of payload; then reuse the connection and watch keep-alive amortize it away.', widget: 'stepper' },
+          { id: 'wr-pooling',    title: 'Connection pooling',              model: 'Fire 100 requests with and without a pool; watch handshake overhead stack up serially vs vanish behind reuse - why every production client pools.', widget: 'sim' },
+          { id: 'wr-http',       title: 'The HTTP request, anatomized',    model: 'Assemble method + path + headers + body; fire it at a toy handler; map the response line, status class, and headers back to what the server decided.', widget: 'stepper' },
+          { id: 'wr-hol',        title: 'Head-of-line blocking',           model: 'Queue responses behind one slow request on a single connection; watch everything stall; then multiplex and watch the stall dissolve - the problem HTTP/2 exists to solve.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'bytes-on-the-wire',
+        label: 'Bytes on the Wire',
+        modules: [
+          { id: 'wr-serialize',  title: 'json vs binary on the wire',      model: 'Serialize the same record as json and a packed binary layout; compare bytes and encode/decode time measured live - the trade protobuf and friends make.', widget: 'live' },
+          { id: 'wr-columnar',   title: 'Row vs column on the wire',       model: 'Ship a table row-wise then column-wise; watch column layout compress and slice better for analytics - the same layout story as The Metal\'s cache room, one level up.', widget: 'sim' },
+          { id: 'wr-compress',   title: 'Compression: cheap wins, real costs', model: 'Slide compression level on a real payload; watch bytes fall while CPU time climbs - the knob every high-volume service tunes.', widget: 'live' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'storage-engines',
+    track: 'branch',
+    order: 13,
+    title: 'Storage Engines',
+    subtitle: 'What the database actually does - indexes, logs, and why your query is slow.',
+    accent: 'var(--accent)',
+    status: 'planned',
+    charterNote: 'D-PL-24. The KNOW room under the SQL Lab DO bank (same KNOW/DO seam as PyLab). Mechanics only - B-trees, LSM, WAL, plans; query-WRITING drills stay in SQL Lab. Vector indexes bridge to the mini-vector-DB capstone shape.',
+    identity: 'PL teaches what a dict costs and what a cache line is; this room is the same glass-box turned on the database - the index, the log, and the plan, as models you drive.',
+    grounding: 'Database Internals (Petrov, selectively) - Use The Index, Luke - SQLite EXPLAIN docs (Pyodide ships sqlite3, so plans run LIVE)',
+    clusters: [
+      {
+        id: 'the-index',
+        label: 'The Index',
+        modules: [
+          { id: 'se-btree',      title: 'The B-tree: why lookups are log n', model: 'Insert keys into a B-tree; watch nodes fill and split; trace one lookup\'s root-to-leaf path - the structure under almost every index.', widget: 'stepper' },
+          { id: 'se-lsm',        title: 'The LSM tree: write fast, merge later', model: 'Stream writes into a memtable; watch it flush to sorted runs and compact; trace a read through the levels - the write-optimized answer to the B-tree.', widget: 'sim' },
+          { id: 'se-index-trade', title: 'The index trade',                model: 'Run the same point lookup and full scan with and without an index on real sqlite, live; watch reads flip from O(n) to O(log n) while writes pay the maintenance tax.', widget: 'live' },
+          { id: 'se-vector',     title: 'Vector indexes: flat vs approximate', model: 'Search embeddings flat (exact, O(n)) then through an IVF-style partition; slide the probe count; watch recall trade against speed - the index inside every vector DB.', widget: 'sim' },
+        ],
+      },
+      {
+        id: 'the-log-and-the-guarantee',
+        label: 'The Log & The Guarantee',
+        modules: [
+          { id: 'se-wal',        title: 'The write-ahead log',             model: 'Write, crash mid-transaction, recover: step the WAL replay and watch committed work survive while the half-done transaction rolls back.', widget: 'stepper' },
+          { id: 'se-acid',       title: 'What a transaction promises',     model: 'Interleave two transactions on one account balance; step isolation levels from read-uncommitted up; watch which anomalies (dirty read, lost update) each level kills.', widget: 'stepper' },
+        ],
+      },
+      {
+        id: 'reading-the-plan',
+        label: 'Reading the Plan',
+        modules: [
+          { id: 'se-plan',       title: 'Why your query is slow',          model: 'EXPLAIN a real sqlite query live; toggle an index and a rewrite; watch the plan flip from SCAN to SEARCH and the measured time follow.', widget: 'live' },
+          { id: 'se-layout',     title: 'Row store vs column store',       model: 'Run \'one whole row\' vs \'one column, all rows\' against both layouts; watch each layout win its own access pattern - the reason analytics engines are columnar.', widget: 'sim' },
         ],
       },
     ],

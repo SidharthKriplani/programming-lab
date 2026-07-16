@@ -219,3 +219,31 @@ New tally: **11 rooms · 36 clusters · 121 seed modules** (re-verified programm
 **Deliberately NOT added, with reasons:** distributed-systems design (MSL owns ML system design; GSL owns serving-in-context — the ownership seam holds); writing-C++-graded-in-browser (impossible in Pyodide, and faking it violates the honest-widget rule); OS deep internals like filesystems/drivers (below the interview floor for these roles); anything Year-2-speculative (the program itself refuses to plan that far — the lab shadows the program, not the fog).
 
 **Seam rule for room 11:** PL teaches C++ *reading and models*; actual compiled C++ grading stays outside PL (the private entrance-exam ledger and, later, capstone repos — different surface, different owner).
+
+---
+
+## 11. Amendment D-PL-24 — the IITK-checklist audit (2 more rooms, 13 total; the LAST map amendment before authoring)
+
+2026-07-16 21:10 IST (Thursday). Triggered by Sidharth: cross-check the map against IIT-Kanpur's CSE core **as a checklist, not a benchmark** (PLAN.md §9/§10 of the private program explicitly reject IITK-equivalence and name automata/compilers/full-theory as breadth traps — the checklist only asks "did D-PL-23 miss anything structural?").
+
+**It missed two things. Both are serving-path substrate, both now skeletons:**
+
+```
+BRANCHES ...unchanged 7-11...
+         12 The Wire          <- NEW (D-PL-24)  · CS425's top half, filtered
+         13 Storage Engines   <- NEW (D-PL-24)  · CS315's mechanics, filtered
+```
+
+New tally: **13 rooms · 43 clusters · 143 seed modules** (re-verified programmatically; supersedes §10's 121).
+
+**Room 12 — The Wire** `the-wire` (branch). The network under every API call: The Cost of Distance (the Dean/Norvig latency ladder, RTT-dominates/N+1, bandwidth-vs-latency) · TCP & HTTP (what a connection costs, pooling, the request anatomized, head-of-line blocking) · Bytes on the Wire (json-vs-binary measured live, row-vs-column shipping, compression's CPU trade). KNOW twin of the `plan-api-*` DO stubs. Routing/link-layer (the bottom half of a networks course) deliberately excluded — no target loop asks it.
+
+**Room 13 — Storage Engines** `storage-engines` (branch). The KNOW room under the SQL Lab DO bank — the same KNOW/DO seam PyLab got in D-PL-22: The Index (B-tree splits, LSM flush/compaction, the index trade measured LIVE on sqlite — Pyodide ships sqlite3 — and flat-vs-IVF vector search) · The Log & The Guarantee (WAL crash-replay, isolation anomalies stepped) · Reading the Plan (EXPLAIN live, row-vs-column layout). Query-WRITING drills stay in SQL Lab; this room is mechanics.
+
+**Three Tier-2 extensions:** `dsa-bits` (DSA patterns — bit manipulation, the absent screen classic; CS:APP ch.2 shadow) · `mt-compiler` (The Metal — what -O2 does, read against godbolt; the model, not the compilers course) · `cp-recurrences` cluster (CP — Master theorem felt + amortized doubling; the one seat "discrete math" earns).
+
+**Checked and REJECTED, on record:** automata/theory-of-computation, a compilers course, full discrete math (all: program breadth traps; no target loop asks them; the lab must not tempt the program into them) · a distributed-systems/system-design room — **checked against MSL directly this session**: MSL ships 15 system-design modules (framework, recsys funnel, two-tower, ANN, ML Platform w/ feature store+serving+registry), staged scenario walkthroughs, and two dedicated tabs — the ML-shaped design coverage the target loops actually test. The seam HOLDS. Noted honestly: MSL is thin on generic distributed substrate (sharding/replication/CAP ≈ 0 hits); if that ever needs filling it belongs in MSL as a scale-substrate cluster, not in PL. Re-examine only with market-test evidence, at a checkpoint.
+
+**Stale-note correction (recordkeeping):** the §Close line "the registry is unimported; no build impact" is SUPERSEDED — `FoundationsBrowser.jsx` is routed (App.jsx + Sidebar), reads this registry, and 21 driven interactive models are wired via `components/foundations/interactiveModules.js`. New rooms auto-appear in the app on registration. Found same session: `interactiveModules.js` still keyed the pre-D-PL-22 id `sp-async` — orphaning the AsyncTimeline model after the rename to `cc-event-loop`; fixed with this amendment.
+
+**SUNSET CLAUSE (binding):** this is the **last** map amendment until F-phase authoring ships at least one full room's driven content. The map is now months ahead of the product; the next PL Foundations session authors modules, it does not draw territory. Any proposal to amend the map before then gets refused with a pointer to this line.
