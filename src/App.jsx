@@ -11,6 +11,7 @@ import { gotchaProblems } from './data/gotchaProblems.js';
 import { parseHash, setHash } from './utils/hashRoute.js';
 import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/auth.js';
 import { upsertLeaderboardRow } from './utils/leaderboard.js';
+import { DailyRep } from './components/shared/DailyRep.jsx';
 
 const GotchaBrowser = lazy(() =>
   import('./pages/GotchaBrowser.jsx').then(m => ({ default: m.GotchaBrowser }))
@@ -43,6 +44,9 @@ function Home({ onNavigate }) {
         <Icon name="terminal" size={16} color="currentColor" />
         Start: Python Gotchas ({gotchaProblems.length})
       </button>
+      {/* Daily Rep — one runnable problem a day (family Daily Drill, PL edition) */}
+      <DailyRep />
+
       <div style={{ marginTop: '2rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.8rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
         <span>· no install</span>
         <span>· real CPython (Pyodide)</span>

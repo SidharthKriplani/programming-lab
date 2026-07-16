@@ -44,6 +44,29 @@ export const pyLabCurriculum = [
     { title: 'user classification', status: 'partial', plannedId: 'plan-e2e-user-classification', note: 'touched (new-user AOV, label high/low); no dedicated segmentation task' },
     { title: 'retention matrix', status: 'planned', plannedId: 'plan-e2e-retention-matrix' },
   ] },
+  { category: 'Systems floor (SWE-for-AI)', items: [
+    { title: 'memory hierarchy & cache locality (strides, layout)', status: 'planned', plannedId: 'plan-sys-strides' },
+    { title: 'references vs copies under pressure', status: 'covered', evidence: 'internals: is-vs-==, shallow-vs-deep, mutable default (6)' },
+    { title: 'complexity in practice (measure, don\'t recite)', status: 'planned', plannedId: 'plan-sys-bigo-bench' },
+    { title: 'the GIL: threads vs processes, measured', status: 'planned', plannedId: 'plan-sys-gil-bench' },
+    { title: 'Amdahl\'s law on real pipelines', status: 'planned', plannedId: 'plan-sys-amdahl' },
+    { title: 'generators as streaming (memory footprint, measured)', status: 'planned', plannedId: 'plan-sys-genstream' },
+    { title: 'float representation traps', status: 'planned', plannedId: 'plan-sys-float' },
+  ] },
+  { category: 'Async & concurrency (the AIE floor)', items: [
+    { title: 'asyncio basics: order the awaits', status: 'planned', plannedId: 'plan-async-order' },
+    { title: 'bounded concurrency: semaphore + gather for LLM calls', status: 'planned', plannedId: 'plan-async-semaphore' },
+    { title: 'fix the race (deterministic replay)', status: 'planned', plannedId: 'plan-async-race' },
+    { title: 'timeout, retry, cancel — structured concurrency', status: 'planned', plannedId: 'plan-async-timeout' },
+    { title: 'producer/consumer with backpressure', status: 'planned', plannedId: 'plan-async-backpressure' },
+  ] },
+  { category: 'Notebook → Service (the bridge campaign)', items: [
+    { title: 'stage 1: extract functions from the mess', status: 'planned', plannedId: 'plan-n2s-stage1' },
+    { title: 'stage 2: dicts become classes at the boundary', status: 'planned', plannedId: 'plan-n2s-stage2' },
+    { title: 'stage 3: package structure + config', status: 'planned', plannedId: 'plan-n2s-stage3' },
+    { title: 'stage 4: tests around the pipeline', status: 'planned', plannedId: 'plan-n2s-stage4' },
+    { title: 'stage 5: a mock inference endpoint', status: 'planned', plannedId: 'plan-n2s-stage5' },
+  ] },
   { category: 'Interview Patterns', items: [
     { title: 'explain your approach before coding', status: 'covered', evidence: 'Ambiguity drill + beforeWriting' },
     { title: 'catch silent bugs (merge inflation, unsorted pct_change)', status: 'covered', evidence: 'trap system + Trap Museum (100 traps)' },
@@ -83,6 +106,30 @@ export const pyLabPlanned = [
   { id: 'plan-pandas-pivot-cohort', title: 'Cohort table with pivot_table', topic: 'pandas-reshape', level: 'judgment', curriculum: 'Core pandas', status: 'planned', seed: 'signup-cohort x month pivot, fill_value=0; aggfunc choice and the margins trap.' },
   // ── Python stdlib partial ──
   { id: 'plan-stdlib-reduce', title: 'Fold with functools.reduce', topic: 'idioms', level: 'fluency', curriculum: 'Python stdlib', status: 'planned', seed: 'reduce for a running fold/merge; readability vs a loop; the no-initializer-on-empty trap.' },
+
+  // ── Systems floor (SWE-for-AI) — SKELETONS (2026-07-16). The systems-depth
+  //    interview layer for senior MLE/AIE: measured, runnable, Python analogs of
+  //    the substrate concepts (memory, complexity, concurrency, performance). ──
+  { id: 'plan-sys-strides', title: 'Cache locality: row-major vs column-major, measured', topic: 'internals', level: 'systems', curriculum: 'Systems floor', status: 'planned', seed: 'sum a 2-D numpy array along rows vs columns; measure with the glass-box HUD; explain the ~x-fold gap via strides/cache lines. The recite-vs-measure trap.' },
+  { id: 'plan-sys-bigo-bench', title: 'Big-O in practice: list vs set membership', topic: 'internals', level: 'systems', curriculum: 'Systems floor', status: 'planned', seed: 'benchmark `x in list` vs `x in set` across sizes; fit the growth; the small-n-where-constants-win trap.' },
+  { id: 'plan-sys-gil-bench', title: 'The GIL, measured: threads vs processes', topic: 'internals', level: 'systems', curriculum: 'Systems floor', status: 'planned', seed: 'CPU-bound work under ThreadPoolExecutor vs sequential (Pyodide-safe simulation of the accounting); why threads don\'t help CPU-bound Python; when they DO help (I/O). The threads-always-faster trap.' },
+  { id: 'plan-sys-amdahl', title: 'Amdahl\'s law on a real pipeline', topic: 'code-craft', level: 'systems', curriculum: 'Systems floor', status: 'planned', seed: 'given stage timings, compute the max speedup from parallelizing one stage; the optimize-the-wrong-stage trap.' },
+  { id: 'plan-sys-genstream', title: 'Generator vs list: memory footprint, measured', topic: 'internals', level: 'systems', curriculum: 'Systems floor', status: 'planned', seed: 'process a large synthetic stream with a list pipeline vs generator pipeline; peak-memory via the HUD; the generators-are-always-better trap (single pass only!).' },
+  { id: 'plan-sys-float', title: 'Float traps: 0.1 + 0.2, summation order, big+small', topic: 'code-craft', level: 'correctness', curriculum: 'Systems floor', status: 'planned', seed: 'predict-then-verify float snippets; math.fsum vs sum; the equality-comparison and catastrophic-cancellation traps.' },
+
+  // ── Async & concurrency — SKELETONS. The #1 AIE software skill. ──
+  { id: 'plan-async-order', title: 'Order the awaits: what prints when?', topic: 'python-core', level: 'correctness', curriculum: 'Async & concurrency', status: 'planned', seed: 'predict output of gather vs sequential awaits vs create_task; deterministic event-loop replay; the create_task-starts-immediately trap.' },
+  { id: 'plan-async-semaphore', title: 'Bounded concurrency for LLM calls', topic: 'ai-eng', level: 'systems', curriculum: 'Async & concurrency', status: 'planned', seed: 'fetch N mock endpoints with at most K in flight (Semaphore + gather); assert max concurrency via an instrumented counter; the unbounded-gather trap.' },
+  { id: 'plan-async-race', title: 'Fix the race: shared counter, deterministic replay', topic: 'python-core', level: 'systems', curriculum: 'Async & concurrency', status: 'planned', seed: 'two tasks increment shared state around awaits; scripted scheduling reproduces the lost update; fix with a Lock; the check-then-act trap.' },
+  { id: 'plan-async-timeout', title: 'Timeout + retry + cancel, structured', topic: 'ai-eng', level: 'systems', curriculum: 'Async & concurrency', status: 'planned', seed: 'wait_for + retry-with-backoff around a flaky mock call; assert cancelled tasks actually stop; the orphaned-task trap.' },
+  { id: 'plan-async-backpressure', title: 'Producer/consumer with backpressure', topic: 'python-core', level: 'systems', curriculum: 'Async & concurrency', status: 'planned', seed: 'asyncio.Queue(maxsize) between a fast producer and slow consumer; assert bounded memory; the unbounded-queue trap.' },
+
+  // ── Notebook → Service — the bridge campaign, staged. SKELETONS. ──
+  { id: 'plan-n2s-stage1', title: 'N→S stage 1: extract functions from the mess', topic: 'code-craft', level: 'judgment', curriculum: 'Notebook → Service', status: 'planned', seed: 'a realistic messy analysis script; extract pure functions so provided tests pass; AST check bans globals; the hidden-state-in-cell-order trap.' },
+  { id: 'plan-n2s-stage2', title: 'N→S stage 2: the dict becomes a class', topic: 'oop', level: 'judgment', curriculum: 'Notebook → Service', status: 'planned', seed: 'replace the config/row dicts crossing function boundaries with dataclasses; tests enforce the interface; the stringly-typed trap.' },
+  { id: 'plan-n2s-stage3', title: 'N→S stage 3: package structure + config', topic: 'code-craft', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'multi-file layout (io / transforms / model / config); imports must resolve; the circular-import and config-sprawl traps.' },
+  { id: 'plan-n2s-stage4', title: 'N→S stage 4: tests around the pipeline', topic: 'code-craft', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'write pytest-style tests (fixtures, edge rows, a regression case) that catch three planted bugs; the happy-path-only trap.' },
+  { id: 'plan-n2s-stage5', title: 'N→S stage 5: a mock inference endpoint', topic: 'ai-eng', level: 'systems', curriculum: 'Notebook → Service', status: 'planned', seed: 'implement handle(request)->response over the pipeline: validation, error codes, idempotent retries; tests simulate requests; the 500-for-bad-input trap.' },
 ];
 
 export default pyLabPlanned;
