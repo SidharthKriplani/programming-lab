@@ -10,7 +10,7 @@
 //
 // parse: read the current hash into { view, sub }. build/set: write it back without a reload.
 
-export const VIEWS = ['home', 'gotchas', 'pylab', 'foundations', 'know', 'judge', 'trapmuseum', 'build', 'progress', 'leaderboard'];
+export const VIEWS = ['home', 'gotchas', 'pylab', 'foundations', 'know', 'judge', 'trapmuseum', 'build', 'progress', 'leaderboard', 'tracks', 'start', 'resources', 'qna', 'cheatsheet', 'climb'];
 
 export function parseHash() {
   const raw = (typeof window !== 'undefined' && window.location ? window.location.hash : '') || '';

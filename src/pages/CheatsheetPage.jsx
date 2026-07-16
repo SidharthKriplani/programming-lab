@@ -14,6 +14,7 @@ function Card({ card }) {
       className='pal-card-hover'
       style={{
         display: 'flex', flexDirection: 'column', gap: '0.45rem', textAlign: 'left', cursor: 'pointer',
+        breakInside: 'avoid', marginBottom: '0.7rem',
         background: flipped ? 'var(--surface-2)' : 'var(--surface)',
         border: '1px solid ' + (flipped ? 'var(--accent-border)' : 'var(--border)'),
         borderRadius: 12, padding: '0.85rem 1rem', width: '100%',
@@ -73,7 +74,7 @@ export function CheatsheetPage() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '0.7rem' }}>
+      <div style={{ columns: '320px', columnGap: '0.7rem' }}>
         {cards.map(c => <Card key={c.q} card={c} />)}
       </div>
     </div>
