@@ -5,6 +5,8 @@
 // automatically, no separate list to maintain).
 import { pyLabPlanned } from '../data/pyLabPlanned.js';
 import { knowModules } from '../data/knowModules.js';
+import { BRIDGE_TRACKS, N2S_CAMPAIGN, FORMATS_PLANNED, BRIDGE_LINKS } from '../data/roadmapPlanned.js';
+import { FOUNDATION_TALLY } from '../data/foundationsRooms.js';
 import { Icon } from '../components/shared/Icon.jsx';
 
 // Featured order — the new-arc categories first, legacy planned groups after.
@@ -90,6 +92,108 @@ export function RoadmapPage({ onNavigate }) {
         })}
       </div>
 
+      {/* Foundations map callout */}
+      <div style={{ background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 12, padding: '1rem 1.15rem', marginBottom: '2rem' }}>
+        <div style={{ fontSize: '0.62rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--accent)', fontFamily: 'var(--font-mono)', marginBottom: '0.35rem' }}>
+          Foundations — the full map is decided
+        </div>
+        <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          <strong style={{ color: 'var(--text)' }}>{FOUNDATION_TALLY.rooms} rooms · {FOUNDATION_TALLY.clusters} clusters · {FOUNDATION_TALLY.modules} modules</strong> — a
+          {' '}{FOUNDATION_TALLY.trunk}-room trunk (Python → The Machine → DSA → NumPy &amp; pandas → Concurrency → Shipping Python) and
+          {' '}{FOUNDATION_TALLY.branch} branches (Competitive Programming, The Metal, Tensors &amp; Autograd). Every module named, modeled, and
+          waiting for flesh — browse the skeleton in Foundations.
+        </p>
+      </div>
+
+      {/* Bridge tracks — the career-transition flagships */}
+      <h2 style={{ margin: '0 0 0.7rem', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+        The Bridges — transition tracks people actually buy
+      </h2>
+      <div className="mo-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(255px, 100%), 1fr))', gap: '0.8rem', marginBottom: '2rem' }}>
+        {BRIDGE_TRACKS.map(t => (
+          <div key={t.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '1rem 1.1rem', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem' }}>
+              <span style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text)' }}>{t.title}</span>
+            </div>
+            <span style={{ alignSelf: 'flex-start', fontSize: '0.55rem', fontWeight: 800, letterSpacing: '0.1em', color: 'var(--accent)', border: '1px solid var(--accent)', borderRadius: 4, padding: '0.08rem 0.35rem', marginBottom: '0.5rem', fontFamily: 'var(--font-mono)' }}>
+              {t.tag} · PLANNED
+            </span>
+            <p style={{ margin: '0 0 0.3rem', fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{t.audience}</p>
+            <p style={{ margin: '0 0 0.7rem', fontSize: '0.74rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{t.promise}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.28rem', marginTop: 'auto' }}>
+              {t.spine.map((s, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem' }}>
+                  <span style={{ fontSize: '0.58rem', fontFamily: 'var(--font-mono)', color: 'var(--text-dim)', flexShrink: 0 }}>{i + 1}</span>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Notebook -> Service campaign arc */}
+      <h2 style={{ margin: '0 0 0.7rem', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+        {N2S_CAMPAIGN.title} — the campaign, stage by stage
+      </h2>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '1.05rem 1.15rem', marginBottom: '2rem' }}>
+        <p style={{ margin: '0 0 0.85rem', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>{N2S_CAMPAIGN.premise}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+          {N2S_CAMPAIGN.stages.map(st => (
+            <div key={st.n} style={{ display: 'flex', alignItems: 'baseline', gap: '0.55rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--accent)', border: '1px solid var(--border)', borderRadius: 4, padding: '0.05rem 0.35rem', flexShrink: 0 }}>S{st.n}</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text)' }}>{st.title}</span>
+              <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-mono)', color: 'var(--text-dim)' }}>graded by {st.gradedBy}</span>
+              <span style={{ marginLeft: 'auto', fontSize: '0.58rem', fontFamily: 'var(--font-mono)', color: 'var(--text-dim)', textTransform: 'uppercase', flexShrink: 0 }}>soon</span>
+            </div>
+          ))}
+        </div>
+        <p style={{ margin: '0.85rem 0 0', fontSize: '0.68rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
+          linear unlock · pass a stage to open the next · progress persists like everything else in PL
+        </p>
+      </div>
+
+      {/* Problem formats — the engine roadmap */}
+      <h2 style={{ margin: '0 0 0.7rem', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+        New problem formats — the engine roadmap
+      </h2>
+      <div className="mo-stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(255px, 100%), 1fr))', gap: '0.7rem', marginBottom: '2rem' }}>
+        {FORMATS_PLANNED.map(f => (
+          <div key={f.id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '0.85rem 0.95rem', opacity: 0.9 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>{f.label}</span>
+              <span style={{ marginLeft: 'auto', fontSize: '0.55rem', fontWeight: 800, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', color: 'var(--text-dim)', border: '1px solid var(--border)', borderRadius: 4, padding: '0.08rem 0.35rem' }}>SOON</span>
+            </div>
+            <p style={{ margin: '0 0 0.4rem', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{f.engine}</p>
+            <p style={{ margin: 0, fontSize: '0.66rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
+              <span style={{ fontFamily: 'var(--font-mono)' }}>first: </span>{f.firstExemplar}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Cross-lab bridge links */}
+      <h2 style={{ margin: '0 0 0.7rem', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+        Cross-lab bridges — PL underneath the siblings
+      </h2>
+      <div style={{ background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: 12, padding: '1rem 1.15rem', marginBottom: '2rem' }}>
+        <p style={{ margin: '0 0 0.75rem', fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+          The ownership contract: PL teaches the software <em>mechanic</em>; GSL / MSL teach it <em>in domain context</em>.
+          These are the first five links — a sibling module will point here, never copy.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+          {BRIDGE_LINKS.map(b => (
+            <div key={b.id} style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--accent)', flexShrink: 0 }}>{b.from.lab}</span>
+              <span style={{ fontSize: '0.76rem', color: 'var(--text)', fontWeight: 600 }}>{b.from.module}</span>
+              <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>→</span>
+              <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{b.to.surface}</span>
+              <span style={{ marginLeft: 'auto', fontSize: '0.58rem', fontFamily: 'var(--font-mono)', color: 'var(--text-dim)', textTransform: 'uppercase', flexShrink: 0 }}>soon</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Family features — shipped + arriving */}
       <h2 style={{ margin: '0 0 0.7rem', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
         Family features — PL becomes the fourth sibling
@@ -101,9 +205,9 @@ export function RoadmapPage({ onNavigate }) {
           { label: 'Ratings (Elo)', desc: 'Per-domain rating that moves with every rated attempt. Weakest-first on Progress.', status: 'live', go: 'progress' },
           { label: 'S / A / B tier tracks', desc: 'One click builds interview-frequency tiers from all 264 problems.', status: 'live', go: 'tracks' },
           { label: 'Interview QnA per module', desc: 'Every Know module gains a completion-gated L0–L3 question ladder.', status: 'soon', go: 'know' },
-          { label: 'Multi-file problems', desc: 'Real repos in the browser: edit module A until tests in test_b.py go green.', status: 'soon' },
-          { label: 'Error autopsy', desc: 'Your misses, classified by failure type — wrong axis, mutation, off-by-one — with targeted reps.', status: 'soon' },
-          { label: 'Blind mode', desc: 'No Check until final Submit — the real interview constraint, with its own rating.', status: 'soon' },
+          { label: 'Foundations rooms', desc: `${FOUNDATION_TALLY.rooms} rooms, ${FOUNDATION_TALLY.modules} modeled modules — the trunk-and-branches KNOW map, browsable now.`, status: 'soon' },
+          { label: 'Bridge tracks', desc: 'DS→MLE, AIE Software Floor, Systems Depth — the transition spines, staged.', status: 'soon' },
+          { label: 'Prerequisite tags', desc: 'Sibling-lab modules declare their PL floor: “assumes pl-async” links back here.', status: 'soon' },
         ].map(f => (
           <div key={f.label} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: '0.85rem 0.95rem', opacity: f.status === 'soon' ? 0.85 : 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem' }}>
