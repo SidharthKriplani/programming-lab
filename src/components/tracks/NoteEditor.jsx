@@ -166,9 +166,9 @@ export function blocksToMarkdown(title, blocks) {
       case 'h1': out.push(`# ${b.content}`, ''); break
       case 'h2': out.push(`## ${b.content}`, ''); break
       case 'h3': out.push(`### ${b.content}`, ''); break
-      case 'bullet': out.push(`- ${b.content}`); break
-      case 'numbered': num += 1; out.push(`${num}. ${b.content}`); break
-      case 'todo': out.push(`- [${b.checked ? 'x' : ' '}] ${b.content}`); break
+      case 'bullet': out.push(`${'  '.repeat(b.indent || 0)}- ${b.content}`); break
+      case 'numbered': num += 1; out.push(`${'  '.repeat(b.indent || 0)}${num}. ${b.content}`); break
+      case 'todo': out.push(`${'  '.repeat(b.indent || 0)}- [${b.checked ? 'x' : ' '}] ${b.content}`); break
       case 'quote': out.push(`> ${(b.content || '').split('\n').join('\n> ')}`, ''); break
       case 'callout': out.push(`> 💡 ${(b.content || '').split('\n').join('\n> ')}`, ''); break
       case 'code': out.push('```' + (b.lang || ''), b.content || '', '```', ''); break
@@ -180,6 +180,12 @@ export function blocksToMarkdown(title, blocks) {
     }
   }
   return out.join('\n').replace(/\n{3,}/g, '\n\n').trim() + '\n'
+}
+
+// Leading whitespace on a list line → indent level (2 spaces or 1 tab each, ≤2).
+function mdIndent(ws) {
+  const w = (ws || '').replace(/\t/g, '  ')
+  return Math.min(2, Math.floor(w.length / 2))
 }
 
 // Parse pasted multi-line text into blocks (markdown-aware).
@@ -202,9 +208,9 @@ export function markdownToBlocks(text) {
     if ((m = line.match(/^###\s+(.*)$/))) blocks.push({ id: uid(), type: 'h3', content: m[1] })
     else if ((m = line.match(/^##\s+(.*)$/))) blocks.push({ id: uid(), type: 'h2', content: m[1] })
     else if ((m = line.match(/^#\s+(.*)$/))) blocks.push({ id: uid(), type: 'h1', content: m[1] })
-    else if ((m = line.match(/^\s*-\s+\[( |x|X)\]\s+(.*)$/))) blocks.push({ id: uid(), type: 'todo', checked: m[1] !== ' ', content: m[2] })
-    else if ((m = line.match(/^\s*[-*•]\s+(.*)$/))) blocks.push({ id: uid(), type: 'bullet', content: m[1] })
-    else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) blocks.push({ id: uid(), type: 'numbered', content: m[1] })
+    else if ((m = line.match(/^(\s*)-\s+\[( |x|X)\]\s+(.*)$/))) blocks.push({ id: uid(), type: 'todo', checked: m[2] !== ' ', content: m[3], indent: mdIndent(m[1]) })
+    else if ((m = line.match(/^(\s*)[-*•]\s+(.*)$/))) blocks.push({ id: uid(), type: 'bullet', content: m[2], indent: mdIndent(m[1]) })
+    else if ((m = line.match(/^(\s*)\d+[.)]\s+(.*)$/))) blocks.push({ id: uid(), type: 'numbered', content: m[2], indent: mdIndent(m[1]) })
     else if ((m = line.match(/^>\s?💡\s?(.*)$/))) blocks.push({ id: uid(), type: 'callout', content: m[1] })
     else if ((m = line.match(/^>\s?(.*)$/))) blocks.push({ id: uid(), type: 'quote', content: m[1] })
     else if (/^\s*(---|\*\*\*|___)\s*$/.test(line)) blocks.push({ id: uid(), type: 'divider', content: '' })
@@ -233,6 +239,12 @@ const BLOCK_DEFS = [
   { type: 'video',    label: 'Video embed',   icon: '▶',   desc: 'YouTube / Vimeo / Loom URL',     kw: 'video youtube vimeo loom embed watch' },
   { type: 'link',     label: 'Link card',     icon: '🔗',  desc: 'Bookmark any URL',               kw: 'link bookmark url web page' },
 ]
+
+// "Jul 16, 11:49 PM" — per-block hover timestamps + the header Edited label.
+function fmtEdited(ts) {
+  if (!ts) return ''
+  return new Date(ts).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
 
 const TEXTISH = new Set(['text', 'h1', 'h2', 'h3', 'bullet', 'numbered', 'todo', 'quote', 'callout'])
 
@@ -299,7 +311,7 @@ const taBase = {
 
 function EditableBlock({
   block, number, focusReq, onChangeContent, onPatch, onSplit, onMergePrev,
-  onNavigate, onExitList, onPaste, onFocusBlock, onSlash, slashOpen, onSlashKey,
+  onSelectAll, lone, onRangeSelect, onNavigate, onExitList, onPaste, onFocusBlock, onSlash, slashOpen, onSlashKey,
 }) {
   const ref = useRef(null)
   const [focused, setFocused] = useState(false)
@@ -356,6 +368,14 @@ function EditableBlock({
     if (mod && e.shiftKey && e.key.toLowerCase() === 'h') { e.preventDefault(); wrapSelection(el, block.content, '==', onChangeContent); return }
     if (mod && e.shiftKey && e.key.toLowerCase() === 's') { e.preventDefault(); wrapSelection(el, block.content, '~~', onChangeContent); return }
 
+    // Tab / Shift+Tab on a list block = indent / outdent (sub-bullets, ≤2 deep).
+    if (e.key === 'Tab' && ['bullet', 'numbered', 'todo'].includes(block.type)) {
+      e.preventDefault()
+      const cur = block.indent || 0
+      const next = e.shiftKey ? Math.max(0, cur - 1) : Math.min(2, cur + 1)
+      if (next !== cur) onPatch({ indent: next })
+      return
+    }
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       // Empty list/todo/quote item → exit back to a plain paragraph.
@@ -378,6 +398,17 @@ function EditableBlock({
       onMergePrev()
       return
     }
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'a' || e.key === 'A')) {
+      const whole = el.selectionStart === 0 && el.selectionEnd === block.content.length
+      if (whole || block.content === '') { e.preventDefault(); onSelectAll(); return }
+      return
+    }
+    if (e.key === 'ArrowDown' && e.shiftKey && el.selectionEnd === block.content.length) {
+      e.preventDefault(); onRangeSelect(1); return
+    }
+    if (e.key === 'ArrowUp' && e.shiftKey && el.selectionStart === 0 && el.selectionEnd === 0) {
+      e.preventDefault(); onRangeSelect(-1); return
+    }
     if (e.key === 'ArrowUp' && el.selectionStart === 0 && el.selectionEnd === 0) {
       e.preventDefault(); onNavigate(-1); return
     }
@@ -390,8 +421,8 @@ function EditableBlock({
   const showRendered = !focused && block.content.trim() !== ''
 
   const marker = (() => {
-    if (block.type === 'bullet') return <span style={{ color: T.mid, width: '1.3rem', flexShrink: 0, textAlign: 'center', userSelect: 'none', lineHeight: typo.lineHeight, fontSize: typo.fontSize }}>•</span>
-    if (block.type === 'numbered') return <span style={{ color: T.mid, minWidth: '1.3rem', flexShrink: 0, textAlign: 'right', paddingRight: '0.35rem', userSelect: 'none', lineHeight: typo.lineHeight, fontSize: typo.fontSize, fontVariantNumeric: 'tabular-nums' }}>{number}.</span>
+    if (block.type === 'bullet') return <span style={{ color: T.mid, width: '1.3rem', flexShrink: 0, textAlign: 'center', userSelect: 'none', lineHeight: typo.lineHeight, fontSize: typo.fontSize }}>{['•', '◦', '▪'][block.indent || 0] || '•'}</span>
+    if (block.type === 'numbered') return <span style={{ color: T.mid, minWidth: '1.3rem', flexShrink: 0, textAlign: 'right', paddingRight: '0.35rem', userSelect: 'none', lineHeight: typo.lineHeight, fontSize: typo.fontSize, fontVariantNumeric: 'tabular-nums' }}>{number}</span>
     if (block.type === 'todo') return (
       <input
         type="checkbox"
@@ -420,7 +451,8 @@ function EditableBlock({
   }
 
   return (
-    <div id={`nb-${block.id}`} style={{ display: 'flex', alignItems: 'flex-start', ...wrapStyle }}>
+    <div id={`nb-${block.id}`} className="nb-block-row" style={{ display: 'flex', alignItems: 'flex-start', ...(block.indent && ['bullet', 'numbered', 'todo'].includes(block.type) ? { paddingLeft: `${Math.min(2, block.indent) * 1.5}rem` } : {}), ...wrapStyle }}>
+      {block.editedAt ? <span className="nb-edited">{fmtEdited(block.editedAt)}</span> : null}
       {block.type === 'callout' && <span style={{ fontSize: '1rem', lineHeight: 1.5, userSelect: 'none' }}>💡</span>}
       {marker}
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -438,7 +470,8 @@ function EditableBlock({
           onPaste={onPaste}
           onFocus={() => { setFocused(true); onFocusBlock(); requestAnimationFrame(() => autosize(ref.current)) }}
           onBlur={() => { setFocused(false); onSlash(null) }}
-          placeholder={block.type === 'text' ? "Type '/' for blocks, or just write…" : ''}
+          className="nb-block-input"
+          placeholder={block.type === 'text' && (focused || lone) ? "Type '/' for blocks, or just write…" : ''}
           style={{ ...taBase, ...typo, display: showRendered ? 'none' : 'block',
             fontStyle: block.type === 'quote' ? 'italic' : 'normal' }}
           onInput={e => autosize(e.target)}
@@ -752,6 +785,7 @@ export function NoteEditor({ trackId, note, onBack }) {
     note.blocks?.length ? note.blocks : [{ id: uid(), type: 'text', content: '' }])
   const [focusReq, setFocusReq] = useState(null)          // { id, pos, t }
   const [focusedId, setFocusedId] = useState(null)
+  const [sel, setSel] = useState(null)              // block-range selection { a, h }
   const [slash, setSlash] = useState(null)                // { blockId, query, index }
   const [menuFor, setMenuFor] = useState(null)            // block id with open handle-menu
   const [dragIdx, setDragIdx] = useState(null)
@@ -780,8 +814,28 @@ export function NoteEditor({ trackId, note, onBack }) {
   }, [trackId, note.id])
 
   function commit(nextBlocks, nextTitle = title) {
-    setBlocks(nextBlocks)
-    persist(nextTitle, nextBlocks)
+    if (sel && nextBlocks.length !== blocks.length) setSel(null) // structure changed -> stale indices
+    // History: snapshot the PRE-change blocks. Structural changes (count/id/type)
+    // always cut an undo boundary; plain typing coalesces (see snapshot()).
+    const structural = nextBlocks.length !== blocks.length ||
+      nextBlocks.some((b, i) => b.id !== blocks[i].id || b.type !== blocks[i].type)
+    snapshot(blocks, structural)
+    hist.current.redo = []
+    // Stamp editedAt on blocks whose substance changed this commit (new blocks
+    // get stamped too). Same-reference blocks skip the compare entirely.
+    const prevById = new Map(blocks.map(b => [b.id, b]))
+    const stamped = nextBlocks.map(b => {
+      const pb = prevById.get(b.id)
+      if (!pb) return { ...b, editedAt: b.editedAt || Date.now() }
+      if (pb === b) return b
+      if (pb.content !== b.content || pb.type !== b.type || pb.indent !== b.indent
+        || pb.checked !== b.checked || pb.lang !== b.lang || pb.body !== b.body) {
+        return { ...b, editedAt: Date.now() }
+      }
+      return b
+    })
+    setBlocks(stamped)
+    persist(nextTitle, stamped)
   }
 
   function setTitleAndSave(t) { setTitle(t); persist(t, blocks) }
@@ -841,6 +895,7 @@ export function NoteEditor({ trackId, note, onBack }) {
     const continueType = ['bullet', 'numbered', 'todo'].includes(cur.type) ? cur.type : 'text'
     const nb = { id: uid(), type: continueType, content: after }
     if (continueType === 'todo') nb.checked = false
+    if (continueType !== 'text' && cur.indent) nb.indent = cur.indent // stay at the same sub-level
     const next = [...blocks.slice(0, i), { ...cur, content: before }, nb, ...blocks.slice(i + 1)]
     commit(next)
     setFocusReq({ id: nb.id, pos: 0, t: Date.now() })
@@ -971,6 +1026,105 @@ export function NoteEditor({ trackId, note, onBack }) {
     // single-line non-URL → default paste
   }
 
+  // ── Block-range selection (docs-style shift+arrow across blocks) ─────────
+
+  // Full-document undo/redo (2026-07-16). Every commit snapshots the PRE-change
+  // blocks; typing bursts coalesce (800ms window) so Cmd+Z steps back a chunk,
+  // not a keystroke. Cmd+Z / Cmd+Shift+Z work everywhere in the editor —
+  // including inside a block textarea (field-local native undo can't restore
+  // splits, merges, deletes, or paste explosions anyway).
+  const hist = useRef({ stack: [], redo: [], last: 0 })
+  function snapshot(prevBlocks, structural) {
+    const h = hist.current
+    const now = Date.now()
+    if (!structural && h.stack.length && now - h.last < 800) { h.last = now; return }
+    h.stack.push(prevBlocks)
+    if (h.stack.length > 100) h.stack.shift()
+    h.last = now
+  }
+  function applyHistory(nextBlocks) {
+    setSel(null)
+    setBlocks(nextBlocks)
+    persist(title, nextBlocks)
+  }
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!(e.metaKey || e.ctrlKey) || (e.key !== 'z' && e.key !== 'Z')) return
+      const h = hist.current
+      if (e.shiftKey) {
+        const next = h.redo.pop()
+        if (next) { e.preventDefault(); h.stack.push(blocks); h.last = 0; applyHistory(next) }
+      } else {
+        const prev = h.stack.pop()
+        if (prev) { e.preventDefault(); h.redo.push(blocks); h.last = 0; applyHistory(prev) }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }) // re-bound each render so blocks/title stay fresh
+
+  function selectAllBlocks() {
+    if (!blocks.length) return
+    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur() } catch {}
+    setSel({ a: 0, h: blocks.length - 1 })
+  }
+
+  function rangeSelect(id, dir) {
+    const i = idx(id)
+    const h = Math.max(0, Math.min(blocks.length - 1, i + dir))
+    if (h === i) return
+    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur() } catch {}
+    setSel({ a: i, h })
+  }
+
+  useEffect(() => {
+    if (!sel) return
+    const lo = Math.min(sel.a, sel.h), hi = Math.max(sel.a, sel.h)
+    // Tab / Shift+Tab on a range = indent / outdent every list block in it.
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      const dir = e.shiftKey ? -1 : 1
+      commit(blocks.map((b, i2) => (i2 >= lo && i2 <= hi && ['bullet', 'numbered', 'todo'].includes(b.type))
+        ? { ...b, indent: Math.max(0, Math.min(2, (b.indent || 0) + dir)) } : b))
+      return
+    }
+    const deleteRange = () => {
+      const kept = blocks.filter((_, i2) => i2 < lo || i2 > hi)
+      const safe = kept.length ? kept : [{ id: uid(), type: 'text', content: '' }]
+      commit(safe)
+      const target = safe[Math.min(lo, safe.length - 1)]
+      if (target) setFocusReq({ id: target.id, pos: 0, t: Date.now() })
+      setSel(null)
+    }
+    const onKey = (e) => {
+      if (e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        e.preventDefault()
+        const nh = Math.max(0, Math.min(blocks.length - 1, sel.h + (e.key === 'ArrowDown' ? 1 : -1)))
+        setSel({ a: sel.a, h: nh })
+        return
+      }
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault()
+        try { navigator.clipboard.writeText(blocksToMarkdown('', blocks.slice(lo, hi + 1))) } catch {}
+        return
+      }
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'x' || e.key === 'X')) {
+        e.preventDefault()
+        try { navigator.clipboard.writeText(blocksToMarkdown('', blocks.slice(lo, hi + 1))) } catch {}
+        deleteRange()
+        return
+      }
+      if (e.key === 'Backspace' || e.key === 'Delete') { e.preventDefault(); deleteRange(); return }
+      if (e.key === 'Escape' || (!e.shiftKey && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) || (!e.metaKey && !e.ctrlKey && e.key.length === 1)) {
+        setSel(null)
+      }
+    }
+    const onMouse = (e) => { if (e.target && e.target.closest && e.target.closest('.nb-tbbtn')) return; setSel(null) }
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('mousedown', onMouse)
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('mousedown', onMouse) }
+  }, [sel, blocks])
+
   // ── Derived stats ─────────────────────────────────────────────────────────
 
   const stats = useMemo(() => {
@@ -1018,6 +1172,16 @@ export function NoteEditor({ trackId, note, onBack }) {
   }
 
   function toolbarType(type) {
+    if (sel) {
+      const lo = Math.min(sel.a, sel.h), hi = Math.max(sel.a, sel.h)
+      const inRange = blocks.slice(lo, hi + 1).filter(b => TEXTISH.has(b.type))
+      if (!inRange.length) return
+      const allAlready = inRange.every(b => b.type === type)
+      const nextType = allAlready ? 'text' : type
+      const ids = new Set(inRange.map(b => b.id))
+      commit(blocks.map(b => (ids.has(b.id) ? { ...b, type: nextType } : b)))
+      return
+    }
     if (!focusedId) return
     const b = blocks.find(x => x.id === focusedId)
     if (!b) return
@@ -1026,16 +1190,47 @@ export function NoteEditor({ trackId, note, onBack }) {
     patchBlock(focusedId, { type }, { refocus: true })
   }
 
-  const savedLabel = savedAt
-    ? `Saved ${new Date(savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-    : 'Auto-saves'
+  const editedTs = savedAt || note.updatedAt || 0
+  const savedLabel = editedTs ? `Edited ${fmtEdited(editedTs)}` : 'Auto-saves'
+  const createdLabel = note.addedAt
+    ? `Created ${new Date(note.addedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}`
+    : ''
 
-  // Numbered-list numbering (consecutive runs).
+  // Indent / outdent the focused list block — or every list block in a range
+  // selection. The visible-toolbar twin of Tab / Shift+Tab.
+  function toolbarIndent(dir) {
+    const LIST = new Set(['bullet', 'numbered', 'todo'])
+    const shift = b => ({ ...b, indent: Math.max(0, Math.min(2, (b.indent || 0) + dir)) })
+    if (sel) {
+      const lo = Math.min(sel.a, sel.h), hi = Math.max(sel.a, sel.h)
+      if (!blocks.slice(lo, hi + 1).some(b => LIST.has(b.type))) return
+      commit(blocks.map((b, i) => (i >= lo && i <= hi && LIST.has(b.type)) ? shift(b) : b))
+      return
+    }
+    if (!focusedId) return
+    const b = blocks.find(x => x.id === focusedId)
+    if (!b || !LIST.has(b.type)) return
+    commit(blocks.map(x => (x.id === focusedId ? shift(x) : x)))
+  }
+
+  // Numbered-list numbering: per indent level (1. / a. / i.), docs-style.
+  // Interleaved bullets/todos do NOT reset the run — only a non-list block does.
   const numbering = useMemo(() => {
     const map = {}
-    let n = 0
+    const roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii', 'xiv', 'xv']
+    const alpha = 'abcdefghijklmnopqrstuvwxyz'
+    let counters = [0, 0, 0]
     for (const b of blocks) {
-      if (b.type === 'numbered') { n += 1; map[b.id] = n } else n = 0
+      if (b.type === 'numbered') {
+        const lvl = Math.min(2, b.indent || 0)
+        counters[lvl] += 1
+        for (let d = lvl + 1; d < 3; d++) counters[d] = 0
+        map[b.id] = lvl === 0 ? `${counters[0]}.`
+          : lvl === 1 ? `${alpha[(counters[1] - 1) % 26]}.`
+          : `${roman[(counters[2] - 1) % roman.length]}.`
+      } else if (!['bullet', 'todo'].includes(b.type)) {
+        counters = [0, 0, 0]
+      }
     }
     return map
   }, [blocks])
@@ -1065,7 +1260,7 @@ export function NoteEditor({ trackId, note, onBack }) {
         <div style={{ flex: 1, minWidth: 0 }} />
         <span style={{ fontSize: '0.7rem', color: T.ghost, flexShrink: 0, whiteSpace: 'nowrap' }}>
           {stats.words} words · {stats.minutes} min read
-          {stats.todos > 0 ? ` · ${stats.todosDone}/${stats.todos} done` : ''} · {savedLabel}
+          {stats.todos > 0 ? ` · ${stats.todosDone}/${stats.todos} done` : ''}{createdLabel ? ` · ${createdLabel}` : ''} · {savedLabel}
         </span>
         <button onClick={copyMarkdown} title="Copy note as Markdown"
           style={{ background: 'none', border: `1px solid ${T.border}`, borderRadius: 6, cursor: 'pointer', color: copiedMd ? T.accentText : T.low, fontSize: '0.7rem', padding: '0.22rem 0.55rem', whiteSpace: 'nowrap', fontFamily: T.sans }}>
@@ -1092,8 +1287,11 @@ export function NoteEditor({ trackId, note, onBack }) {
             title={BLOCK_DEFS.find(d => d.type === type)?.label}
             onMouseDown={e => e.preventDefault()} onClick={() => toolbarType(type)}>{label}</button>
         ))}
+        <span style={{ width: 1, height: 16, background: T.border, margin: '0 6px', flexShrink: 0 }} />
+        <button className="nb-tbbtn" style={tbBtn(false)} title="Outdent (Shift+Tab)" onMouseDown={e => e.preventDefault()} onClick={() => toolbarIndent(-1)}>⇤</button>
+        <button className="nb-tbbtn" style={tbBtn(false)} title="Sub-bullet — indent (Tab)" onMouseDown={e => e.preventDefault()} onClick={() => toolbarIndent(1)}>⇥</button>
         <span style={{ marginLeft: 'auto', fontSize: '0.64rem', color: T.ghost, whiteSpace: 'nowrap', paddingLeft: 8 }}>
-          “/” for blocks · “# ” “- ” “[] ” “&gt; ” “```” shortcuts
+          “/” for blocks · “# ” “- ” “[] ” “&gt; ” “```” shortcuts · ⇥ sub-bullet
         </span>
       </div>
 
@@ -1132,6 +1330,8 @@ export function NoteEditor({ trackId, note, onBack }) {
                       animationDelay: `${Math.min(i, 10) * 22}ms`,
                       padding: '0.14rem 0', borderTop: overIdx === i && dragIdx !== null && dragIdx !== i ? `2px solid ${T.accent}` : '2px solid transparent',
                       opacity: dragIdx === i ? 0.45 : 1,
+                      background: sel && i >= Math.min(sel.a, sel.h) && i <= Math.max(sel.a, sel.h) ? T.accentFaint : 'transparent',
+                      borderRadius: 6,
                     }}
                     className="nb-row"
                   >
@@ -1177,6 +1377,9 @@ export function NoteEditor({ trackId, note, onBack }) {
                           onPatch={(patch, opts) => patchBlock(block.id, patch, opts)}
                           onSplit={(before, after) => splitBlock(block.id, before, after)}
                           onMergePrev={() => mergePrev(block.id)}
+                          onSelectAll={() => selectAllBlocks()}
+                          lone={blocks.length === 1}
+                          onRangeSelect={dir => rangeSelect(block.id, dir)}
                           onNavigate={dir => navigate(block.id, dir)}
                           onExitList={() => patchBlock(block.id, { type: 'text' }, { refocus: true })}
                           onPaste={e => handlePaste(e, block.id)}
