@@ -71,9 +71,11 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 // ── nav model ──
 const TRACK = [
   { label: 'Home', view: 'home', icon: 'layout' },
+  { label: 'Start Here', view: 'start', icon: 'compass' },
   { label: 'Progress', view: 'progress', icon: 'bar-chart' },
   { label: 'My Tracks', view: 'tracks', icon: 'file-text' },
   { label: 'Leaderboard', view: 'leaderboard', icon: 'star' },
+  { label: 'Resources', view: 'resources', icon: 'book-open' },
 ];
 
 const FRAMES = [

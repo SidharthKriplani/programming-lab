@@ -26,6 +26,8 @@ const FoundationsBrowser = lazy(() => import('./pages/FoundationsBrowser.jsx').t
 const TrapMuseum = lazy(() => import('./pages/TrapMuseum.jsx').then(m => ({ default: m.TrapMuseum })));
 const Leaderboard = lazy(() => import('./pages/Leaderboard.jsx').then(m => ({ default: m.Leaderboard })));
 const MyTracksPage = lazy(() => import('./pages/MyTracksPage.jsx').then(m => ({ default: m.MyTracksPage })));
+const StartHere = lazy(() => import('./pages/StartHere.jsx').then(m => ({ default: m.StartHere })));
+const ResourcesPage = lazy(() => import('./pages/ResourcesPage.jsx').then(m => ({ default: m.ResourcesPage })));
 
 function Home({ onNavigate }) {
   return (
@@ -68,7 +70,7 @@ function Home({ onNavigate }) {
           {FOUNDATION_TALLY.rooms} rooms · {FOUNDATION_TALLY.modules} modules — trunk & branches
         </div>
         <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>
-          Python → The Machine → DSA → NumPy & pandas → Concurrency → Shipping Python, plus Competitive Programming, The Metal, and Tensors & Autograd. Browse the skeleton →
+          The trunk: Python → The Machine → DSA → NumPy & pandas → Concurrency → Shipping Python. The branches: CP, The Metal, Tensors, The OS Floor, C++, The Wire, Storage Engines. Browse the map →
         </div>
       </button>
 
@@ -170,6 +172,8 @@ export default function App() {
               : view === 'judge' ? <JudgeBrowser />
               : view === 'trapmuseum' ? <TrapMuseum />
               : view === 'build' ? <BuildBrowser />
+              : view === 'start' ? <StartHere onNavigate={navigate} />
+              : view === 'resources' ? <ResourcesPage />
               : view === 'tracks' ? <MyTracksPage />
               : view === 'leaderboard' ? <Leaderboard user={user} onSignIn={onSignIn} />
               : <Home onNavigate={navigate} />}
