@@ -9,6 +9,8 @@ import {
   clusterModules, backingFor,
 } from '../data/foundationsRooms.js';
 import { THREAD_BY_ROOM } from '../data/lessonThreads.js';
+import { CPP_TRACES } from '../data/cppTraces.js';
+import { CppTraceRunner } from './CppTraceRunner.jsx';
 import { setHash } from '../utils/hashRoute.js';
 import { knowModules } from '../data/knowModules.js';
 import { KnowRunner } from './KnowBrowser.jsx';
@@ -175,6 +177,7 @@ function WidgetRunner({ room, mod, onBack }) {
 function RoomDetail({ room, onBack }) {
   const [activeReal, setActiveReal] = useState(null);
   const [activeWidget, setActiveWidget] = useState(null);
+  const [activeTrace, setActiveTrace] = useState(null);
   const progress = getProgress(KNOW_KEY);
   const readyIds = roomModules(room).map(backingFor).filter(b => b && KNOW[b]);
 
@@ -192,6 +195,9 @@ function RoomDetail({ room, onBack }) {
   }
   if (activeWidget) {
     return <WidgetRunner room={room} mod={activeWidget} onBack={() => { setActiveWidget(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
+  }
+  if (activeTrace) {
+    return <CppTraceRunner trace={activeTrace} onBack={() => { setActiveTrace(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
   }
 
   return (
@@ -259,7 +265,9 @@ function RoomDetail({ room, onBack }) {
                 const b = backingFor(mod);
                 const real = b && KNOW[b];
                 const Widget = INTERACTIVE_MODULES[mod.id];
+                const trace = CPP_TRACES.find(t => t.id === mod.id && t.verified && t.steps && t.steps.length > 0);
                 if (real) return <ReadyCard key={mod.id} mod={mod} solved={!!progress.solved[b]} seen={!!progress.seen[b]} driven={!!Widget} onOpen={() => { setActiveReal(b); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
+                if (trace) return <ReadyCard key={mod.id} mod={mod} solved={false} seen={false} driven onOpen={() => { setActiveTrace(trace); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
                 if (Widget) return <ReadyCard key={mod.id} mod={mod} solved={false} seen={false} driven onOpen={() => { setActiveWidget(mod); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />;
                 return <PlannedCard key={mod.id} mod={mod} />;
               })}
