@@ -1,5 +1,7 @@
 # PL — STATUS
 
+> **18 Jul 2026 — Tracker note persistence hardened (cross-lab fix).** My Tracks notes now survive tab close/refresh and multi-tab editing: `NoteEditor` flushes the 500ms autosave on `visibilitychange`(hidden)+`pagehide` (unmount cleanup never runs on a real page close); `MyTracksPage` listens to `window 'storage'` (key `pl-tracks-v1`) so a 2nd tab reconciles instead of clobbering. Editor already keyed by `liveNote.id`. PL tracks are local-only by design — no sync layer. Files: `src/components/tracks/NoteEditor.jsx`, `src/pages/MyTracksPage.jsx`. esbuild-clean, additive, uncommitted — push on Mac. (MSL/GSL/PAL got the same fix; PAL also gained cross-device sync.)
+
 > **16 Jul 2026:** PL is PAUSED for content (FOUNDATIONS-SPEC.md §14 = resume authority). Two cross-lab parity items landed while paused: NoteEditor brought level with the family (selection/undo/sub-bullets/timestamps — verbatim PAL adoption) + global PageHighlighter. Commit command handed to Sidharth. Details: LINEAGE tail.
 
 _Last updated: 2026-07-03 (session close). PL 0.44.x — leaderboard (shared PAL identity) on top of the "come-alive" program. Built + verified locally in incremental batches; commit/push commands handed to Sidharth's Mac per batch (approve-first)._

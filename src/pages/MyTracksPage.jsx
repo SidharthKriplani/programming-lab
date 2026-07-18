@@ -31,7 +31,16 @@ export function MyTracksPage() {
   const refresh = () => setTracks(getTracks());
   useEffect(() => {
     window.addEventListener('pl_tracks', refresh);
-    return () => window.removeEventListener('pl_tracks', refresh);
+    // Cross-tab reconciliation: the 'pl_tracks' CustomEvent is same-tab only.
+    // localStorage 'storage' events fire in OTHER tabs when any tab writes the
+    // tracks key, so a second tab won't hold stale state (or clobber the first
+    // tab's writes on its next save). Fires on key match, or key === null (clear()).
+    const onStorage = (e) => { if (e.key === 'pl-tracks-v1' || e.key === null) refresh(); };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener('pl_tracks', refresh);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   const track = tracks.find(t => t.id === selectedId) || null;
