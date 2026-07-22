@@ -1,5 +1,14 @@
 # PL — STATUS
 
+> **23 Jul 2026 — Session record (Fable orchestration).** PL stayed content-PAUSED; user
+> decision (AskUserQuestion, 22 Jul): **unpause for the parity wave ONLY** — port the family
+> annotation stack (stickies v2.1 hashless+confirm, highlight tombstones/optimistic-lock —
+> PL localHighlights already got the delete-resurrection + flicker fixes and the
+> PageHighlighter click-defer this session — takeaway box, glossary card, live-sync v2
+> wiring), NO new content. Parity wave is queued on Fable's bench behind GSL exemplar
+> approvals + Sonnet D8 audit; nothing PL-side dispatched to the worker yet. PL highlights
+> remain on PL's own store key; tracks remain local-only by design pending the wave.
+
 > **18 Jul 2026 — Tracker note persistence hardened (cross-lab fix).** My Tracks notes now survive tab close/refresh and multi-tab editing: `NoteEditor` flushes the 500ms autosave on `visibilitychange`(hidden)+`pagehide` (unmount cleanup never runs on a real page close); `MyTracksPage` listens to `window 'storage'` (key `pl-tracks-v1`) so a 2nd tab reconciles instead of clobbering. Editor already keyed by `liveNote.id`. PL tracks are local-only by design — no sync layer. Files: `src/components/tracks/NoteEditor.jsx`, `src/pages/MyTracksPage.jsx`. esbuild-clean, additive, uncommitted — push on Mac. (MSL/GSL/PAL got the same fix; PAL also gained cross-device sync.)
 
 > **16 Jul 2026:** PL is PAUSED for content (FOUNDATIONS-SPEC.md §14 = resume authority). Two cross-lab parity items landed while paused: NoteEditor brought level with the family (selection/undo/sub-bullets/timestamps — verbatim PAL adoption) + global PageHighlighter. Commit command handed to Sidharth. Details: LINEAGE tail.
