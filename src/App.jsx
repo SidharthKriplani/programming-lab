@@ -15,6 +15,7 @@ import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/a
 import { supabase } from './utils/supabase.js';
 import { upsertLeaderboardRow } from './utils/leaderboard.js';
 import { DailyRep } from './components/shared/DailyRep.jsx';
+import { SearchModal } from './components/SearchModal.jsx';
 import { FOUNDATION_TALLY } from './data/foundationsRooms.js';
 
 const GotchaBrowser = lazy(() =>
@@ -94,8 +95,12 @@ export default function App() {
   const [navOpen, setNavOpen] = useState(false);
   const [skin, setSkinState] = useState(getSkin());
   const [user, setUser] = useState(null);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const navigate = (v) => { setView(v); setHash(v); setNavOpen(false); };
+  // Search v1 (2026-07-28): the only room-addressable route is `climb` — see
+  // components/SearchModal.jsx for why module hits resolve to their room, not the module.
+  const navigateToRoom = (roomId) => { setView('climb'); setHash('climb', roomId); setNavOpen(false); };
   const onCycleSkin = () => setSkinState(cycleSkin());
   const onSignIn = () => signInWithGoogle();
   const onSignOut = () => { signOut(); setUser(null); };
@@ -136,6 +141,17 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // global shortcut: Cmd/Ctrl+K opens search — matches the chrome trigger's own ⌘K hint
+  // (D-PL new ruling 2026-07-28). Separate effect from the plain-key "p" shortcut above
+  // since this one specifically wants the modifier key.
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); setSearchOpen(s => !s); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // PyLab opens as its OWN full-screen room (no app sidebar) — like SQL Lab in PAL.
   if (view === 'pylab') {
     return (
@@ -165,6 +181,7 @@ export default function App() {
         <div className="desktop-topbar">
           <BreaklabsChrome
             user={user} supabaseEnabled={!!supabase} onSignInGoogle={onSignIn}
+            onSearchOpen={() => setSearchOpen(true)}
             onNavigateProgress={() => navigate('progress')}
             onNavigateMyTracks={() => navigate('tracks')}
             onNavigateLeaderboard={() => navigate('leaderboard')}
@@ -207,6 +224,8 @@ export default function App() {
           </Suspense>
         </main>
       </div>
+
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} onNavigateRoom={navigateToRoom} />
     </div>
   );
 }

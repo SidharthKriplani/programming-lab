@@ -3,9 +3,12 @@
 // wired to PL's own auth/nav/theme, not a cross-repo import — see
 // genai-systems-lab/src/components/BreaklabsChrome.jsx for the master reference.
 //
-// PL wiring is intentionally minimal per the D-port spec: brand + ProfileChip dropdown only.
-//   - No search trigger: PL has no search corpus (onSearchOpen simply isn't passed; the master
-//     component already guards its search button behind `onSearchOpen &&`).
+// PL wiring is intentionally minimal per the D-port spec: brand + search + ProfileChip
+// dropdown only.
+//   - Search trigger (added 2026-07-28, new ruling): PL now has a v1 search (title-only
+//     index over foundationsRooms.js, see data/searchIndex.js + components/SearchModal.jsx).
+//     Centered in the bar like the sibling labs, desktop-only, guarded behind onSearchOpen
+//     so this file stays backward-compatible if a caller omits it.
 //   - No streak badge, no theme toggle, no sticky-notes tray: none of those systems exist in PL
 //     yet, and the theme toggle already lives in the sidebar footer (utils/theme.js) — not
 //     duplicated here.
@@ -81,13 +84,28 @@ function ProfileChip({ user, onNavigateProgress, onNavigateMyTracks, onNavigateL
 // ─── Chrome ────────────────────────────────────────────────────────────────────────────────
 export default function BreaklabsChrome({
   user, supabaseEnabled, onSignInGoogle,
+  onSearchOpen, searchPlaceholder = "Search…",
   onNavigateProgress, onNavigateMyTracks, onNavigateLeaderboard, onNavigateStartHere, onNavigateResources,
 }) {
   return (
-    <div className="flex items-center justify-between flex-1 min-w-0 gap-2">
+    <div className="flex items-center flex-1 min-w-0 gap-2">
       <BrandMark variant="full" descriptor="PROGRAMMING" accent="#46E08A" size={16} />
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      {/* D-PL new ruling (2026-07-28): centered search trigger, desktop-only, guarded
+          behind onSearchOpen so this component stays backward-compatible. */}
+      {onSearchOpen && (
+        <div className="hidden lg:flex flex-1 justify-center min-w-0">
+          <button onClick={onSearchOpen} aria-label="Search"
+            className="flex items-center gap-2 lg:w-64 px-3 py-1.5 rounded-lg text-left min-w-0 transition-all hover:opacity-90"
+            style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" style={{ color: "var(--text-dim)", flexShrink: 0 }}><circle cx="4.5" cy="4.5" r="3" stroke="currentColor" strokeWidth="1.3" /><line x1="7" y1="7" x2="10" y2="10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
+            <span className="text-xs flex-1 truncate" style={{ color: "var(--text-dim)" }}>{searchPlaceholder}</span>
+            <kbd className="hidden sm:inline text-[9px] rounded px-1 font-mono" style={{ border: "1px solid var(--border)", color: "var(--text-dim)" }}>⌘K</kbd>
+          </button>
+        </div>
+      )}
+
+      <div className="flex items-center gap-1.5 shrink-0 ml-auto">
         {supabaseEnabled && (
           user ? (
             <ProfileChip user={user}
