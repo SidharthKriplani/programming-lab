@@ -704,6 +704,19 @@ body {
   margin: 0 auto;
 }
 
+/* ── Desktop top bar (BreaklabsChrome, D-port) ───────────────────────────── */
+.desktop-topbar {
+  display: flex;
+  align-items: center;
+  padding: 0.55rem 1.25rem;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+
 /* ── Mobile top bar + drawer ───────────────────────────────────────────── */
 .mobile-topbar {
   display: none;
@@ -741,6 +754,13 @@ body {
   .app-sidebar.open { transform: translateX(0); }
   .mobile-topbar { display: flex; }
   .app-main { padding: 1.25rem 1rem 3rem; }
+  .desktop-topbar { display: none; }
+}
+
+/* Sidebar entries now redundant with the BreaklabsChrome ProfileChip dropdown (desktop only —
+   the two-mode nav doctrine: mobile keeps the classic full drawer, nothing hidden there). */
+@media (min-width: 860px) {
+  .sidebar-desktop-hide { display: none; }
 }
 
 /* ── IDE / Python cell output (MSL PythonCell selectors) ──────────────────── */

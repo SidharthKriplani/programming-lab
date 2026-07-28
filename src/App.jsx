@@ -4,6 +4,7 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { PlatinumMenuBar } from './components/layout/PlatinumMenuBar.jsx';
+import BreaklabsChrome from './components/BreaklabsChrome.jsx';
 import { getSkin, cycleSkin } from './utils/skin.js';
 import { Icon } from './components/shared/Icon.jsx';
 import { BrandMark } from './components/shared/BrandMark.jsx';
@@ -11,6 +12,7 @@ import { gotchaProblems } from './data/gotchaProblems.js';
 import { parseHash, setHash } from './utils/hashRoute.js';
 import { PageHighlighter } from './components/PageHighlighter.jsx';
 import { onAuthStateChange, getUser, signInWithGoogle, signOut } from './utils/auth.js';
+import { supabase } from './utils/supabase.js';
 import { upsertLeaderboardRow } from './utils/leaderboard.js';
 import { DailyRep } from './components/shared/DailyRep.jsx';
 import { FOUNDATION_TALLY } from './data/foundationsRooms.js';
@@ -156,6 +158,21 @@ export default function App() {
       <Sidebar view={view} onNavigate={navigate} open={navOpen} onClose={() => setNavOpen(false)} skin={skin} onCycleSkin={onCycleSkin} user={user} onSignIn={onSignIn} onSignOut={onSignOut} />
 
       <div className="app-main-wrapper">
+        {/* Desktop top bar (>=860px) — BreaklabsChrome (D-port from GSL). Replaces nothing that
+            existed before: PL previously had no desktop header row. The sidebar TRACK entries
+            this dropdown duplicates (Progress/My Tracks/Leaderboard/Start Here/Resources) are
+            hidden at this breakpoint via .sidebar-desktop-hide (see Sidebar.jsx + index.css). */}
+        <div className="desktop-topbar">
+          <BreaklabsChrome
+            user={user} supabaseEnabled={!!supabase} onSignInGoogle={onSignIn}
+            onNavigateProgress={() => navigate('progress')}
+            onNavigateMyTracks={() => navigate('tracks')}
+            onNavigateLeaderboard={() => navigate('leaderboard')}
+            onNavigateStartHere={() => navigate('start')}
+            onNavigateResources={() => navigate('resources')}
+          />
+        </div>
+
         {/* Mobile top bar */}
         <div className="mobile-topbar">
           <button className="mobile-menu-btn" onClick={() => setNavOpen(o => !o)} aria-label="Menu">☰</button>

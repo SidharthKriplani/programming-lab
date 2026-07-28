@@ -40,13 +40,13 @@ function Chevron({ open }) {
   );
 }
 
-function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
+function NavItem({ label, icon, active, soon, count, total, sub, onClick, hideDesktop }) {
   return (
     <button
       onClick={onClick}
       disabled={soon}
       aria-current={active ? 'page' : undefined}
-      className={active ? 'sidebar-nav-active' : ''}
+      className={[active ? 'sidebar-nav-active' : '', hideDesktop ? 'sidebar-desktop-hide' : ''].filter(Boolean).join(' ')}
       style={{
         width: '100%', display: 'flex', alignItems: 'center', gap: '0.5rem',
         padding: sub ? '0.4rem 0.6rem' : '0.46rem 0.6rem',
@@ -69,13 +69,16 @@ function NavItem({ label, icon, active, soon, count, total, sub, onClick }) {
 }
 
 // ── nav model ──
+// hideDesktop: D-port (chrome-topbar) — these five now live in the BreaklabsChrome
+// ProfileChip dropdown too, so they're redundant on desktop (>=860px, CSS-only hide via
+// .sidebar-desktop-hide). Home has no chrome equivalent, so it always stays visible.
 const TRACK = [
   { label: 'Home', view: 'home', icon: 'layout' },
-  { label: 'Start Here', view: 'start', icon: 'compass' },
-  { label: 'Progress', view: 'progress', icon: 'bar-chart' },
-  { label: 'My Tracks', view: 'tracks', icon: 'file-text' },
-  { label: 'Leaderboard', view: 'leaderboard', icon: 'star' },
-  { label: 'Resources', view: 'resources', icon: 'book-open' },
+  { label: 'Start Here', view: 'start', icon: 'compass', hideDesktop: true },
+  { label: 'Progress', view: 'progress', icon: 'bar-chart', hideDesktop: true },
+  { label: 'My Tracks', view: 'tracks', icon: 'file-text', hideDesktop: true },
+  { label: 'Leaderboard', view: 'leaderboard', icon: 'star', hideDesktop: true },
+  { label: 'Resources', view: 'resources', icon: 'book-open', hideDesktop: true },
 ];
 
 const FRAMES = [
@@ -118,7 +121,7 @@ function bankSolved(bank) {
 
 export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'platinum', onCycleSkin, user, onSignIn, onSignOut }) {
   const [theme, setThemeState] = useState(getTheme());
-  const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'DO');
+  const [openFrame, setOpenFrame] = useState(VIEW_FRAME[view] || 'KNOW'); // D23: homogeneity ruling, was 'DO'
 
   // follows-navigation: opening a tab auto-expands its frame (one-open-per-level)
   useEffect(() => {
@@ -149,7 +152,7 @@ export function Sidebar({ view, onNavigate, open = false, onClose, skin = 'plati
         {/* TRACK cluster — flat, always visible */}
         <div style={{ marginBottom: '0.85rem' }}>
           {TRACK.map(t => (
-            <NavItem key={t.label} label={t.label} icon={noIcons ? undefined : t.icon} active={view === t.view} onClick={() => go(t.view)} />
+            <NavItem key={t.label} label={t.label} icon={noIcons ? undefined : t.icon} active={view === t.view} onClick={() => go(t.view)} hideDesktop={t.hideDesktop} />
           ))}
         </div>
 
