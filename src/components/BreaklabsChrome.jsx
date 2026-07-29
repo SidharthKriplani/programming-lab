@@ -88,13 +88,13 @@ export default function BreaklabsChrome({
   onNavigateProgress, onNavigateMyTracks, onNavigateLeaderboard, onNavigateStartHere, onNavigateResources,
 }) {
   return (
-    <div className="flex items-center flex-1 min-w-0 gap-2">
+    <div className="relative flex items-center flex-1 min-w-0 gap-2">
       <BrandMark variant="full" descriptor="PROGRAMMING" accent="#46E08A" size={16} />
 
       {/* D-PL new ruling (2026-07-28): centered search trigger, desktop-only, guarded
           behind onSearchOpen so this component stays backward-compatible. */}
       {onSearchOpen && (
-        <div className="hidden lg:flex flex-1 justify-center min-w-0">
+        <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 min-w-0">
           <button onClick={onSearchOpen} aria-label="Search"
             className="flex items-center gap-2 lg:w-64 px-3 py-1.5 rounded-lg text-left min-w-0 transition-all hover:opacity-90"
             style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
