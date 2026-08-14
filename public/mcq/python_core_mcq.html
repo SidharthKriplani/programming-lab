@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Core – MCQ Bank</title>
+<style>
+  :root {
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --ink: #1c1e21;
+    --muted: #6b7280;
+    --border: #e3e5e8;
+    --accent: #2757c7;
+    --good: #1a7f37;
+    --good-bg: #e9f7ee;
+    --bad: #b3261e;
+    --bad-bg: #fbeceb;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  header h1 { margin: 0 0 4px; font-size: 1.15rem; }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .score-pill {
+    background: var(--accent);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s ease;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .q-tags {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .q-stem {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    white-space: pre-wrap;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fbfbfc;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--ink);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: #f0f4fe; }
+  .option:disabled { cursor: default; }
+  .option.correct { background: var(--good-bg); border-color: var(--good); font-weight: 600; }
+  .option.incorrect { background: var(--bad-bg); border-color: var(--bad); }
+  .option.reveal-correct { background: var(--good-bg); border-color: var(--good); }
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.right { background: var(--good-bg); color: #145a29; border: 1px solid var(--good); }
+  .feedback.wrong { background: var(--bad-bg); color: #7a1913; border: 1px solid var(--bad); }
+  .feedback strong { display: block; margin-bottom: 4px; }
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+  }
+  button.next-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: none;
+  }
+  button.next-btn.show { display: inline-block; }
+  button.next-btn:hover { opacity: 0.9; }
+  .summary {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .summary h2 { font-size: 1.6rem; margin-bottom: 6px; }
+  .summary .big-score { font-size: 2.4rem; font-weight: 700; color: var(--accent); margin: 10px 0; }
+  .summary button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 20px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Python Core – MCQ Bank</h1>
+  <div class="meta-row">
+    <span id="progress-text">Question 1 of 81</span>
+    <span class="score-pill" id="score-pill">Score: 0 / 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</header>
+<main id="main"></main>
+<footer>81 questions &middot; order shuffles on every reload &middot; self-contained, no external dependencies</footer>
+
+<script id="quiz-data" type="application/json">[{"topic": "slicing", "difficulty": "screen", "stem": "What does [1, 2, 3, 4, 5][1:3] return?", "options": ["[2, 3]", "[1, 2, 3]", "[2, 3, 4]", "[1, 2]"], "correct": 0, "explanation": "Slicing is start-inclusive, stop-exclusive, so [1:3] takes indices 1 and 2 -> [2, 3]. [1, 2, 3] wrongly includes index 0 or treats stop as inclusive."}, {"topic": "slicing", "difficulty": "screen", "stem": "What does 'hello world'[::-1] evaluate to?", "options": ["'dlrow olleh'", "'hello world'", "'world hello'", "Error: strings can't use negative step"], "correct": 0, "explanation": "A step of -1 walks the string backwards, reversing it. Strings support slicing with any step, so the 'Error' option is wrong."}, {"topic": "slicing", "difficulty": "screen", "stem": "What is the result of list(range(10))[2:8:2]?", "options": ["[2, 4, 6]", "[2, 4, 6, 8]", "[2, 3, 4, 5, 6, 7]", "[3, 5, 7]"], "correct": 0, "explanation": "Start at 2, stop before 8, step by 2: 2, 4, 6. Including 8 wrongly treats the stop index as inclusive."}, {"topic": "slicing", "difficulty": "screen", "stem": "What does [10, 20, 30, 40][-2:] return?", "options": ["[30, 40]", "[40]", "[10, 20]", "[20, 30]"], "correct": 0, "explanation": "-2 means the second-to-last element onward, so it returns the last two items. [20, 30] is the wrong direction (that would be [1:-1])."}, {"topic": "slicing", "difficulty": "mid", "stem": "What happens when you slice a list out of bounds, e.g. [1, 2, 3][5:10]?", "options": ["Returns an empty list, no error", "Raises IndexError", "Returns [1, 2, 3]", "Raises ValueError"], "correct": 0, "explanation": "Slicing clamps out-of-range bounds instead of raising; an out-of-range slice just yields an empty result. Only direct indexing (e.g. lst[5]) raises IndexError."}, {"topic": "slicing", "difficulty": "mid", "stem": "What does a[:] do when a is a list?", "options": ["Creates a shallow copy of the list", "Returns a reference to the same list object", "Empties the list in place", "Raises a SyntaxError"], "correct": 0, "explanation": "a[:] builds a new list object containing the same top-level elements — a shallow copy. It is not the same object as a (a[:] is a is False), which rules out the reference option."}, {"topic": "slicing", "difficulty": "mid", "stem": "What is list(range(5))[::-2]?", "options": ["[4, 2, 0]", "[0, 2, 4]", "[4, 3, 2, 1, 0]", "[3, 1]"], "correct": 0, "explanation": "A negative step walks from the end backward by 2 each time: 4, then 2, then 0. [0, 2, 4] is the forward-order mistake."}, {"topic": "slicing", "difficulty": "screen", "stem": "Given s = 'abcdef', what does s[2:] return?", "options": ["'cdef'", "'ab'", "'abc'", "'cde'"], "correct": 0, "explanation": "Omitting the stop index means 'go to the end', so it returns everything from index 2 onward. 'ab' is the complementary (wrong) slice."}, {"topic": "slicing", "difficulty": "tricky", "stem": "What does list(range(10))[10:2:-1] return?", "options": ["[9, 8, 7, 6, 5, 4, 3]", "[]", "[2, 3, 4, 5, 6, 7, 8, 9]", "[10, 9, 8, 7, 6, 5, 4, 3]"], "correct": 0, "explanation": "Start clamps to the last valid index (9) when going backward, walks down to (but not including) index 2, giving 9..3. An empty list would only happen if start were below stop when stepping negatively."}, {"topic": "mutability", "difficulty": "screen", "stem": "Which of these types is mutable?", "options": ["list", "tuple", "str", "frozenset"], "correct": 0, "explanation": "Lists can be changed in place (append, item assignment). tuple, str, and frozenset are all immutable once created."}, {"topic": "mutability", "difficulty": "screen", "stem": "What is the classic bug in this function?\ndef add_item(item, bucket=[]):\n    bucket.append(item)\n    return bucket", "options": ["The default list is created once and shared across all calls that don't pass bucket", "It raises TypeError on the second call", "Python re-creates the default list fresh on every call, so there's no bug", "append() doesn't work on function parameters"], "correct": 0, "explanation": "Default argument values are evaluated once at function definition time, so a mutable default is reused and accumulates state across calls. The 'fresh every call' option describes what most people mistakenly expect."}, {"topic": "mutability", "difficulty": "mid", "stem": "What is printed?\na = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)", "options": ["[1, 2, 3, 4]", "[1, 2, 3]", "Error", "[4]"], "correct": 0, "explanation": "b = a copies the reference, not the list, so a and b point to the same object; mutating through b is visible via a. [1, 2, 3] would only be true if b were a copy."}, {"topic": "mutability", "difficulty": "screen", "stem": "Which statement about tuples is correct?", "options": ["A tuple containing a list can still have that inner list mutated", "Tuples are always fully immutable, including any nested objects", "Tuples support .append()", "Tuples cannot contain mutable objects"], "correct": 0, "explanation": "Tuple immutability only means the tuple can't be reassigned to point at different objects at each index — but if one of those objects is itself mutable (like a list), that inner object can still change. Tuples have no .append method, which is why that option is wrong."}, {"topic": "mutability", "difficulty": "mid", "stem": "What does x = (1, 2, 3); x[0] = 9 do?", "options": ["Raises TypeError: 'tuple' object does not support item assignment", "Sets x to (9, 2, 3)", "Silently does nothing", "Raises IndexError"], "correct": 0, "explanation": "Tuples don't support item assignment because they're immutable; Python raises a TypeError specifically naming that. IndexError would only occur for an out-of-range index on a sequence that does support assignment."}, {"topic": "mutability", "difficulty": "screen", "stem": "What is the output?\ndef f(x):\n    x += [1]\n    return x\nlst = [0]\nf(lst)\nprint(lst)", "options": ["[0, 1]", "[0]", "[1]", "TypeError"], "correct": 0, "explanation": "For a list, += calls __iadd__, which mutates in place (equivalent to extend), so the caller's list is changed. If lst were an immutable type like a tuple, += would rebind locally and the caller would see no change — which is the trap this question tests."}, {"topic": "mutability", "difficulty": "tricky", "stem": "What is the output?\ndef f(x):\n    x = x + [1]\n    return x\nlst = [0]\nf(lst)\nprint(lst)", "options": ["[0]", "[0, 1]", "[1]", "TypeError"], "correct": 0, "explanation": "x + [1] builds a brand-new list and rebinds the local name x to it; the caller's lst is untouched. This is the opposite of x += [1], which mutates in place — confusing the two is the classic trap."}, {"topic": "mutability", "difficulty": "mid", "stem": "Which of these is the safest way to create N independent empty lists (e.g. for a list of buckets)?", "options": ["[[] for _ in range(N)]", "[[]] * N", "[list()] * N", "N * [[]]"], "correct": 0, "explanation": "A list comprehension creates a fresh list object on each iteration. [[]] * N and its equivalents repeat references to the *same* inner list, so mutating one bucket mutates all of them."}, {"topic": "mutability", "difficulty": "mid", "stem": "Why is a plain dict not usable as a dictionary key?", "options": ["Dicts are mutable and therefore unhashable", "Dicts don't implement __eq__", "Only strings can be dict keys", "Dicts are too large to hash efficiently"], "correct": 0, "explanation": "Dict keys must be hashable, and hashability requires immutability (a mutable object's hash could change after insertion, breaking the hash table). Dicts do implement __eq__ just fine — that's not the blocker."}, {"topic": "comprehensions", "difficulty": "screen", "stem": "What does [x*x for x in range(5) if x % 2 == 0] evaluate to?", "options": ["[0, 4, 16]", "[0, 1, 4, 9, 16]", "[4, 16]", "[0, 2, 4]"], "correct": 0, "explanation": "It squares only the even numbers in range(5) — 0, 2, 4 — giving 0, 4, 16. The unfiltered list [0, 1, 4, 9, 16] ignores the `if` condition entirely."}, {"topic": "comprehensions", "difficulty": "screen", "stem": "Which comprehension builds a dict mapping each word to its length from words = ['a', 'bb', 'ccc']?", "options": ["{w: len(w) for w in words}", "[w: len(w) for w in words]", "{len(w) for w in words}", "dict(w for w in words)"], "correct": 0, "explanation": "{key_expr: value_expr for item in iterable} is dict-comprehension syntax. {len(w) for w in words} is a set comprehension of lengths only, not a mapping."}, {"topic": "comprehensions", "difficulty": "mid", "stem": "What is the output?\nprint([y for x in [[1,2],[3,4]] for y in x])", "options": ["[1, 2, 3, 4]", "[[1, 2], [3, 4]]", "[1, 3, 2, 4]", "Error"], "correct": 0, "explanation": "This is a flattening nested comprehension: the outer `for x in ...` iterates sublists, the inner `for y in x` iterates their elements, in left-to-right, top-to-bottom order — same order as writing nested for-loops. Keeping the nested structure would just be the original list, which isn't what a comprehension without nesting logic does here."}, {"topic": "comprehensions", "difficulty": "screen", "stem": "What does {x for x in [1, 1, 2, 2, 3]} return?", "options": ["{1, 2, 3}", "[1, 1, 2, 2, 3]", "{1, 1, 2, 2, 3}", "(1, 2, 3)"], "correct": 0, "explanation": "Curly braces with a single expression build a set comprehension, and sets automatically dedupe, so duplicates collapse to {1, 2, 3}. A set literal can never display repeated elements, ruling out {1, 1, 2, 2, 3}."}, {"topic": "comprehensions", "difficulty": "mid", "stem": "In a comprehension `[expr for x in iterable if cond]`, what is the evaluation order?", "options": ["The condition is checked for each x before expr is evaluated for that x", "expr is computed first for every x, then filtered by cond afterward", "cond is only evaluated once, before the loop starts", "Order is undefined and can vary by Python version"], "correct": 0, "explanation": "For each item, the `if` clause is tested first; only if it passes does the comprehension evaluate expr and include it. Computing expr for everything up front and filtering after would be wasteful and isn't how comprehensions execute."}, {"topic": "comprehensions", "difficulty": "tricky", "stem": "What does this print?\nfns = [lambda: i for i in range(3)]\nprint([f() for f in fns])", "options": ["[2, 2, 2]", "[0, 1, 2]", "[0, 0, 0]", "TypeError"], "correct": 0, "explanation": "Each lambda closes over the *variable* i, not its value at creation time; by the time the lambdas are called, the loop has finished and i is 2, so all three return 2. [0, 1, 2] is what people expect but is wrong — a classic late-binding-closure trap."}, {"topic": "comprehensions", "difficulty": "mid", "stem": "Which is functionally closest to a generator expression like (x*2 for x in range(5))?", "options": ["A lazily-evaluated iterator that produces items one at a time", "A list built eagerly in memory, just with parentheses instead of brackets", "A tuple comprehension that returns a tuple", "A syntax error — Python has no generator expressions"], "correct": 0, "explanation": "Parentheses around a comprehension create a generator expression: values are produced lazily on demand, not materialized into a container. There is no such thing as a 'tuple comprehension' — wrapping in () does not build a tuple."}, {"topic": "comprehensions", "difficulty": "screen", "stem": "What does [x for x in range(3) for y in range(2)] produce?", "options": ["[0, 0, 1, 1, 2, 2]", "[0, 1, 2, 0, 1, 2]", "[0, 1, 0, 1, 0, 1]", "[(0,0),(0,1),(1,0),(1,1),(2,0),(2,1)]"], "correct": 0, "explanation": "The outer loop over x is the slower-varying one; for each x, the inner loop over y runs twice, but only x is emitted, so each x value repeats twice: 0,0,1,1,2,2. The tuple-pairs option is wrong because the expression is just `x`, not `(x, y)`."}, {"topic": "comprehensions", "difficulty": "mid", "stem": "Why might replacing a list comprehension with a generator expression inside sum(...) matter for large inputs?", "options": ["The generator avoids building the full intermediate list in memory", "Generators execute in parallel across CPU cores automatically", "sum() only accepts generators, never lists", "Generator expressions are always faster in raw CPU time"], "correct": 0, "explanation": "sum(x for x in big_iterable) streams values one at a time instead of first materializing a full list, which matters for memory on large inputs. sum() happily accepts a list too — the win here is memory, not that lists are rejected."}, {"topic": "dict/set", "difficulty": "screen", "stem": "What happens if you access a missing key with d['missing'] on a plain dict?", "options": ["Raises KeyError", "Returns None", "Returns an empty string", "Creates the key with value None"], "correct": 0, "explanation": "Bracket access on a plain dict raises KeyError for a missing key. d.get('missing') is what returns None instead — that's a different method with different behavior."}, {"topic": "dict/set", "difficulty": "screen", "stem": "Since Python 3.7, what is guaranteed about a regular dict's iteration order?", "options": ["It preserves insertion order", "It is always sorted by key", "It is random each run", "It matches the order keys would sort alphabetically"], "correct": 0, "explanation": "CPython 3.6 made insertion-order preservation an implementation detail, and 3.7 made it a language guarantee. Dicts are not automatically sorted by key — that would require sorted(d.items())."}, {"topic": "dict/set", "difficulty": "mid", "stem": "What does dict.setdefault('key', []) do if 'key' is not already present?", "options": ["Inserts 'key' with the given default value and returns that value", "Returns the default without modifying the dict", "Raises KeyError since the key is missing", "Overwrites the dict entirely with the default"], "correct": 0, "explanation": "setdefault both inserts the key (if missing) with the given default AND returns the value now stored — that combination is exactly why it's used to build dict-of-lists patterns in one line. 'Returns the default without modifying the dict' describes .get(), not .setdefault()."}, {"topic": "dict/set", "difficulty": "mid", "stem": "What is the output?\ns1 = {1, 2, 3}\ns2 = {2, 3, 4}\nprint(s1 ^ s2)", "options": ["{1, 4}", "{2, 3}", "{1, 2, 3, 4}", "{1, 2, 3, 2, 3, 4}"], "correct": 0, "explanation": "^ is symmetric difference: elements in exactly one of the sets, i.e. {1, 4}. {2, 3} is the intersection (&), a common mix-up with symmetric difference."}, {"topic": "dict/set", "difficulty": "screen", "stem": "Which operator computes the intersection of two sets?", "options": ["&", "|", "^", "-"], "correct": 0, "explanation": "& returns elements common to both sets. | is union, ^ is symmetric difference, and - is set difference — all distinct set operators worth telling apart."}, {"topic": "dict/set", "difficulty": "tricky", "stem": "Why can't you use a list as a set element, e.g. {[1, 2], 3}?", "options": ["Lists are unhashable because they're mutable, and set elements must be hashable", "Sets can only contain numbers and strings", "You need to convert the list to a string first", "Sets have a maximum element size limit"], "correct": 0, "explanation": "Set membership relies on hashing elements into buckets; a hashable object's hash must never change, which mutable lists can't guarantee. Sets can hold any hashable type, not just numbers/strings — tuples of hashables work fine, for example."}, {"topic": "dict/set", "difficulty": "mid", "stem": "What does {**d1, **d2} do when d1 and d2 share a key?", "options": ["The value from d2 wins because it's unpacked second", "The value from d1 always wins regardless of order", "Raises TypeError for duplicate keys", "Both values are kept in a list at that key"], "correct": 0, "explanation": "Dict unpacking merges left-to-right, and later keys overwrite earlier ones — so d2's value for a shared key wins. Unlike list concatenation, colliding dict keys never raise an error or combine into a list."}, {"topic": "dict/set", "difficulty": "mid", "stem": "What's the key practical difference between dict.get(key) and dict[key] for a missing key?", "options": [".get returns None (or a supplied default) instead of raising", "dict[key] is always faster than .get for missing keys", "get() works only on defaultdict, not plain dict", "dict[key] returns None for missing keys just like .get"], "correct": 0, "explanation": ".get() is the safe accessor that returns None (or an explicit default) on a miss, while [] raises KeyError — a deliberate difference so you can choose fail-loud vs fail-soft. .get() works on any regular dict, not just defaultdict."}, {"topic": "dict/set", "difficulty": "screen", "stem": "What does collections.Counter(['a','b','a','c','b','a']).most_common(1) return?", "options": ["[('a', 3)]", "[('a', 3), ('b', 2)]", "('a', 3)", "['a', 'a', 'a']"], "correct": 0, "explanation": "most_common(n) returns a list of the n most frequent (item, count) tuples, so most_common(1) gives a single-element list [('a', 3)]. Returning the bare tuple ('a', 3) omits the list wrapper that most_common always returns."}, {"topic": "exceptions", "difficulty": "screen", "stem": "Which block always runs, whether or not an exception was raised?", "options": ["finally", "else", "except", "try"], "correct": 0, "explanation": "finally executes no matter what — exception raised, caught, or not — making it the right place for cleanup like closing files. else only runs if no exception occurred, which is a narrower guarantee."}, {"topic": "exceptions", "difficulty": "screen", "stem": "When does the `else` clause of a try/except run?", "options": ["Only if the try block completed without raising an exception", "Only if an exception was caught", "Always, after finally", "Never — try/except has no else clause"], "correct": 0, "explanation": "try/except/else is valid syntax, and else runs exactly when the try body succeeds cleanly with no exception. It's the opposite of the except path, not a fallback for when an exception WAS caught."}, {"topic": "exceptions", "difficulty": "mid", "stem": "What's wrong with `except:` (a bare except with no exception type)?", "options": ["It catches everything including KeyboardInterrupt and SystemExit, masking real problems", "It's a SyntaxError in Python 3", "It only catches built-in exceptions, not custom ones", "It silently ignores the exception without stopping execution flow differently than except Exception"], "correct": 0, "explanation": "A bare except catches BaseException, which includes KeyboardInterrupt and SystemExit — meaning Ctrl+C or sys.exit() can get silently swallowed. `except Exception:` is the narrower, generally-recommended catch-all since it excludes those control-flow exceptions."}, {"topic": "exceptions", "difficulty": "mid", "stem": "What does `raise` with no arguments do inside an except block?", "options": ["Re-raises the currently-handled exception, preserving its traceback", "Raises a generic Exception with no message", "Is a SyntaxError outside a function", "Silently does nothing"], "correct": 0, "explanation": "Bare `raise` inside an except clause re-raises the active exception with its original traceback intact — useful for logging and re-propagating. It does not fabricate a new generic Exception."}, {"topic": "exceptions", "difficulty": "mid", "stem": "What is the purpose of `raise NewError(...) from original_err`?", "options": ["It chains exceptions, showing both in the traceback while marking the cause explicitly", "It suppresses the original exception's traceback entirely", "It converts NewError into a warning instead of an exception", "It retries the operation that caused original_err"], "correct": 0, "explanation": "`raise ... from ...` sets __cause__, producing a traceback that shows both exceptions with 'the above exception was the direct cause of the following exception' — useful for wrapping low-level errors in domain-specific ones without losing context. `raise ... from None` is the variant that suppresses context, not the plain `from err` form."}, {"topic": "exceptions", "difficulty": "screen", "stem": "Which exception is raised by int('abc')?", "options": ["ValueError", "TypeError", "SyntaxError", "NameError"], "correct": 0, "explanation": "ValueError is raised when a function receives an argument of the right type but an inappropriate value, exactly the case for a non-numeric string. TypeError would apply if you passed the wrong *type* entirely, like int([1,2])."}, {"topic": "exceptions", "difficulty": "screen", "stem": "What is the correct order for multiple except clauses catching a class hierarchy?", "options": ["More specific exception types before more general ones", "More general exception types before more specific ones", "Order doesn't matter, Python picks the best match", "Alphabetical order by exception class name"], "correct": 0, "explanation": "Python checks except clauses top to bottom and uses the first match, so a general type like Exception listed before a specific subclass like ValueError would swallow it and the specific clause would never run. Order matters — Python does not automatically find the 'best' match."}, {"topic": "exceptions", "difficulty": "tricky", "stem": "What gets printed?\ndef f():\n    try:\n        return 1\n    finally:\n        print('cleanup')\nprint(f())", "options": ["cleanup\\n1", "1\\ncleanup", "cleanup only, function returns None", "Error: can't return from try with a finally block"], "correct": 0, "explanation": "finally still runs even when the try block hits a return — it executes before the function actually returns to the caller, so 'cleanup' prints first, then the returned value 1 is printed by the outer print(). A return inside try with finally present is completely legal."}, {"topic": "exceptions", "difficulty": "tricky", "stem": "What does this function return?\ndef f():\n    try:\n        return 1\n    finally:\n        return 2", "options": ["2", "1", "Raises RuntimeError", "None"], "correct": 0, "explanation": "A return statement inside finally overrides any return (or exception) from the try block — the finally's return wins, so this returns 2. This is a well-known gotcha and generally considered bad practice, but it's not an error."}, {"topic": "json/collections/itertools", "difficulty": "screen", "stem": "What does json.dumps({'a': 1, 'b': None}) produce?", "options": ["'{\"a\": 1, \"b\": null}'", "'{\"a\": 1, \"b\": None}'", "'{a: 1, b: null}'", "A Python dict, not a string"], "correct": 0, "explanation": "json.dumps serializes Python None to JSON's `null` literal and always double-quotes keys — Python's None never appears literally in valid JSON output. It returns a str, not a dict."}, {"topic": "json/collections/itertools", "difficulty": "screen", "stem": "What is the type of the object returned by json.loads('{\"x\": 1}')?", "options": ["dict", "str", "JSONObject (a special JSON type)", "list"], "correct": 0, "explanation": "json.loads deserializes a JSON object into a Python dict (and JSON arrays into Python lists). Python has no separate 'JSONObject' type — JSON maps to native Python containers."}, {"topic": "json/collections/itertools", "difficulty": "mid", "stem": "Why does json.dumps(my_dict) raise TypeError when my_dict contains a datetime object?", "options": ["The json module has no default encoder for datetime objects", "JSON has a native datetime type but Python's encoder is broken", "datetime objects are too large to serialize", "json.dumps only works on dicts with string values"], "correct": 0, "explanation": "The standard json module only knows how to serialize a fixed set of built-in types (str, int, float, bool, None, list, dict); datetime isn't among them, so you need a custom `default=` function or to pre-convert it to a string. JSON itself has no native date/time type at all, which is why this needs a workaround rather than being a bug."}, {"topic": "json/collections/itertools", "difficulty": "screen", "stem": "What does collections.defaultdict(int) do when you access a missing key?", "options": ["Creates the key with value 0 (int()'s default) instead of raising KeyError", "Raises KeyError just like a plain dict", "Returns None", "Raises TypeError since int isn't a valid factory"], "correct": 0, "explanation": "defaultdict calls its factory function (here int(), which returns 0) to auto-populate any missing key on access, avoiding manual 'if key not in d' checks. A plain dict is what raises KeyError — that's precisely the problem defaultdict solves."}, {"topic": "json/collections/itertools", "difficulty": "mid", "stem": "What does list(itertools.chain([1,2],[3,4])) produce?", "options": ["[1, 2, 3, 4]", "[[1, 2], [3, 4]]", "[1, 3, 2, 4]", "(1, 2, 3, 4)"], "correct": 0, "explanation": "itertools.chain iterates multiple iterables one after another as if they were a single sequence, flattening them into 1, 2, 3, 4. It does not interleave elements (that would be zip-like behavior) or preserve the nested list structure."}, {"topic": "json/collections/itertools", "difficulty": "mid", "stem": "What does list(itertools.islice(range(100), 5)) return?", "options": ["[0, 1, 2, 3, 4]", "[95, 96, 97, 98, 99]", "[0, 5, 10, 15, 20]", "[100]"], "correct": 0, "explanation": "islice(iterable, stop) with a single argument works like slicing [:stop], returning the first 5 elements: 0-4. It doesn't take a step by default, so the every-5th-element answer is wrong."}, {"topic": "json/collections/itertools", "difficulty": "tricky", "stem": "What does list(itertools.groupby([1,1,2,2,1,1])) group items by, and why does the result surprise people expecting {1: [1,1,1,1], 2: [2,2]}?", "options": ["It only groups *consecutive* equal runs, so it produces two separate groups of 1 (before and after the 2s)", "It groups all equal elements together like a full partition regardless of position", "It raises TypeError because the input isn't sorted", "It returns a dict exactly like the expectation shown"], "correct": 0, "explanation": "itertools.groupby only merges *adjacent* equal elements — it does not do a full groupby-and-collect like a SQL GROUP BY or pandas .groupby(); since the 1s aren't all contiguous here, you get three runs: (1,[1,1]), (2,[2,2]), (1,[1,1]). This is why groupby is almost always paired with a prior sort."}, {"topic": "json/collections/itertools", "difficulty": "mid", "stem": "What does collections.namedtuple let you do that a plain tuple doesn't?", "options": ["Access fields by name (e.g. p.x) in addition to index (e.g. p[0])", "Mutate individual fields after creation", "Store more than a fixed number of elements", "Automatically convert to a dict without any extra code"], "correct": 0, "explanation": "namedtuple generates a lightweight class with named field access while remaining a tuple underneath (still indexable, still immutable). It's still immutable like a regular tuple — fields can't be reassigned after creation, which rules out the mutation option."}, {"topic": "json/collections/itertools", "difficulty": "screen", "stem": "Which itertools function pairs up elements from two iterables, stopping at the shorter one?", "options": ["zip (a builtin, commonly used alongside itertools)", "itertools.product", "itertools.permutations", "itertools.combinations"], "correct": 0, "explanation": "zip() pairs elements positionally and truncates to the shortest input — the standard tool for this. itertools.product instead produces the full Cartesian product (every combination), which is a very different, larger result."}, {"topic": "gotchas", "difficulty": "screen", "stem": "What does 0.1 + 0.2 == 0.3 evaluate to in Python?", "options": ["False, due to floating-point representation error", "True, Python handles decimals exactly", "True, but only on 64-bit systems", "Raises a FloatingPointError"], "correct": 0, "explanation": "Binary floating point can't represent 0.1 or 0.2 exactly, so their sum is something like 0.30000000000000004, not exactly 0.3. Use math.isclose() or the decimal module when exact decimal comparison matters."}, {"topic": "gotchas", "difficulty": "screen", "stem": "What is the output of `print(type(1/2))` in Python 3?", "options": ["<class 'float'>", "<class 'int'>", "<class 'complex'>", "SyntaxError"], "correct": 0, "explanation": "In Python 3, / is true division and always returns a float, even for two ints that divide evenly. Integer (floor) division uses // instead, which is the operator that would return an int."}, {"topic": "gotchas", "difficulty": "mid", "stem": "Why does `is` sometimes return True for small integers like `1 is 1` but you shouldn't rely on it for equality checks?", "options": ["CPython caches small integers (-5 to 256) as singletons, an implementation detail — use == for value equality", "`is` is just a synonym for == in Python", "Integers are always the same object because they're immutable", "It's guaranteed behavior across all Python implementations, safe to rely on"], "correct": 0, "explanation": "CPython's small-int caching is an implementation detail, not a language guarantee — relying on `is` for integer equality can break on other implementations or with larger numbers. `is` checks object identity, not value equality, which is a distinct semantic from `==`."}, {"topic": "gotchas", "difficulty": "mid", "stem": "What's the output?\nprint([1, 2] == [1, 2])\nprint([1, 2] is [1, 2])", "options": ["True\\nFalse", "True\\nTrue", "False\\nFalse", "False\\nTrue"], "correct": 0, "explanation": "== compares values (both lists contain the same elements -> True); `is` compares identity, and these are two separately-constructed list objects, so it's False. Two literal list expressions are never the same object even with identical contents."}, {"topic": "gotchas", "difficulty": "screen", "stem": "What does `print('5' + 5)` do?", "options": ["Raises TypeError: can only concatenate str (not 'int') to str", "Prints '55'", "Prints 10", "Automatically converts and prints 5"], "correct": 0, "explanation": "Python 3 does not implicitly convert between str and int for +; mixing them raises TypeError. You'd need str(5) or int('5') to make the types match first."}, {"topic": "gotchas", "difficulty": "tricky", "stem": "What's wrong with modifying a list while iterating over it, e.g.\nfor x in my_list:\n    if x % 2 == 0:\n        my_list.remove(x)", "options": ["Iteration position shifts after removal, causing elements to be silently skipped", "Python raises RuntimeError immediately for any list mutation during iteration", "Nothing is wrong, this correctly removes all even numbers", "remove() cannot be called inside a for loop"], "correct": 0, "explanation": "Removing an item shifts all later elements left by one, but the iterator's internal index keeps advancing, so the element that shifted into the just-vacated slot gets skipped — you silently miss some evens. Unlike mutating a dict's keys during iteration (which does raise RuntimeError), list mutation during iteration fails silently instead, which is arguably worse."}, {"topic": "gotchas", "difficulty": "mid", "stem": "What does `print(bool([]))` and `print(bool([0]))` output?", "options": ["False\\nTrue", "True\\nFalse", "False\\nFalse", "True\\nTrue"], "correct": 0, "explanation": "An empty list is falsy regardless of contents-vs-emptiness distinctions; [0] is a non-empty list (containing one element, 0) and any non-empty container is truthy — the value 0 *inside* it doesn't matter. This truthiness-of-container-vs-value-of-element mix-up is the trap."}, {"topic": "gotchas", "difficulty": "tricky", "stem": "What does `print(id([]) == id([]))` most likely print, and why is this comparison misleading?", "options": ["True — because the first empty list's memory got freed and reused for the second one immediately, not because they're the same object", "False, and it always will be, guaranteed by the language spec", "True, because Python interns all empty lists like it does small integers", "Raises TypeError — id() cannot be called on mutable objects"], "correct": 0, "explanation": "CPython typically frees the first temporary list's memory (its refcount hits zero) before allocating the second, so the second can reuse the same address — id() equality here reflects an implementation quirk of object lifetime, not object identity or interning. Python does NOT intern empty lists the way it interns small ints; this is a well-known 'comparing ids of dead objects' trap."}, {"topic": "gotchas", "difficulty": "screen", "stem": "What does `print(round(2.5))` return in Python 3?", "options": ["2, due to banker's rounding (round half to even)", "3, standard rounding up", "2.5, unchanged", "Raises ValueError"], "correct": 0, "explanation": "Python 3's round() uses round-half-to-even ('banker's rounding') for .5 cases to reduce cumulative bias, so round(2.5) is 2 and round(3.5) is 4. This differs from the round-half-up rule many people learned in school, which is exactly why it's a common surprise."}, {"topic": "oop", "difficulty": "screen", "stem": "What is the purpose of `self` as the first parameter of an instance method?", "options": ["It's a reference to the specific instance the method is called on", "It's a reserved keyword required by Python's grammar", "It refers to the class itself, not an instance", "It holds the return value of the method"], "correct": 0, "explanation": "`self` is just a conventional name (not a keyword) for the instance passed automatically when you call instance.method(), giving the method access to that object's attributes. `cls` is the analogous convention for classmethods, which refers to the class instead."}, {"topic": "oop", "difficulty": "screen", "stem": "What does `__init__` do in a Python class?", "options": ["Initializes a newly-created instance's attributes", "Creates and allocates the instance object itself", "Destroys the instance when it's garbage collected", "Defines the class's string representation"], "correct": 0, "explanation": "__init__ runs right after the instance is created (by __new__) to set up its initial state, like self.x = x. __new__ is the actual object-allocation step, and __del__ (not asked here) handles teardown."}, {"topic": "oop", "difficulty": "mid", "stem": "What is method resolution order (MRO) used for?", "options": ["Determining which class's method is called first in multiple inheritance", "Sorting class methods alphabetically for documentation", "Deciding the order attributes are initialized in __init__", "Optimizing method call speed at compile time"], "correct": 0, "explanation": "When a class inherits from multiple parents, MRO (computed via the C3 linearization algorithm) defines the specific order Python searches those classes for an attribute or method. It's a runtime lookup-order concept, not a compile-time optimization or an attribute-initialization order."}, {"topic": "oop", "difficulty": "mid", "stem": "What is the difference between a classmethod and a staticmethod?", "options": ["classmethod receives the class as its first argument (cls); staticmethod receives neither self nor cls", "staticmethod receives self; classmethod does not", "They are functionally identical, just different naming conventions", "classmethod can only be called on instances, never on the class"], "correct": 0, "explanation": "@classmethod is bound to the class and commonly used for alternate constructors (cls(...)); @staticmethod is just a plain function namespaced inside the class with no automatic first argument at all. Both are callable on the class or an instance — the distinction is what gets passed automatically, not who can call them."}, {"topic": "oop", "difficulty": "screen", "stem": "What does inheritance let a subclass do?", "options": ["Reuse and override behavior defined in a parent class", "Directly modify the parent class's source code at runtime", "Automatically become a singleton", "Access private variables of unrelated classes"], "correct": 0, "explanation": "Inheritance lets a subclass reuse the parent's attributes/methods and override specific ones to specialize behavior (via super() calls if needed). It has nothing to do with singletons or accessing unrelated classes' internals."}, {"topic": "oop", "difficulty": "mid", "stem": "What does calling super().__init__() inside a subclass's __init__ typically accomplish?", "options": ["Runs the parent class's initialization logic so the subclass builds on top of it", "Calls the subclass's own __init__ again recursively", "Skips the parent class entirely and uses only the subclass's attributes", "Deletes the parent class's attributes"], "correct": 0, "explanation": "super().__init__() delegates to the next class in the MRO's initializer, ensuring the parent's setup (e.g. setting inherited attributes) runs before the subclass adds its own. It follows the MRO, not the same class again, so it isn't recursive self-invocation."}, {"topic": "oop", "difficulty": "mid", "stem": "What is 'encapsulation' referring to when Python convention uses a single leading underscore, e.g. self._value?", "options": ["A convention signaling 'internal use, not part of the public API' — Python doesn't enforce true privacy", "True language-enforced privacy — the attribute literally cannot be accessed from outside", "It makes the attribute read-only", "It's required syntax for any instance attribute"], "correct": 0, "explanation": "Python has no real access modifiers; a single leading underscore is purely a convention telling other developers 'treat this as internal.' Double-leading-underscore triggers name mangling (a different, separate mechanism), but even that doesn't provide true privacy — it just makes accidental access harder."}, {"topic": "oop", "difficulty": "screen", "stem": "What is polymorphism, in the OOP sense demonstrated by calling .speak() on both a Dog and a Cat object?", "options": ["Different classes can implement the same method name with type-specific behavior", "Every class must inherit from a common base class named Animal", "One object can literally change its class at runtime", "It means only one class can define a given method name"], "correct": 0, "explanation": "Polymorphism means the same interface (method name/signature) can behave differently depending on the actual object's type — calling .speak() dispatches to whichever class's implementation matches the runtime type. It doesn't require a specific base class name; Python's duck typing means it works even without formal inheritance."}, {"topic": "oop", "difficulty": "tricky", "stem": "Why does defining __eq__ on a class without also defining __hash__ make instances unhashable by default?", "options": ["Python sets __hash__ to None automatically when __eq__ is overridden, to prevent violating the hash/eq contract", "Python always keeps the default object.__hash__ regardless of __eq__", "__hash__ is unrelated to __eq__ and this scenario doesn't occur", "Overriding __eq__ raises a SyntaxError unless __hash__ is defined in the same class"], "correct": 0, "explanation": "The hash contract requires that equal objects have equal hashes; since a custom __eq__ can make previously-distinct objects compare equal, Python conservatively sets __hash__ to None so you're forced to define a consistent __hash__ yourself (or the class becomes unhashable, which is often fine for mutable classes). Python does NOT silently keep the default identity-based hash, because that could violate the eq/hash contract silently."}, {"topic": "decorators/generators", "difficulty": "screen", "stem": "What does the `@` syntax in `@decorator_name` above a function definition do?", "options": ["Passes the function to decorator_name and rebinds the name to the result", "Runs the function immediately at import time", "Marks the function as private", "Is required syntax for all function definitions"], "correct": 0, "explanation": "`@decorator_name\\ndef f(): ...` is exactly equivalent to `def f(): ...; f = decorator_name(f)` — the decorator wraps or replaces the function object. It doesn't execute the decorated function itself at definition time, only the decorator call that wraps it."}, {"topic": "decorators/generators", "difficulty": "mid", "stem": "Why do most well-written decorators use `functools.wraps` on their inner wrapper function?", "options": ["It preserves the original function's __name__, __doc__, and other metadata on the wrapped version", "It's required for the decorator to run at all", "It automatically caches the function's return value", "It converts the function into a generator"], "correct": 0, "explanation": "Without functools.wraps, the decorated function's introspection metadata (name, docstring) gets replaced by the wrapper's own, which breaks debugging, help(), and tools that rely on function identity. It has nothing to do with caching — that's functools.lru_cache's job, a different decorator entirely."}, {"topic": "decorators/generators", "difficulty": "screen", "stem": "What makes a function a generator function in Python?", "options": ["It contains at least one `yield` statement in its body", "It's decorated with @generator", "It returns a list instead of a single value", "It must be defined with `async def`"], "correct": 0, "explanation": "Any function containing `yield` becomes a generator function; calling it returns a generator object rather than immediately running the body. `async def` defines a coroutine, a related but distinct concept used for asynchronous code, not the plain generator/yield mechanism."}, {"topic": "decorators/generators", "difficulty": "mid", "stem": "What happens when you call a generator function, e.g. `gen = my_generator()`?", "options": ["It returns a generator object immediately without running any code inside the function yet", "It runs the function body to completion immediately", "It raises TypeError since generators can't be called directly", "It blocks until the first yield is reached"], "correct": 0, "explanation": "Calling a generator function just constructs and returns a generator object; none of the function body executes until you start pulling values via next() or a for loop — this laziness is the whole point. It does not block or eagerly compute anything at call time."}, {"topic": "decorators/generators", "difficulty": "mid", "stem": "What is the main practical benefit of a generator over building and returning a full list?", "options": ["Memory efficiency — values are produced one at a time instead of all held in memory at once", "Generators are always faster in total CPU time for any workload", "Generators can be indexed with [] just like lists", "Generators automatically run in a separate thread"], "correct": 0, "explanation": "Generators are lazy, so they never materialize the whole sequence in memory at once — crucial for very large or infinite sequences. Unlike lists, you cannot randomly index into a generator (no gen[3]) — you can only pull the next value forward."}, {"topic": "decorators/generators", "difficulty": "screen", "stem": "What does @property let you do in a class?", "options": ["Expose a method as if it were a plain attribute (accessed without parentheses)", "Force a method to always return None", "Automatically make an attribute private", "Cache the return value forever after the first call"], "correct": 0, "explanation": "@property turns a method into a computed attribute — you write obj.value instead of obj.value() — commonly used for validated or derived attributes with optional matching @value.setter. It doesn't cache anything by itself (that would need functools.cached_property or manual memoization) and doesn't affect privacy."}, {"topic": "decorators/generators", "difficulty": "mid", "stem": "Roughly what does this decorator pattern accomplish?\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(time.time() - start)\n        return result\n    return wrapper", "options": ["It wraps func to print its execution time each call while still returning func's normal result", "It permanently replaces func's return value with the elapsed time", "It only works on functions that take no arguments", "It runs func twice, once for timing and once for the real call"], "correct": 0, "explanation": "The wrapper calls func exactly once, captures the time around that single call, prints the duration as a side effect, and still returns func's actual result unchanged — a classic timing decorator. *args, **kwargs forwarding is exactly what lets it work with functions of any signature, not just zero-argument ones."}, {"topic": "decorators/generators", "difficulty": "tricky", "stem": "Why do decorator factories look like `@decorator(arg1, arg2)` instead of `@decorator`?", "options": ["decorator(arg1, arg2) must itself return the actual decorator function that then wraps the target", "It's purely stylistic and behaves identically to @decorator with no arguments", "Python requires parentheses on every decorator regardless of arguments", "It passes arg1, arg2 directly to the wrapped function every time it's called"], "correct": 0, "explanation": "A parameterized decorator needs an extra layer: the outer call `decorator(arg1, arg2)` returns a real decorator function, which is then applied to the target — three levels of nested functions total (factory -> decorator -> wrapper). Plain `@decorator` (no call) is only valid when decorator itself directly accepts the function, not extra config arguments."}, {"topic": "decorators/generators", "difficulty": "mid", "stem": "What does calling next() on an exhausted generator (one that has already yielded everything) do?", "options": ["Raises StopIteration", "Restarts the generator from the beginning", "Returns None", "Raises IndexError"], "correct": 0, "explanation": "Once a generator's code has run to completion, further next() calls raise StopIteration — this is exactly the signal a `for` loop relies on internally to know when to stop. Generators cannot be rewound or restarted; you'd need to call the generator function again to get a fresh one."}]</script>
+<script>
+(function () {
+  var raw = JSON.parse(document.getElementById('quiz-data').textContent);
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Shuffle question order, and shuffle each question's option order (remapping correct index).
+  var questions = shuffle(raw).map(function (q) {
+    var idx = q.options.map(function (_, i) { return i; });
+    var shuffledIdx = shuffle(idx);
+    var newOptions = shuffledIdx.map(function (i) { return q.options[i]; });
+    var newCorrect = shuffledIdx.indexOf(q.correct);
+    return {
+      stem: q.stem,
+      options: newOptions,
+      correct: newCorrect,
+      explanation: q.explanation,
+      topic: q.topic || '',
+      difficulty: q.difficulty || ''
+    };
+  });
+
+  var total = questions.length;
+  var current = 0;
+  var score = 0;
+  var answered = 0;
+
+  var main = document.getElementById('main');
+  var progressText = document.getElementById('progress-text');
+  var scorePill = document.getElementById('score-pill');
+  var progressFill = document.getElementById('progress-fill');
+
+  function updateHeader() {
+    progressText.textContent = 'Question ' + Math.min(current + 1, total) + ' of ' + total;
+    scorePill.textContent = 'Score: ' + score + ' / ' + answered;
+    progressFill.style.width = (Math.min(current, total) / total * 100) + '%';
+  }
+
+  function letter(i) { return String.fromCharCode(65 + i); }
+
+  function renderQuestion() {
+    if (current >= total) {
+      renderSummary();
+      return;
+    }
+    var q = questions[current];
+    updateHeader();
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var tagLine = [];
+    if (q.topic) tagLine.push(q.topic);
+    if (q.difficulty) tagLine.push(q.difficulty);
+    var tagsDiv = document.createElement('div');
+    tagsDiv.className = 'q-tags';
+    tagsDiv.textContent = tagLine.join(' · ');
+    card.appendChild(tagsDiv);
+
+    var stem = document.createElement('p');
+    stem.className = 'q-stem';
+    stem.textContent = q.stem;
+    card.appendChild(stem);
+
+    var optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    var feedback = document.createElement('div');
+    feedback.className = 'feedback';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'next-btn';
+    nextBtn.textContent = current === total - 1 ? 'See results' : 'Next question';
+
+    var buttons = [];
+    q.options.forEach(function (opt, i) {
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.textContent = letter(i) + '. ' + opt;
+      btn.addEventListener('click', function () {
+        buttons.forEach(function (b) { b.disabled = true; });
+        var isCorrect = i === q.correct;
+        answered++;
+        if (isCorrect) {
+          score++;
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('incorrect');
+          buttons[q.correct].classList.add('reveal-correct');
+        }
+        feedback.classList.add('show');
+        feedback.classList.add(isCorrect ? 'right' : 'wrong');
+        feedback.innerHTML = '<strong>' + (isCorrect ? 'Correct.' : 'Not quite.') + '</strong>' +
+          escapeHtml(q.explanation);
+        nextBtn.classList.add('show');
+        updateHeader();
+      });
+      buttons.push(btn);
+      optsDiv.appendChild(btn);
+    });
+
+    card.appendChild(optsDiv);
+    card.appendChild(feedback);
+
+    var navRow = document.createElement('div');
+    navRow.className = 'nav-row';
+    nextBtn.addEventListener('click', function () {
+      current++;
+      renderQuestion();
+    });
+    navRow.appendChild(nextBtn);
+    card.appendChild(navRow);
+
+    main.innerHTML = '';
+    main.appendChild(card);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function renderSummary() {
+    progressText.textContent = 'Complete';
+    progressFill.style.width = '100%';
+    var pct = total ? Math.round((score / total) * 100) : 0;
+    var div = document.createElement('div');
+    div.className = 'card summary';
+    div.innerHTML = '<h2>Quiz complete</h2>' +
+      '<div class="big-score">' + score + ' / ' + total + '</div>' +
+      '<div>' + pct + '% correct</div>';
+    var btn = document.createElement('button');
+    btn.textContent = 'Restart (new shuffle)';
+    btn.addEventListener('click', function () { location.reload(); });
+    div.appendChild(btn);
+    main.innerHTML = '';
+    main.appendChild(div);
+  }
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>

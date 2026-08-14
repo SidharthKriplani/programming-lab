@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CI/CD &amp; Testing Recognition – MCQ Bank</title>
+<style>
+  :root {
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --ink: #1c1e21;
+    --muted: #6b7280;
+    --border: #e3e5e8;
+    --accent: #2757c7;
+    --good: #1a7f37;
+    --good-bg: #e9f7ee;
+    --bad: #b3261e;
+    --bad-bg: #fbeceb;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  header h1 { margin: 0 0 4px; font-size: 1.15rem; }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .score-pill {
+    background: var(--accent);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s ease;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .q-tags {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .q-stem {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    white-space: pre-wrap;
+  }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fbfbfc;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--ink);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); background: #f0f4fe; }
+  .option:disabled { cursor: default; }
+  .option.correct { background: var(--good-bg); border-color: var(--good); font-weight: 600; }
+  .option.incorrect { background: var(--bad-bg); border-color: var(--bad); }
+  .option.reveal-correct { background: var(--good-bg); border-color: var(--good); }
+  .feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.right { background: var(--good-bg); color: #145a29; border: 1px solid var(--good); }
+  .feedback.wrong { background: var(--bad-bg); color: #7a1913; border: 1px solid var(--bad); }
+  .feedback strong { display: block; margin-bottom: 4px; }
+  .nav-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 14px;
+  }
+  button.next-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: none;
+  }
+  button.next-btn.show { display: inline-block; }
+  button.next-btn:hover { opacity: 0.9; }
+  .summary {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .summary h2 { font-size: 1.6rem; margin-bottom: 6px; }
+  .summary .big-score { font-size: 2.4rem; font-weight: 700; color: var(--accent); margin: 10px 0; }
+  .summary button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 16px;
+  }
+  footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 20px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>CI/CD &amp; Testing Recognition – MCQ Bank</h1>
+  <div class="meta-row">
+    <span id="progress-text">Question 1 of 50</span>
+    <span class="score-pill" id="score-pill">Score: 0 / 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+</header>
+<main id="main"></main>
+<footer>50 questions &middot; order shuffles on every reload &middot; self-contained, no external dependencies</footer>
+
+<script id="quiz-data" type="application/json">[{"topic": "cicd-basics", "difficulty": "screen", "stem": "What does CI (Continuous Integration) primarily aim to achieve?", "options": ["Frequently merging code changes into a shared branch, with automated builds/tests running on each merge to catch integration issues early", "Deploying every code change directly to production automatically with no review", "Writing all code in a single shared file to avoid merge conflicts", "Continuously monitoring a live production system for uptime"], "correct": 0, "explanation": "CI is about integrating code changes often (rather than in large, risky batches) and automatically validating each integration with builds/tests, surfacing conflicts and bugs quickly. Automatically deploying every change straight to production describes Continuous Deployment, a related but distinct practice that goes further than CI alone."}, {"topic": "cicd-basics", "difficulty": "screen", "stem": "What is the difference between Continuous Delivery and Continuous Deployment?", "options": ["Continuous Delivery keeps every change release-ready but may require a manual approval to actually release; Continuous Deployment releases automatically with no manual gate", "They are exactly the same practice with two different names", "Continuous Deployment only applies to mobile apps", "Continuous Delivery means deploying once per year on a fixed schedule"], "correct": 0, "explanation": "Delivery ensures the pipeline always produces a deployable artifact, but a human still decides when to actually hit the release button; Deployment automates that final step too, pushing every passing change straight to production. This distinction is one of the most commonly tested CI/CD vocabulary points precisely because the two terms sound so similar but mean different things."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "What is a typical purpose of a 'staging' environment in a CI/CD pipeline?", "options": ["A production-like environment used to test a release candidate before it goes live, catching issues that a dev environment might miss", "The environment where developers write and debug code locally", "A backup copy of the production database with no other purpose", "An environment used exclusively for load testing, never functional testing"], "correct": 0, "explanation": "Staging mirrors production as closely as practical (config, scale, integrations) so a release candidate can be validated in realistic conditions before actually reaching real users — catching environment-specific issues dev/local testing wouldn't surface. It typically hosts a range of pre-release validation (functional, integration, sometimes performance), not one narrow test type exclusively."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "Why do CI pipelines typically run automated tests before allowing a merge to the main branch?", "options": ["To catch bugs and regressions automatically before they land in shared code that others build on top of", "Running tests is a purely optional courtesy step with no real enforcement value", "Tests only need to run after deployment to production, not before merging", "Test execution has no bearing on code quality"], "correct": 0, "explanation": "Gating merges on passing tests (often via required status checks in the CI system) is what prevents broken code from silently entering the shared codebase, where it would affect every other developer building on top of main. It's a preventive, pre-merge quality gate specifically — running tests only after production deployment would mean broken code already reached real users."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "What does a 'rollback' mechanism in a deployment pipeline provide?", "options": ["The ability to quickly revert to a previously known-good version if a new deployment causes problems in production", "A way to automatically merge conflicting pull requests", "A tool for compressing deployment artifacts", "A method for writing unit tests automatically"], "correct": 0, "explanation": "Rollback capability (e.g. redeploying the last stable artifact, or a blue-green environment swap) is a critical safety net that limits the blast radius and downtime of a bad release, rather than requiring a rushed manual fix-forward under pressure. It's a deployment-safety mechanism, unrelated to code merging, artifact compression, or test authoring."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "What is the purpose of a 'canary' deployment strategy?", "options": ["Gradually roll out a new version to a small subset of traffic/users first, monitoring for issues before rolling out to everyone", "Deploy directly to 100% of production traffic immediately with no gradual rollout", "A strategy exclusively used for database schema migrations", "A synonym for a completely manual deployment process with no automation"], "correct": 0, "explanation": "Canary releases limit exposure by routing a small percentage of real traffic to the new version first, watching key metrics for regressions before expanding rollout — catching problems while the blast radius is still small. It's specifically about a gradual, monitored rollout — the opposite of an all-at-once, full-traffic release."}, {"topic": "cicd-basics", "difficulty": "screen", "stem": "What is a 'build' step generally responsible for in a CI pipeline?", "options": ["Compiling/packaging the source code into a runnable or deployable artifact", "Writing new test cases automatically based on code changes", "Manually reviewing code changes for style violations", "Sending marketing emails about new releases"], "correct": 0, "explanation": "The build step turns source code into something executable/deployable — compiling, bundling dependencies, packaging into a container image, etc. — a prerequisite before tests can run against the built artifact in many pipelines. Test authoring and code review are separate, distinct pipeline activities from the build step itself."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "Why is it considered good practice to keep a CI pipeline's build/test feedback loop fast (e.g. minutes, not hours)?", "options": ["Slow feedback discourages frequent commits and delays catching problems, undermining the whole point of continuous integration", "Pipeline speed has no effect on developer behavior or workflow", "CI pipelines are required by most tools to complete in under 60 seconds", "Faster pipelines always produce less reliable test results"], "correct": 0, "explanation": "If CI takes hours, developers batch up changes and delay integrating, defeating CI's core premise of frequent, small, quickly-validated merges — fast feedback keeps the practice actually continuous rather than in name only. There's no universal hard time limit tools enforce, and pipeline speed and test reliability are independent properties — a fast pipeline isn't inherently less trustworthy."}, {"topic": "cicd-basics", "difficulty": "mid", "stem": "What is 'infrastructure as code' (IaC) and how does it relate to CI/CD pipelines?", "options": ["Defining and provisioning infrastructure (servers, networking, etc.) via version-controlled configuration files, often applied automatically as part of a pipeline", "Writing application business logic instead of any infrastructure configuration", "A specific brand-name product, not a general practice", "A method for writing infrastructure documentation only, with no automation"], "correct": 0, "explanation": "IaC tools (Terraform, CloudFormation, etc.) let infrastructure changes be reviewed, versioned, and applied through the same kind of pipeline used for application code, bringing CI/CD discipline to infrastructure changes too. It's a general practice/methodology implemented by multiple different tools, not a single specific product name."}, {"topic": "cicd-basics", "difficulty": "screen", "stem": "What is a 'pipeline' in the context of CI/CD tooling?", "options": ["An automated sequence of stages (e.g. build, test, deploy) that code changes pass through", "A single manual step performed by a release manager", "A type of database connection pool", "A physical network cable used for deployments"], "correct": 0, "explanation": "A CI/CD pipeline defines the ordered, automated stages a change goes through from commit to (potentially) production, with each stage gating progression to the next. It's an automation concept describing pipeline stages, unrelated to database connection pooling or physical networking hardware."}, {"topic": "github-actions", "difficulty": "screen", "stem": "In GitHub Actions, what is a 'workflow'?", "options": ["A configurable automated process defined in a YAML file that runs one or more jobs in response to an event (e.g. a push or pull request)", "A GitHub feature for managing team permissions only", "A single line of code within a script", "A synonym for a GitHub repository"], "correct": 0, "explanation": "A workflow is the top-level automation unit, defined in .github/workflows/*.yml, that specifies triggers, jobs, and steps to run. Repository permissions are managed through a completely separate GitHub feature, unrelated to workflow configuration."}, {"topic": "github-actions", "difficulty": "screen", "stem": "What does the `on:` key in a GitHub Actions workflow YAML file define?", "options": ["The event(s) that trigger the workflow to run, e.g. push, pull_request, or a schedule", "The programming language used by the workflow", "The specific GitHub username who can trigger the workflow", "The total number of retries allowed"], "correct": 0, "explanation": "The `on:` section declares what triggers execution — a push to a branch, a pull request being opened, a cron schedule, a manual dispatch, etc. It has nothing to do with declaring a programming language, which is instead handled within the job's actual build/run steps."}, {"topic": "github-actions", "difficulty": "mid", "stem": "What is the relationship between a 'job' and a 'step' in a GitHub Actions workflow?", "options": ["A job is a set of steps that execute in sequence on the same runner; a workflow can contain multiple jobs, which by default run in parallel", "A step contains multiple jobs; jobs cannot contain steps", "Jobs and steps are exactly the same concept with interchangeable names", "A workflow can only ever contain exactly one job and one step"], "correct": 0, "explanation": "Steps are the individual commands/actions within a job, executed in order on one runner; jobs themselves are the higher-level grouping, and multiple jobs in a workflow run in parallel by default unless explicit dependencies (needs:) are declared. The hierarchy is the reverse of that distractor — jobs contain steps, not the other way around."}, {"topic": "github-actions", "difficulty": "mid", "stem": "What does a 'runner' refer to in GitHub Actions?", "options": ["The virtual machine or container that actually executes the jobs defined in a workflow", "A person responsible for approving pull requests", "A tool for writing YAML configuration files", "A specific type of GitHub Actions trigger event"], "correct": 0, "explanation": "Runners are the compute environment (GitHub-hosted or self-hosted) where jobs actually execute — e.g. ubuntu-latest spins up a fresh Ubuntu VM for that job's steps. It's an execution environment, not a human role, a config-authoring tool, or an event type."}, {"topic": "github-actions", "difficulty": "mid", "stem": "Why might a team use a matrix strategy (e.g. matrix: python-version: [3.9, 3.10, 3.11]) in a GitHub Actions job?", "options": ["To automatically run the same job multiple times across different configurations (e.g. Python versions) in parallel, testing compatibility across all of them", "To limit the workflow to running exactly once regardless of configuration", "Matrix strategy is only used for deploying to multiple cloud regions, nothing else", "It reduces the workflow to a single sequential run instead of parallel execution"], "correct": 0, "explanation": "A build matrix multiplies out combinations of specified variables (Python versions, OS, etc.) into multiple parallel job runs, letting you verify compatibility across all of them in one workflow definition instead of duplicating job config manually. It's a general-purpose parallel-configuration-testing feature, not limited specifically to multi-region deployment scenarios."}, {"topic": "github-actions", "difficulty": "mid", "stem": "What is the purpose of GitHub Actions 'secrets' (e.g. accessed via ${{ secrets.API_KEY }})?", "options": ["Securely store sensitive values (API keys, credentials) that workflows can use without exposing them in the workflow file or logs", "A way to hide entire workflow files from other repository collaborators", "A feature for encrypting the entire Git repository", "A mechanism to prevent a workflow from ever failing"], "correct": 0, "explanation": "Secrets are encrypted at rest and injected as environment variables/inputs at runtime, with GitHub automatically redacting them from log output, so sensitive credentials never need to be hardcoded in the workflow YAML. They're specifically for protecting sensitive VALUES used during execution — not for hiding the workflow file itself or encrypting the whole repo, which are unrelated, separate concepts."}, {"topic": "github-actions", "difficulty": "screen", "stem": "What is a common purpose of caching (e.g. actions/cache) in a GitHub Actions workflow?", "options": ["Speed up subsequent workflow runs by reusing previously downloaded dependencies instead of re-fetching them every time", "Permanently store the final production build artifact forever", "Cache is required for a workflow to be syntactically valid", "Caching disables all subsequent test runs"], "correct": 0, "explanation": "Caching dependency directories (like node_modules or a pip cache) between runs avoids redundant downloads/installs, meaningfully speeding up CI — a common optimization especially for larger dependency trees. Caches have expiration/eviction policies and aren't meant as permanent artifact storage — that's a different feature (build artifacts / releases) with a different purpose."}, {"topic": "github-actions", "difficulty": "mid", "stem": "Why might a team configure branch protection rules requiring a GitHub Actions status check to pass before merging a pull request?", "options": ["To enforce that automated tests/checks must succeed before code can be merged, preventing broken code from entering the protected branch", "Branch protection rules have no interaction with CI status checks at all", "This setting only affects who can view the repository, not merging", "It automatically deletes failing branches"], "correct": 0, "explanation": "Required status checks are the actual enforcement mechanism connecting CI results to merge permissions — without this setting, a PR could be merged even with failing tests, undermining the whole point of running CI in the first place. Branch protection and required status checks are specifically about controlling merge eligibility, unrelated to repository visibility settings or automatically deleting anything."}, {"topic": "pytest", "difficulty": "screen", "stem": "In pytest, how does a test function typically get discovered and run automatically?", "options": ["By naming the function with a `test_` prefix (or `_test` suffix) in a file also matching pytest's discovery pattern", "Every function in a Python file is automatically treated as a test, regardless of naming", "Tests must be manually registered in a config file one by one", "Only functions decorated with @pytest.mark.run are ever discovered"], "correct": 0, "explanation": "Pytest's default discovery convention looks for files like test_*.py or *_test.py and functions/methods prefixed with test_, no explicit registration required. Not every function is treated as a test — pytest specifically relies on this naming convention to distinguish test functions from helper functions in the same file."}, {"topic": "pytest", "difficulty": "screen", "stem": "What is a pytest 'fixture' used for?", "options": ["Providing reusable setup (and teardown) logic/data that tests can request as a function parameter", "A type of assertion that always passes", "A configuration file format specific to pytest", "A tool for measuring code coverage percentage"], "correct": 0, "explanation": "Fixtures (defined with @pytest.fixture) supply reusable setup like a database connection, a temp file, or test data, which pytest automatically injects into any test function that declares it as a parameter — avoiding repetitive setup code across tests. Coverage measurement is handled by a separate tool (pytest-cov / coverage.py), not by fixtures themselves."}, {"topic": "pytest", "difficulty": "mid", "stem": "What does @pytest.mark.parametrize let you do?", "options": ["Run the same test function multiple times with different sets of input values/expected outputs", "Mark a test to always be skipped regardless of conditions", "Permanently disable a test from ever running again", "Parametrize only works on fixtures, never on test functions directly"], "correct": 0, "explanation": "Parametrize lets you define a table of input/expected-output pairs and have pytest generate a separate test run for each row — great for covering many edge cases (empty input, typical input, boundary values) without duplicating test code. It's specifically applied as a decorator directly on test functions, which is its most common and defining use case."}, {"topic": "pytest", "difficulty": "mid", "stem": "What is the purpose of a fixture with `scope='session'` compared to the default `scope='function'`?", "options": ["A session-scoped fixture is set up once and shared across the entire test run, rather than being recreated for every single test function", "Session scope means the fixture only works during an interactive Python REPL session", "Function-scoped fixtures run faster than session-scoped ones in every case", "Scope only affects fixture naming, not its actual lifecycle"], "correct": 0, "explanation": "Fixture scope controls how often setup/teardown runs — session scope reuses one instance across the whole test session (useful for expensive setup like spinning up a test database), while the default function scope tears down and rebuilds fresh for every individual test for isolation. Broader-scoped fixtures are typically used specifically because they're SLOWER to set up (hence you want to avoid rebuilding them per-test) — the speed comparison in that distractor has it backwards."}, {"topic": "pytest", "difficulty": "mid", "stem": "What is the purpose of pytest.raises(SomeException) as a context manager in a test?", "options": ["Assert that the code inside the block raises the specified exception, failing the test if it doesn't", "Suppress and ignore any exception raised inside the block silently", "Automatically retry the code block if an exception occurs", "Mark the entire test file as expected to fail"], "correct": 0, "explanation": "pytest.raises lets you explicitly test error-handling paths — the test only passes if the wrapped code actually raises the expected exception type, catching regressions where error handling silently stops working. It doesn't silently swallow errors as a general suppression tool — if the exception ISN'T raised, the test explicitly fails, which is the entire point of the assertion."}, {"topic": "pytest", "difficulty": "mid", "stem": "Why are pytest fixtures generally preferred over setUp()/tearDown() methods (from unittest-style testing) for managing test dependencies?", "options": ["Fixtures are more composable and reusable — they can be shared across test files, parametrized, and have configurable scope, rather than being tied to one test class", "Fixtures cannot perform any cleanup/teardown logic at all", "setUp/tearDown methods run faster than any fixture in every scenario", "Fixtures are exclusively for database connections and nothing else"], "correct": 0, "explanation": "Fixtures are standalone, composable units that can be imported and reused across many test modules, support dependency injection between fixtures, and offer flexible scoping — capabilities that class-bound setUp/tearDown methods don't offer as cleanly. Fixtures fully support teardown too (code after a `yield` statement runs as cleanup), so claiming they can't handle teardown at all is simply incorrect."}, {"topic": "pytest", "difficulty": "screen", "stem": "What does running `pytest -k \"test_login\"` do?", "options": ["Runs only tests whose name matches the given substring/expression, e.g. tests containing 'test_login'", "Runs every test in the codebase regardless of the -k value", "Deletes all tests except test_login", "Installs a new plugin named test_login"], "correct": 0, "explanation": "The -k flag filters which tests actually run based on a name-matching expression, useful for quickly running a relevant subset during focused debugging instead of the full suite. It's a selective test-runner filter, not a destructive operation and not a plugin installation mechanism."}, {"topic": "pytest", "difficulty": "mid", "stem": "What is the difference between a mock and a real dependency in a unit test, and why use mocks?", "options": ["A mock is a stand-in object simulating a dependency's behavior, letting you test code in isolation without relying on slow, flaky, or unavailable real systems (like a live API)", "Mocks and real dependencies behave identically in every respect, with zero practical difference", "Mocks can only be used for testing databases, not APIs or file systems", "Using mocks means you never need to write any assertions in the test"], "correct": 0, "explanation": "Mocking (e.g. via unittest.mock or pytest-mock) replaces a real, often slow/unreliable/external dependency with a controllable fake, so a unit test can run fast, deterministically, and in isolation, verifying your code's logic without actually hitting a real database or third-party API. Mocks are broadly applicable to any external dependency — databases, APIs, file systems, clocks, and more — not restricted to database testing specifically."}, {"topic": "api-testing", "difficulty": "screen", "stem": "What is Postman commonly used for?", "options": ["Manually and programmatically sending HTTP requests to APIs and inspecting/validating the responses", "Compiling source code into a binary executable", "Managing a Git repository's branch history", "Writing and rendering CSS stylesheets"], "correct": 0, "explanation": "Postman is a widely-used GUI tool for constructing HTTP requests (GET, POST, etc.), inspecting responses, and writing automated request/response assertion scripts (including collection runners for regression suites). It has nothing to do with source compilation, version control, or web styling — those are entirely separate tool categories."}, {"topic": "api-testing", "difficulty": "screen", "stem": "What does an HTTP status code in the 200-299 range generally indicate?", "options": ["Success — the request was received, understood, and processed correctly", "A client error, like a malformed request", "A server error, indicating something broke on the backend", "The request is still pending and awaiting further action"], "correct": 0, "explanation": "2xx codes signal success (200 OK, 201 Created, 204 No Content, etc.) — the request was successfully processed as expected. Client errors are signaled by 4xx codes and server errors by 5xx codes — different ranges entirely from the success-indicating 2xx family."}, {"topic": "api-testing", "difficulty": "screen", "stem": "What does a 404 HTTP status code indicate?", "options": ["The requested resource could not be found at the given URL", "The request succeeded and returned data", "The server experienced an internal error", "The client is not authorized to access the resource"], "correct": 0, "explanation": "404 Not Found specifically means the server couldn't locate a resource matching the requested URL/path — a very common status to test for when validating error-handling behavior in an API. An authorization failure is signaled by a different status code (401 Unauthorized or 403 Forbidden), a distinct scenario from a resource simply not existing."}, {"topic": "api-testing", "difficulty": "mid", "stem": "What is the key difference between a 401 and a 403 HTTP status code?", "options": ["401 means the request lacks valid authentication credentials; 403 means the credentials are valid but the client isn't authorized to access that resource", "401 and 403 are exactly interchangeable and mean the same thing", "403 means the server is temporarily down for maintenance", "401 always means the requested resource doesn't exist"], "correct": 0, "explanation": "401 Unauthorized (a somewhat confusingly-named code) really means 'you're not authenticated — who are you?', while 403 Forbidden means 'we know who you are, but you don't have permission for this' — a distinction frequently tested precisely because the codes' names are misleading. Server maintenance downtime is typically signaled by a 5xx server error code, not by 403 — a completely different status family."}, {"topic": "api-testing", "difficulty": "mid", "stem": "In REST API design, what is the conventional purpose of the PUT method versus POST?", "options": ["PUT is typically used for a full update/replace of an existing resource (often idempotent); POST is typically used to create a new resource (not idempotent)", "PUT and POST are functionally identical in every REST API by convention", "PUT is only used for deleting resources", "POST cannot include a request body, only PUT can"], "correct": 0, "explanation": "By REST convention, PUT replaces a resource at a known URL and is idempotent (calling it multiple times with the same body yields the same end state), while POST typically creates a new resource (or triggers a non-idempotent action) — a common interview distinction. Both methods absolutely support a request body carrying the payload — that's central to how each of them actually works, not a distinguishing restriction between them."}, {"topic": "api-testing", "difficulty": "mid", "stem": "Why is testing an API's error responses (e.g. malformed input, missing auth) just as important as testing its happy-path success responses?", "options": ["Real-world clients will inevitably send invalid requests, and the API needs to fail gracefully and predictably rather than crashing or leaking sensitive information", "Error responses never actually occur in a well-built production API", "Testing error cases is only relevant for internal APIs, never public ones", "APIs automatically handle all error cases correctly without any explicit testing needed"], "correct": 0, "explanation": "Malformed requests, expired tokens, and edge-case inputs are a routine part of real traffic (whether from bugs, malicious actors, or legitimate edge cases), so verifying the API responds predictably (right status code, no stack trace leakage, no crash) is a core part of API test coverage, not an afterthought. Public-facing APIs arguably need this testing even MORE than internal ones, given exposure to a much wider and less trusted range of callers."}, {"topic": "api-testing", "difficulty": "mid", "stem": "What does a Postman 'collection' let you do?", "options": ["Group a set of related API requests together, which can be run in sequence (e.g. via a Collection Runner) for repeatable testing, often with assertion scripts", "Store a single request with no ability to save or reuse it", "Automatically generate the entire backend API server code", "Encrypt all HTTP traffic sent through Postman"], "correct": 0, "explanation": "Collections bundle related requests (e.g. all endpoints for one feature or one full user flow) so they can be organized, shared with a team, and replayed as a repeatable test suite — often chained together with variables passed between requests. It's a request-organization and test-automation feature, unrelated to backend code generation or traffic encryption, which are different concerns entirely."}, {"topic": "api-testing", "difficulty": "mid", "stem": "Why might an API test suite validate the JSON response schema (field names/types), not just the HTTP status code?", "options": ["A 200 status code alone doesn't guarantee the response body has the correct structure — a schema change (missing/renamed field, wrong type) could break client code while still returning success", "Status codes always guarantee the response body is perfectly correct", "Schema validation only matters for XML responses, not JSON", "JSON responses never need any kind of structural validation"], "correct": 0, "explanation": "An API could return HTTP 200 with a technically 'successful' response that's still missing an expected field or has silently changed a field's type — breaking client-side code that depends on that exact shape — which is exactly why schema/contract validation is a separate, necessary layer of API testing beyond just checking the status code. This concern applies just as much to JSON APIs (arguably the dominant modern format) as to any other response format, not something limited to XML specifically."}, {"topic": "test-case-anatomy", "difficulty": "screen", "stem": "What are the typical core components of a well-structured manual test case?", "options": ["Preconditions, test steps, expected result, and actual result", "Only a title and a pass/fail checkbox, nothing else", "The name of the developer who wrote the code being tested", "A list of all bugs ever found in the application"], "correct": 0, "explanation": "A complete test case documents the starting state needed (preconditions), the exact steps to perform, what SHOULD happen (expected result), and what actually happened when executed (actual result) — enough detail for anyone to reproduce and verify it. A bare title with a checkbox omits the reproducibility detail that makes a test case actually useful and rerunnable by someone else."}, {"topic": "test-case-anatomy", "difficulty": "mid", "stem": "Why is the Arrange-Act-Assert (AAA) pattern commonly recommended for structuring unit tests?", "options": ["It gives each test a clear, consistent structure — set up the state, perform the action being tested, then verify the outcome — making tests easier to read and maintain", "AAA is a testing framework name, not a structural pattern", "It requires writing exactly three lines of code per test, no more or less", "It only applies to database tests, not general unit tests"], "correct": 0, "explanation": "Structuring every test with a clear Arrange (setup) / Act (execute) / Assert (verify) separation makes tests predictable to read and easier to debug when they fail, since you immediately know which phase to look at. It's a widely-applicable structural convention for unit tests generally, not something narrowly scoped to database-specific testing."}, {"topic": "test-case-anatomy", "difficulty": "mid", "stem": "What makes a good test assertion message (e.g. a custom failure message on an assert) valuable when a test fails?", "options": ["It quickly tells the reader what was expected vs. actually happened, without needing to dig through the test code to understand the failure", "Assertion messages are purely decorative and never actually shown to anyone", "A good message should always just say 'Test failed' with no further detail", "Messages are only useful in manual testing, never in automated tests"], "correct": 0, "explanation": "A specific, informative failure message (e.g. 'expected status 200, got 404') saves significant debugging time by immediately conveying what went wrong, versus a generic failure requiring the reader to reread and trace through the whole test to understand it. These messages are surfaced directly in automated test runner output/logs specifically to speed up debugging — they're a core part of automated testing practice, not a manual-only concept."}, {"topic": "test-case-anatomy", "difficulty": "screen", "stem": "What is a 'test data' set in the context of a test case, and why does it matter?", "options": ["The specific input values used to execute the test, chosen to exercise both typical and edge-case scenarios", "A permanent copy of the production database used for every test", "Data that is only relevant to performance testing, not functional testing", "A randomly generated value that changes every single test run with no control"], "correct": 0, "explanation": "Deliberately chosen test data — typical values, boundary values, invalid values — is what actually exercises different code paths and edge cases; well-chosen test data is central to catching real bugs rather than just confirming the obvious happy path works. Good test data is typically controlled/deterministic (not left to arbitrary randomness) specifically so failures are reproducible and debuggable, not a moving target."}, {"topic": "test-levels", "difficulty": "screen", "stem": "What does a 'unit test' typically verify?", "options": ["The behavior of a single, isolated piece of code (e.g. one function or class), usually with dependencies mocked out", "The entire application working correctly end to end through the UI", "How well two different systems integrate together", "The application's performance under heavy load"], "correct": 0, "explanation": "Unit tests isolate one small unit of logic, typically stubbing/mocking anything it depends on, so failures point precisely at that unit rather than being confused with issues in a dependency. Full end-to-end UI verification and load/performance testing are each their own distinct, broader test category, not what a unit test is scoped to check."}, {"topic": "test-levels", "difficulty": "screen", "stem": "What does an 'integration test' typically verify that a unit test does not?", "options": ["That multiple components (e.g. a service and a real database) work correctly together, not just in isolation", "The visual appearance of a web page's CSS styling", "The legal compliance of the application", "The exact wall-clock runtime of a single function"], "correct": 0, "explanation": "Integration tests check that separately-developed pieces (a service layer talking to an actual database, or two microservices communicating) actually work correctly when combined — catching interface mismatches that isolated unit tests, with their mocked dependencies, would completely miss. Visual/CSS styling checks and legal compliance review are unrelated, entirely different categories of validation, not integration testing's purpose."}, {"topic": "test-levels", "difficulty": "mid", "stem": "What does an 'end-to-end (e2e) test' verify, compared to unit and integration tests?", "options": ["A full user workflow through the entire real system (often via the actual UI), simulating how a real user would use the application", "Only a single isolated function's return value", "Only the database schema's structural correctness", "Nothing beyond what a unit test already covers"], "correct": 0, "explanation": "E2E tests exercise a complete realistic flow — e.g. 'log in, add item to cart, checkout' — through the full stack, often via browser automation, catching problems that only show up when everything is wired together as a real user would experience it. This is a broader scope than unit tests (single isolated functions) — e2e and unit tests catch genuinely different classes of problems, not overlapping/redundant coverage."}, {"topic": "test-levels", "difficulty": "mid", "stem": "Why is the 'testing pyramid' concept (many unit tests, fewer integration tests, even fewer e2e tests) generally recommended?", "options": ["Unit tests are fast, cheap, and pinpoint failures precisely; e2e tests are slow, expensive, and more brittle, so a healthy suite leans heavily on the fast/cheap layer with e2e reserved for critical flows", "The pyramid shape is purely a visual convention with no practical implication for test suite design", "E2E tests should always outnumber unit tests for maximum coverage", "Integration tests are unnecessary if you have enough unit tests"], "correct": 0, "explanation": "E2E tests are valuable but slow to run and prone to flakiness (network/timing/UI issues), so relying on them too heavily makes the suite slow and unreliable; a pyramid-shaped mix gets fast, precise feedback from the large unit-test base while still validating real integration/user flows at a lighter, more selective layer higher up. Integration tests catch a genuinely different class of bugs (interface/wiring issues between real components) that mocked-out unit tests structurally cannot detect, no matter how many unit tests you have."}, {"topic": "test-levels", "difficulty": "tricky", "stem": "Why are end-to-end tests often described as more 'flaky' (intermittently failing without a real code change) than unit tests?", "options": ["E2E tests depend on more moving parts — network calls, timing, real browsers/UI rendering — any of which can introduce nondeterministic failures unrelated to an actual bug", "E2E tests are written in a fundamentally less reliable programming language", "Flakiness only ever happens in unit tests, never in e2e tests", "E2E tests cannot be automated, so 'flaky' doesn't apply to them"], "correct": 0, "explanation": "An e2e test's dependency chain includes real timing, network conditions, and rendering behavior, any of which can introduce a transient failure unrelated to the actual code under test — unit tests, with everything mocked and controlled, have far fewer sources of nondeterminism. E2E tests absolutely can be (and routinely are) automated — flakiness is a well-known characteristic specifically OF automated e2e suites, not a reason they can't be automated at all."}, {"topic": "test-levels", "difficulty": "tricky", "stem": "In a microservices architecture, why might 'contract testing' be used as a lighter-weight alternative to full end-to-end integration tests between services?", "options": ["It verifies each service honors an agreed-upon API contract (request/response shape) independently, without needing to spin up every dependent service together for a full e2e run", "Contract testing requires deploying the entire system together, just like e2e testing does", "Contract tests can only be written after the entire system is already in production", "Contract testing replaces the need for unit tests entirely"], "correct": 0, "explanation": "Contract testing (e.g. consumer-driven contracts) lets each service verify independently that it satisfies an agreed interface, catching integration mismatches without the cost and complexity of standing up every service together — a middle ground between isolated unit tests and full e2e tests. It's specifically valued because it does NOT require deploying every dependent service together, which is exactly the expensive setup it's designed to avoid."}, {"topic": "selenium", "difficulty": "screen", "stem": "What is Selenium primarily used for?", "options": ["Automating interactions with a real web browser for testing purposes (clicking, typing, navigating)", "Compiling Java source code", "Managing cloud infrastructure deployments", "Writing SQL queries against a database"], "correct": 0, "explanation": "Selenium WebDriver programmatically drives an actual browser — clicking buttons, filling forms, navigating pages — to automate functional/UI testing of web applications. It's a browser automation tool specifically, unrelated to compilation, infrastructure provisioning, or database querying."}, {"topic": "selenium", "difficulty": "mid", "stem": "Why does Selenium provide 'explicit waits' (e.g. WebDriverWait) instead of relying only on fixed sleep() delays?", "options": ["Explicit waits poll for a specific condition (like an element becoming visible) and proceed as soon as it's met, avoiding both flaky failures from too-short waits and wasted time from too-long fixed sleeps", "Fixed sleep() delays are always faster and more reliable than explicit waits", "Explicit waits are only needed for mobile testing, not web testing", "Selenium cannot use any kind of wait mechanism at all"], "correct": 0, "explanation": "A fixed sleep() either wastes time waiting longer than necessary or, worse, doesn't wait long enough on a slow page load, causing a flaky failure — explicit waits dynamically poll for the actual condition (element present, clickable, etc.) up to a timeout, which is both faster on average and more reliable. Fixed sleeps are widely considered an anti-pattern precisely because they're LESS reliable than explicit waits, not more — that's the opposite of the real tradeoff."}, {"topic": "selenium", "difficulty": "mid", "stem": "What is a 'locator' in Selenium (e.g. By.ID, By.CSS_SELECTOR, By.XPATH)?", "options": ["A strategy for finding a specific element on a web page so Selenium can interact with it", "A tool for locating the physical server hosting the website", "A method for finding syntax errors in test code", "A way to locate which team owns a given test file"], "correct": 0, "explanation": "Locators tell Selenium how to find a target element in the page's DOM (by ID, CSS selector, XPath, etc.) so it can then click, type into, or read from that element — a foundational concept for any Selenium-based test. It's about identifying page ELEMENTS for interaction, entirely unrelated to server hosting location, code syntax checking, or file ownership."}, {"topic": "selenium", "difficulty": "tricky", "stem": "Why does Selenium require explicitly switching context (e.g. driver.switch_to.frame(...)) before interacting with an element inside an iframe?", "options": ["Elements inside an iframe live in a separate embedded document context, and Selenium's default context won't 'see' them until you switch into that frame", "Iframes are not supported by Selenium under any circumstances", "Selenium automatically detects and enters iframes with no code needed", "Switching frame context is only needed for CSS-based locators, not XPath"], "correct": 0, "explanation": "An iframe embeds an entirely separate HTML document, and Selenium's element-finding methods only search the currently active context — attempting to locate an element inside an iframe without first switching into it typically fails with a 'no such element' error, a classic Selenium gotcha. Selenium does fully support interacting with iframes — it just requires this explicit context switch first; it's a well-established, documented feature, not something entirely unsupported."}, {"topic": "waterfall-vs-agile", "difficulty": "screen", "stem": "In the traditional Waterfall model, when does testing typically happen relative to development?", "options": ["As a distinct phase after development/implementation is largely complete, following a sequential set of stages", "Continuously, in parallel with development, throughout the entire project", "Only after the product has already shipped to customers", "Testing and development happen in the exact same phase with no separation"], "correct": 0, "explanation": "Waterfall's defining characteristic is sequential, largely non-overlapping phases (requirements -> design -> implementation -> testing -> maintenance), so testing is typically a distinct phase that starts once development work is substantially finished. Testing woven continuously alongside development throughout the project describes the Agile approach instead, the contrasting methodology this question is set up to distinguish from Waterfall."}, {"topic": "waterfall-vs-agile", "difficulty": "mid", "stem": "How does testing in Agile methodology (with practices like continuous testing / shift-left testing) generally differ from Waterfall's approach?", "options": ["Agile integrates testing continuously throughout short iterations/sprints rather than treating it as one large phase at the end, enabling faster feedback on smaller increments of work", "Agile eliminates the need for testing entirely, relying only on user feedback after release", "Agile requires exactly the same phase-gated testing process as Waterfall, just renamed", "Agile only allows manual testing, never test automation"], "correct": 0, "explanation": "Agile's iterative, incremental nature means testing happens continuously within each short sprint on smaller chunks of functionality, giving much faster feedback than waiting for one large end-of-project testing phase as in Waterfall — this tight feedback loop is a core reason automated testing (unit, integration, CI-driven) is so central to Agile practice. Agile is actually closely associated with HEAVY use of test automation (to sustain that fast, continuous feedback loop) — the opposite of being restricted to manual testing only."}]</script>
+<script>
+(function () {
+  var raw = JSON.parse(document.getElementById('quiz-data').textContent);
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // Shuffle question order, and shuffle each question's option order (remapping correct index).
+  var questions = shuffle(raw).map(function (q) {
+    var idx = q.options.map(function (_, i) { return i; });
+    var shuffledIdx = shuffle(idx);
+    var newOptions = shuffledIdx.map(function (i) { return q.options[i]; });
+    var newCorrect = shuffledIdx.indexOf(q.correct);
+    return {
+      stem: q.stem,
+      options: newOptions,
+      correct: newCorrect,
+      explanation: q.explanation,
+      topic: q.topic || '',
+      difficulty: q.difficulty || ''
+    };
+  });
+
+  var total = questions.length;
+  var current = 0;
+  var score = 0;
+  var answered = 0;
+
+  var main = document.getElementById('main');
+  var progressText = document.getElementById('progress-text');
+  var scorePill = document.getElementById('score-pill');
+  var progressFill = document.getElementById('progress-fill');
+
+  function updateHeader() {
+    progressText.textContent = 'Question ' + Math.min(current + 1, total) + ' of ' + total;
+    scorePill.textContent = 'Score: ' + score + ' / ' + answered;
+    progressFill.style.width = (Math.min(current, total) / total * 100) + '%';
+  }
+
+  function letter(i) { return String.fromCharCode(65 + i); }
+
+  function renderQuestion() {
+    if (current >= total) {
+      renderSummary();
+      return;
+    }
+    var q = questions[current];
+    updateHeader();
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var tagLine = [];
+    if (q.topic) tagLine.push(q.topic);
+    if (q.difficulty) tagLine.push(q.difficulty);
+    var tagsDiv = document.createElement('div');
+    tagsDiv.className = 'q-tags';
+    tagsDiv.textContent = tagLine.join(' · ');
+    card.appendChild(tagsDiv);
+
+    var stem = document.createElement('p');
+    stem.className = 'q-stem';
+    stem.textContent = q.stem;
+    card.appendChild(stem);
+
+    var optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    var feedback = document.createElement('div');
+    feedback.className = 'feedback';
+
+    var nextBtn = document.createElement('button');
+    nextBtn.className = 'next-btn';
+    nextBtn.textContent = current === total - 1 ? 'See results' : 'Next question';
+
+    var buttons = [];
+    q.options.forEach(function (opt, i) {
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.textContent = letter(i) + '. ' + opt;
+      btn.addEventListener('click', function () {
+        buttons.forEach(function (b) { b.disabled = true; });
+        var isCorrect = i === q.correct;
+        answered++;
+        if (isCorrect) {
+          score++;
+          btn.classList.add('correct');
+        } else {
+          btn.classList.add('incorrect');
+          buttons[q.correct].classList.add('reveal-correct');
+        }
+        feedback.classList.add('show');
+        feedback.classList.add(isCorrect ? 'right' : 'wrong');
+        feedback.innerHTML = '<strong>' + (isCorrect ? 'Correct.' : 'Not quite.') + '</strong>' +
+          escapeHtml(q.explanation);
+        nextBtn.classList.add('show');
+        updateHeader();
+      });
+      buttons.push(btn);
+      optsDiv.appendChild(btn);
+    });
+
+    card.appendChild(optsDiv);
+    card.appendChild(feedback);
+
+    var navRow = document.createElement('div');
+    navRow.className = 'nav-row';
+    nextBtn.addEventListener('click', function () {
+      current++;
+      renderQuestion();
+    });
+    navRow.appendChild(nextBtn);
+    card.appendChild(navRow);
+
+    main.innerHTML = '';
+    main.appendChild(card);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
+  function renderSummary() {
+    progressText.textContent = 'Complete';
+    progressFill.style.width = '100%';
+    var pct = total ? Math.round((score / total) * 100) : 0;
+    var div = document.createElement('div');
+    div.className = 'card summary';
+    div.innerHTML = '<h2>Quiz complete</h2>' +
+      '<div class="big-score">' + score + ' / ' + total + '</div>' +
+      '<div>' + pct + '% correct</div>';
+    var btn = document.createElement('button');
+    btn.textContent = 'Restart (new shuffle)';
+    btn.addEventListener('click', function () { location.reload(); });
+    div.appendChild(btn);
+    main.innerHTML = '';
+    main.appendChild(div);
+  }
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
